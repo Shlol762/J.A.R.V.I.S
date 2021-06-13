@@ -120,7 +120,7 @@ async def local_image_inserter(ctx: commands.Context, embed: discord.Embed, team
 
 
 async def set_timestamp(embed: discord.Embed,
-                        foot_text: str = "Requested"):
+                        foot_text: str = "Requested") -> discord.Embed:
     embed.timestamp = time_set(datetime.datetime.now())
     if embed.footer:
         if embed._footer.get('text'):

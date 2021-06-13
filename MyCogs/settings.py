@@ -1,8 +1,9 @@
 from typing import Union
 import discord, json
 from discord.ext import commands
+from discord import Embed
 from MyCogs import command_log_and_err, Cog, command,\
-    guild_only, Context, Client
+    guild_only, Context, Client, set_timestamp
 
 #commands.
 class Settings(Cog):
@@ -244,10 +245,18 @@ class Settings(Cog):
     @guild_only()
     async def settings(self, ctx: Context):
         with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json", "r") as f:
-            settings: dict = json.load(f)
+            settings: dict[str:dict[str:bool]] = json.load(f)
+        embed = await set_timestamp(Embed(title=f"`J.A.R.V.I.S` configuration settings in `{ctx.channel.name}`",
+                      description=""))
 
         if settings.get(str(ctx.channel.id)):
-            pass
+            for setting, bool_val in settings.get(str(ctx.channel.id)).items():
+                embed.description = f"`{setting.title():^10} - {bool_val:>5}`\n"
+        elif settings.get(str(ctx.guild.id)):
+            for setting, bool_val in settings.get(str(ctx.channel.id)).items():
+                embed.description = f"`{setting.title():^10} - {bool_val:>5}`\n"
+
+        await ctx.send(embed=embed)
 
 
 def setup(client):
