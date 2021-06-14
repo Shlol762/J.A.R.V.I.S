@@ -191,21 +191,23 @@ class Events(Cog):
                 message_text: str = re.sub(r"when(s|'s| is)?", "when", message.content.lower()).replace("my", author.mention).replace('your', self.client.user.name).replace(
                     "birthday", "bday").replace("i", author.mention)
                 if re.search(r"\b(when (is )?(the next occurrance of |will)?((.)+ (next )?bday)| the day (.)+ was born)", message_text.lower()):
-                    person = re.search("<@(!)?[0-9]+>", message_text.replace("'s", ''))
-                    person: Member = await MemberConverter().convert(ctx=ctx, argument=person.group())
-                    path: str = "C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/birthdays.json"
-                    f = open(path, 'r')
-                    birthdays: dict[str: str] = json.load(f)
-                    f.close()
-                    if birthdays.get(str(person.id)):
-                        time: datetime.datetime = datetime.datetime.strptime(birthdays[str(person.id)]+datetime.datetime.now().strftime("/%Y"), "%d/%m/%Y")
-                        if time < datetime.datetime.now():
-                            time: str = re.sub(" to `00:00 [0-9]{2}/[0-9]{2}/[0-9]{4}`", "", time.strftime(f"""The next occurrance of {'your' if person.id == author.id else person.name+"'s"} birthday is in {timeto(f'{time.day}/{time.month}/{time.year + 1}')} on the `%dth of %B in {time.year + 1}`"""))
+                    try:
+                        person = re.search(r"<@(!)?[0-9]+>", message_text.replace("'s", ''))
+                        person: Member = await MemberConverter().convert(ctx=ctx, argument=person.group())
+                        path: str = "C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/birthdays.json"
+                        f = open(path, 'r')
+                        birthdays: dict[str: str] = json.load(f)
+                        f.close()
+                        if birthdays.get(str(person.id)):
+                            time: datetime.datetime = datetime.datetime.strptime(birthdays[str(person.id)]+datetime.datetime.now().strftime("/%Y"), "%d/%m/%Y")
+                            if time < datetime.datetime.now():
+                                time: str = re.sub(" to `00:00 [0-9]{2}/[0-9]{2}/[0-9]{4}`", "", time.strftime(f"""The next occurrance of {'your' if person.id == author.id else person.name+"'s"} birthday is in {timeto(f'{time.day}/{time.month}/{time.year + 1}')} on the `%dth of %B in {time.year + 1}`"""))
+                            else:
+                                time: str = re.sub(" to `00:00 [0-9]{2}/[0-9]{2}/[0-9]{4}`", "", time.strftime(f"""The next occurrance of {'your' if person.id == author.id else person.name+"'s"} birthday is in {timeto(f'{time.day}/{time.month}/{time.year}')} on the `%dth of %B in %Y`"""))
+                            await ctx.send(time)
                         else:
-                            time: str = re.sub(" to `00:00 [0-9]{2}/[0-9]{2}/[0-9]{4}`", "", time.strftime(f"""The next occurrance of {'your' if person.id == author.id else person.name+"'s"} birthday is in {timeto(f'{time.day}/{time.month}/{time.year}')} on the `%dth of %B in %Y`"""))
-                        await ctx.send(time)
-                    else:
-                        await ctx.send(f"I'm sorry but I don't think I have that birthday stored anywhere. Contact Shlol#2501 to add the birthday")
+                            await ctx.send(f"I'm sorry but I don't think I have that birthday stored anywhere. Contact Shlol#2501 to add the birthday")
+                    except AttributeError: pass
 
     @Cog.listener()
     async def on_disconnect(self):

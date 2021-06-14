@@ -257,6 +257,7 @@ class Settings(Cog):
             config: dict = settings.get(str(ctx.guild.id))
             for setting, bool_val in config.items():
                 embed.description += f"`{setting.title():^10} - {'True' if bool_val == 1 else 'False':^7}`\n"
+        await command_log_and_err(ctx, self.client, "Success")
         await ctx.send(embed=embed)
 
 
