@@ -217,5 +217,6 @@ def file_opener(file: str, option: str = 'read') -> str:
 async def get_prefix(bot: Bot, message: Message) -> str:
     with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/prefixes.json", "r") as f:
         prefixes = json.load(f)
+    id: str = str(message.guild.id) if message.guild else "DMαθβ"
     for_guild = prefixes[str(message.guild.id)]
     return when_mentioned_or(for_guild)(bot, message)
