@@ -1,7 +1,7 @@
 from typing import Union
 import discord, json
 from discord.ext import commands
-from discord import Embed
+from discord import Embed, Colour
 from MyCogs import command_log_and_err, Cog, command,\
     guild_only, Context, Client, set_timestamp
 
@@ -247,15 +247,16 @@ class Settings(Cog):
         with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json", "r") as f:
             settings: dict[str:dict[str:bool]] = json.load(f)
         embed = await set_timestamp(Embed(title=f"`J.A.R.V.I.S` configuration settings in `{ctx.channel.name}`",
-                      description=""))
+                      description="", colour=Colour.random()))
 
         if settings.get(str(ctx.channel.id)):
-            for setting, bool_val in settings.get(str(ctx.channel.id)).items():
+            config: dict = settings.get(str(ctx.channel.id))
+            for setting, bool_val in config.items():
                 embed.description = f"`{setting.title():^10} - {bool_val:>5}`\n"
         elif settings.get(str(ctx.guild.id)):
-            for setting, bool_val in settings.get(str(ctx.channel.id)).items():
-                embed.description = f"`{setting.title():^10} - {bool_val:>5}`\n"
-
+            config: dict = settings.get(str(ctx.guild.id))
+            for setting, bool_val in config.items():
+                embed.description += f"`{setting.title():^10} - {'True' if bool_val == 1 else 'False':^7}`\n"
         await ctx.send(embed=embed)
 
 
