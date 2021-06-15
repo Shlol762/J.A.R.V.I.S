@@ -1,4 +1,5 @@
 import asyncio
+import json
 from typing import Optional, Union
 import discord
 from MyCogs import command_log_and_err, set_timestamp, Context,\
@@ -50,10 +51,9 @@ class Mslo(Cog):
         author = ctx.message.author
         guild_id = str(ctx.guild.id)
         channel_id = str(ctx.message.channel.id)
-        f = open("C:/Users/Shlok/J.A.R.V.I.SV2021/text_files/kick_forbidden_list.txt", "r")
-        kick = f.readlines()
-        kick_str = ''.join(kick)
-        f.close()
+        with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json", "r") as f:
+            settings: dict = json.load(f)
+        id: str = channel_id if settings.get(channel_id) else guild_id
         if reason.lower() == 'override 403' and author.id == ctx.guild.owner_id:
             try:
                 invite, error, msg, invitelnk = await self.invite(ctx, member)
@@ -78,7 +78,7 @@ class Mslo(Cog):
             await ctx.send("Oi your not allowed to override me! Do it the old way peasant this only for owners!")
             await command_log_and_err(ctx=ctx, client=self.client, status='Not owner.', used_on=member)
         else:
-            if (guild_id not in kick_str) and (channel_id not in kick_str):
+            if settings[id]["kick"]:
                 if member:
                     if member == author:
                         await ctx.send("Ya can't kick yourself dummy!")
@@ -132,10 +132,9 @@ class Mslo(Cog):
         author = ctx.message.author
         guild_id = str(ctx.guild.id)
         channel_id = str(ctx.message.channel.id)
-        f = open("C:/Users/Shlok/J.A.R.V.I.SV2021/text_files/ban_forbidden_list.txt", "r")
-        ban = f.readlines()
-        ban_str = ''.join(ban)
-        f.close()
+        with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json", "r") as f:
+            settings: dict = json.load(f)
+        id: str = channel_id if settings.get(channel_id) else guild_id
         if reason.lower() == 'override 403' and author.id == ctx.guild.owner_id:
             try:
                 await member.ban(reason=reason, delete_message_days=0)
@@ -152,7 +151,7 @@ class Mslo(Cog):
             await command_log_and_err(ctx=ctx, client=self.client, status='Not owner.', used_on=member)
             await ctx.send("Oi your not allowed to override me! Do it the old way peasant this only for owners!")
         else:
-            if (guild_id not in ban_str) and (channel_id not in ban_str):
+            if settings[id]["ban"]:
                 if member:
                     if member == author:
                         await ctx.send(

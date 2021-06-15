@@ -1,4 +1,6 @@
 import datetime
+import json
+
 import discord
 from discord.ext import commands
 from typing import Optional
@@ -26,11 +28,10 @@ class Utilities(commands.Cog):
         author = ctx.message.author
         guild_id = str(ctx.guild.id)
         channel_id = str(ctx.message.channel.id)
-        f = open("C:/Users/Shlok/J.A.R.V.I.SV2021/text_files/clear_forbidden_list.txt", "r")
-        clear = f.readlines()
-        clear_str = ''.join(clear)
-        f.close()
-        if (guild_id not in clear_str) and (channel_id not in clear_str):
+        with open("C:/Users/Shlok/J.A.R.V.I.SV2021/text_files/clear_forbidden_list.txt", "r") as f:
+            settings: dict = json.load(f)
+        id: str = channel_id if settings.get(channel_id) else guild_id
+        if settings[id]["clear"]:
             if amount > 20:
                 await command_log_and_err(ctx, self.client, 'Amt exceeded limit'.format(amount))
                 await ctx.send(f"Sorry {author.mention}, can't clear more than 20 messages")

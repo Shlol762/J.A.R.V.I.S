@@ -18,104 +18,108 @@ class Settings(Cog):
               brief='⚙701')
     @guild_only()
     async def enable(self, ctx: Context, _command: str = 'none', server_or_channel: str = 'server'):
-        c_low = _command.lower()
-        guild_id = str(ctx.guild.id)
-        channel_id = str(ctx.message.channel.id)
-        author = ctx.message.author
-        if author.id == ctx.guild.owner_id:
-            if c_low == 'none':
-                await command_log_and_err(ctx, self.client, err_code="Err_70148",
-                                          text="Choose what you want to change please.")
+        if ctx.author.id == ctx.guild.owner_id:
+            c_low = _command.lower()
+            guild_id = str(ctx.guild.id)
+            channel_id = str(ctx.message.channel.id)
+            author = ctx.message.author
+            if author.id == ctx.guild.owner_id:
+                if c_low == 'none':
+                    await command_log_and_err(ctx, self.client, err_code="Err_70148",
+                                              text="Choose what you want to change please.")
+                else:
+                    json_file = "C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json"
+                    template = {
+                        "ban": True,
+                        "kick": True,
+                        "clear": True,
+                        "message": True,
+                        "msghai": True,
+                        "noswear": True,
+                        "convo": True,
+                        "nou": True,
+                        "greetings": True,
+                        "farewells": True,
+                        "iamgod": True
+                    }
+
+                    with open(json_file, "r") as f: bot_comm_config: dict = json.load(f)
+
+                    if bot_comm_config.get(channel_id) and server_or_channel == 'channel':
+                        channel_config: Union[dict, None] = bot_comm_config.get(channel_id)
+                        if channel_config:
+                            func = channel_config.get(_command)
+                            if func:
+                                await ctx.send(f"`{_command}` was already enabled in this `Channel`")
+                            elif func is False:
+                                channel_config[_command] = True
+                                await ctx.send(f"`{_command}` has been enabled in this `Channel`")
+                            else:
+                                await ctx.send(f"There isn't any setting called `{_command}`")
+                            if channel_config == template: bot_comm_config.pop(channel_id)
+                    elif not bot_comm_config.get(channel_id) and server_or_channel == 'channel':
+                        bot_comm_config[channel_id] = {
+                            "ban": True,
+                            "kick": True,
+                            "clear": True,
+                            "message": True,
+                            "msghai": True,
+                            "noswear": True,
+                            "convo": True,
+                            "nou": True,
+                            "greetings": True,
+                            "farewells": True,
+                            "iamgod": True
+                        }
+                        channel_config: Union[dict, None] = bot_comm_config.get(channel_id)
+                        if channel_config:
+                            func = channel_config.get(_command)
+                            if func: await ctx.send(f"`{_command}` was already enabled in this `Channel`")
+                            elif func is False:
+                                channel_config[_command] = True
+                                await ctx.send(f"`{_command}` has been enabled in this `Channel`")
+                            else: await ctx.send(f"There isn't any setting called `{_command}`")
+                            if channel_config == template: bot_comm_config.pop(channel_id)
+                    if bot_comm_config.get(guild_id) and server_or_channel == 'server':
+                        guild_config: Union[dict, None] = bot_comm_config.get(guild_id)
+                        if guild_config:
+                            func = guild_config.get(_command)
+                            if func: await ctx.send(f"`{_command}` was already enabled in this `Server`")
+                            elif func is False:
+                                guild_config[_command] = True
+                                await ctx.send(f"`{_command}` has been enabled in this `Server`")
+                            else: await ctx.send(f"There isn't any setting called `{_command}`")
+                    elif not bot_comm_config.get(guild_id) and server_or_channel == 'server':
+                        bot_comm_config[guild_id] = {
+                            "ban": True,
+                            "kick": True,
+                            "clear": True,
+                            "message": True,
+                            "msghai": True,
+                            "noswear": True,
+                            "convo": True,
+                            "nou": True,
+                            "greetings": True,
+                            "farewells": True,
+                            "iamgod": True
+                        }
+                        guild_config: Union[dict, None] = bot_comm_config.get(guild_id)
+                        if guild_config:
+                            func = guild_config.get(_command)
+                            if func: await ctx.send(f"`{_command}` was already enabled in this `Server`")
+                            elif func is False:
+                                guild_config[_command] = True
+                                await ctx.send(f"`{_command}` has been enabled in this `Server`")
+                            else: await ctx.send(f"There isn't any setting called `{_command}`")
+
+                    with open(json_file, "w") as f: json.dump(bot_comm_config, f, indent=3)
+                    await command_log_and_err(ctx, self.client, 'Success')
             else:
-                json_file = "C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json"
-                template = {
-                    "ban": True,
-                    "kick": True,
-                    "clear": True,
-                    "message": True,
-                    "msghai": True,
-                    "noswear": True,
-                    "convo": True,
-                    "nou": True,
-                    "greetings": True,
-                    "farewells": True,
-                    "iamgod": True
-                }
-
-                with open(json_file, "r") as f: bot_comm_config: dict = json.load(f)
-
-                if bot_comm_config.get(channel_id) and server_or_channel == 'channel':
-                    channel_config: Union[dict, None] = bot_comm_config.get(channel_id)
-                    if channel_config:
-                        func = channel_config.get(_command)
-                        if func:
-                            await ctx.send(f"`{_command}` was already enabled in this `Channel`")
-                        elif func is False:
-                            channel_config[_command] = True
-                            await ctx.send(f"`{_command}` has been enabled in this `Channel`")
-                        else:
-                            await ctx.send(f"There isn't any setting called `{_command}`")
-                        if channel_config == template: bot_comm_config.pop(channel_id)
-                elif not bot_comm_config.get(channel_id) and server_or_channel == 'channel':
-                    bot_comm_config[channel_id] = {
-                        "ban": True,
-                        "kick": True,
-                        "clear": True,
-                        "message": True,
-                        "msghai": True,
-                        "noswear": True,
-                        "convo": True,
-                        "nou": True,
-                        "greetings": True,
-                        "farewells": True,
-                        "iamgod": True
-                    }
-                    channel_config: Union[dict, None] = bot_comm_config.get(channel_id)
-                    if channel_config:
-                        func = channel_config.get(_command)
-                        if func: await ctx.send(f"`{_command}` was already enabled in this `Channel`")
-                        elif func is False:
-                            channel_config[_command] = True
-                            await ctx.send(f"`{_command}` has been enabled in this `Channel`")
-                        else: await ctx.send(f"There isn't any setting called `{_command}`")
-                        if channel_config == template: bot_comm_config.pop(channel_id)
-                if bot_comm_config.get(guild_id) and server_or_channel == 'server':
-                    guild_config: Union[dict, None] = bot_comm_config.get(guild_id)
-                    if guild_config:
-                        func = guild_config.get(_command)
-                        if func: await ctx.send(f"`{_command}` was already enabled in this `Server`")
-                        elif func is False:
-                            guild_config[_command] = True
-                            await ctx.send(f"`{_command}` has been enabled in this `Server`")
-                        else: await ctx.send(f"There isn't any setting called `{_command}`")
-                elif not bot_comm_config.get(guild_id) and server_or_channel == 'server':
-                    bot_comm_config[guild_id] = {
-                        "ban": True,
-                        "kick": True,
-                        "clear": True,
-                        "message": True,
-                        "msghai": True,
-                        "noswear": True,
-                        "convo": True,
-                        "nou": True,
-                        "greetings": True,
-                        "farewells": True,
-                        "iamgod": True
-                    }
-                    guild_config: Union[dict, None] = bot_comm_config.get(guild_id)
-                    if guild_config:
-                        func = guild_config.get(_command)
-                        if func: await ctx.send(f"`{_command}` was already enabled in this `Server`")
-                        elif func is False:
-                            guild_config[_command] = True
-                            await ctx.send(f"`{_command}` has been enabled in this `Server`")
-                        else: await ctx.send(f"There isn't any setting called `{_command}`")
-
-                with open(json_file, "w") as f: json.dump(bot_comm_config, f, indent=3)
-                await command_log_and_err(ctx, self.client, 'Success')
+                await command_log_and_err(ctx, self.client, 'Not owner')
+                await ctx.send("You need to be owner to change settings.")
         else:
-            await command_log_and_err(ctx, self.client, 'Not owner')
-            await ctx.send("You need to be owner to change settings.")\
+            await ctx.send(f"You are not owner of this server {ctx.author.mention}")
+            await command_log_and_err(ctx, self.client, "Not onwer")
 
     @command(name='Disable', aliases=['da'],
       help='Disables the selected setting the bot has for the server.',
@@ -123,101 +127,105 @@ class Settings(Cog):
       brief='⚙702')
     @guild_only()
     async def disable(self, ctx: Context, _command: str = 'none', server_or_channel: str = 'server'):
-        c_low = _command.lower()
-        guild_id = str(ctx.guild.id)
-        channel_id = str(ctx.message.channel.id)
-        author = ctx.message.author
-        if author.id == ctx.guild.owner_id:
-            if c_low == 'none':
-                await command_log_and_err(ctx, self.client, err_code="Err_70248",
-                                          text="Choose what you want to change please.")
+        if ctx.author.id == ctx.guild.owner_id:
+            c_low = _command.lower()
+            guild_id = str(ctx.guild.id)
+            channel_id = str(ctx.message.channel.id)
+            author = ctx.message.author
+            if author.id == ctx.guild.owner_id:
+                if c_low == 'none':
+                    await command_log_and_err(ctx, self.client, err_code="Err_70248",
+                                              text="Choose what you want to change please.")
+                else:
+                    json_file = "C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json"
+                    template = {
+                        "ban": True,
+                        "kick": True,
+                        "clear": True,
+                        "message": True,
+                        "msghai": True,
+                        "noswear": True,
+                        "convo": True,
+                        "nou": True,
+                        "greetings": True,
+                        "farewells": True,
+                        "iamgod": True
+                    }
+
+                    with open(json_file, "r") as f: bot_comm_config: dict = json.load(f)
+
+                    if bot_comm_config.get(channel_id) and server_or_channel == 'channel':
+                        channel_config: Union[dict, None] = bot_comm_config.get(channel_id)
+                        if channel_config:
+                            func = channel_config.get(_command)
+                            if func:
+                                channel_config[_command] = False
+                                await ctx.send(f"`{_command}` has been disabled in this `Channel`")
+                            elif func is False: await ctx.send(f"`{_command}` was already disabled in this `Channel`")
+                            else: await ctx.send(f"There isn't any setting called `{_command}`")
+                            if channel_config == template: bot_comm_config.pop(channel_id)
+                    elif not bot_comm_config.get(channel_id) and server_or_channel == 'channel':
+                        bot_comm_config[channel_id] = {
+                            "ban": True,
+                            "kick": True,
+                            "clear": True,
+                            "message": True,
+                            "msghai": True,
+                            "noswear": True,
+                            "convo": True,
+                            "nou": True,
+                            "greetings": True,
+                            "farewells": True,
+                            "iamgod": True
+                        }
+                        channel_config: Union[dict, None] = bot_comm_config.get(channel_id)
+                        if channel_config:
+                            func = channel_config.get(_command)
+                            if func:
+                                channel_config[_command] = False
+                                await ctx.send(f"`{_command}` has been disabled in this `Channel`")
+                            elif func is False: await ctx.send(f"`{_command}` was already disabled in this `Channel`")
+                            else: await ctx.send(f"There isn't any setting called `{_command}`")
+                            if channel_config == template: bot_comm_config.pop(channel_id)
+                    if bot_comm_config.get(guild_id) and server_or_channel == 'server':
+                        guild_config: Union[dict, None] = bot_comm_config.get(guild_id)
+                        if guild_config:
+                            func = guild_config.get(_command)
+                            if func:
+                                guild_config[_command] = False
+                                await ctx.send(f"`{_command}` has been disabled in this `Server`")
+                            elif func is False: await ctx.send(f"`{_command}` was already disabled in this `Server`")
+                            else: await ctx.send(f"There isn't any setting called `{_command}`")
+                    elif not bot_comm_config.get(guild_id) and server_or_channel == 'server':
+                        bot_comm_config[guild_id] = {
+                            "ban": True,
+                            "kick": True,
+                            "clear": True,
+                            "message": True,
+                            "msghai": True,
+                            "noswear": True,
+                            "convo": True,
+                            "nou": True,
+                            "greetings": True,
+                            "farewells": True,
+                            "iamgod": True
+                        }
+                        guild_config: Union[dict, None] = bot_comm_config.get(guild_id)
+                        if guild_config:
+                            if func:
+                                guild_config[_command] = False
+                                await ctx.send(f"`{_command}` has been disabled in this `Server`")
+                            elif func is False: await ctx.send(f"`{_command}` was already disabled in this `Server`")
+                            else: await ctx.send(f"There isn't any setting called `{_command}`")
+
+                    with open(json_file, "w") as f: json.dump(bot_comm_config, f, indent=3)
+                    await command_log_and_err(ctx, self.client, 'Success')
             else:
-                json_file = "C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json"
-                template = {
-                    "ban": True,
-                    "kick": True,
-                    "clear": True,
-                    "message": True,
-                    "msghai": True,
-                    "noswear": True,
-                    "convo": True,
-                    "nou": True,
-                    "greetings": True,
-                    "farewells": True,
-                    "iamgod": True
-                }
-
-                with open(json_file, "r") as f: bot_comm_config: dict = json.load(f)
-
-                if bot_comm_config.get(channel_id) and server_or_channel == 'channel':
-                    channel_config: Union[dict, None] = bot_comm_config.get(channel_id)
-                    if channel_config:
-                        func = channel_config.get(_command)
-                        if func:
-                            channel_config[_command] = False
-                            await ctx.send(f"`{_command}` has been disabled in this `Channel`")
-                        elif func is False: await ctx.send(f"`{_command}` was already disabled in this `Channel`")
-                        else: await ctx.send(f"There isn't any setting called `{_command}`")
-                        if channel_config == template: bot_comm_config.pop(channel_id)
-                elif not bot_comm_config.get(channel_id) and server_or_channel == 'channel':
-                    bot_comm_config[channel_id] = {
-                        "ban": True,
-                        "kick": True,
-                        "clear": True,
-                        "message": True,
-                        "msghai": True,
-                        "noswear": True,
-                        "convo": True,
-                        "nou": True,
-                        "greetings": True,
-                        "farewells": True,
-                        "iamgod": True
-                    }
-                    channel_config: Union[dict, None] = bot_comm_config.get(channel_id)
-                    if channel_config:
-                        func = channel_config.get(_command)
-                        if func:
-                            channel_config[_command] = False
-                            await ctx.send(f"`{_command}` has been disabled in this `Channel`")
-                        elif func is False: await ctx.send(f"`{_command}` was already disabled in this `Channel`")
-                        else: await ctx.send(f"There isn't any setting called `{_command}`")
-                        if channel_config == template: bot_comm_config.pop(channel_id)
-                if bot_comm_config.get(guild_id) and server_or_channel == 'server':
-                    guild_config: Union[dict, None] = bot_comm_config.get(guild_id)
-                    if guild_config:
-                        func = guild_config.get(_command)
-                        if func:
-                            guild_config[_command] = False
-                            await ctx.send(f"`{_command}` has been disabled in this `Server`")
-                        elif func is False: await ctx.send(f"`{_command}` was already disabled in this `Server`")
-                        else: await ctx.send(f"There isn't any setting called `{_command}`")
-                elif not bot_comm_config.get(guild_id) and server_or_channel == 'server':
-                    bot_comm_config[guild_id] = {
-                        "ban": True,
-                        "kick": True,
-                        "clear": True,
-                        "message": True,
-                        "msghai": True,
-                        "noswear": True,
-                        "convo": True,
-                        "nou": True,
-                        "greetings": True,
-                        "farewells": True,
-                        "iamgod": True
-                    }
-                    guild_config: Union[dict, None] = bot_comm_config.get(guild_id)
-                    if guild_config:
-                        if func:
-                            guild_config[_command] = False
-                            await ctx.send(f"`{_command}` has been disabled in this `Server`")
-                        elif func is False: await ctx.send(f"`{_command}` was already disabled in this `Server`")
-                        else: await ctx.send(f"There isn't any setting called `{_command}`")
-
-                with open(json_file, "w") as f: json.dump(bot_comm_config, f, indent=3)
-                await command_log_and_err(ctx, self.client, 'Success')
+                await command_log_and_err(ctx, self.client, 'Not owner')
+                await ctx.send("You need to be owner to change settings.")
         else:
-            await command_log_and_err(ctx, self.client, 'Not owner')
-            await ctx.send("You need to be owner to change settings.")
+            await ctx.send(f"You are not owner of this server {ctx.author.mention}")
+            await command_log_and_err(ctx, self.client, "Not onwer")
 
     @command(name='Set Prefix', aliases=['setprefix', 'spf'],
              help='Sets the prefix for the server the command is called in.',
