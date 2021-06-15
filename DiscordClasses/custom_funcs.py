@@ -4,18 +4,24 @@ import discord
 from PIL import Image
 from discord.ext import commands
 from discord.ext.commands import RoleNotFound, RoleConverter, MemberConverter, Bot, Context, when_mentioned_or
-from discord import Role, Member, Message
+from discord import Role, Member, Message, Emoji
 from pytz import timezone
-from typing import Union, Optional, List
+from typing import Union, Optional, List, Coroutine
 import aiohttp
 import re
 
 
-def trim(string: str):
+__doc__ = "Module containing all sorts of custom functions."
+
+
+def trim(string: str) -> str:
+    """Takes in a string argument and trims every extra whitespace from in between as well as the ends."""
     return re.sub(" +", " ", string.strip())
 
 
 def print_methods(obj: object, magic_methods: bool = False):
+    """Prints all the callable attributes of an object, with an option to not print the default 'Magic'
+    or 'Dunder' methods."""
     print("\n\n\nMethods of object are:\n")
     for method_name in dir(obj):
         if callable(getattr(obj, method_name)):
@@ -24,6 +30,7 @@ def print_methods(obj: object, magic_methods: bool = False):
 
 
 def print_vars(obj):
+    """Prints all the uncallable attributes of an object."""
     print("\n\n\nAttributes of object are:\n")
     for var_name in dir(obj):
         if not callable(getattr(obj, var_name)):
@@ -31,6 +38,7 @@ def print_vars(obj):
 
 
 async def reaction(ctx: Context = None, success=None):
+    """Adds a reaction to any command invoking message."""
     if success is False:
         await ctx.message.clear_reactions()
         await ctx.message.add_reaction('❌')
@@ -42,7 +50,8 @@ async def reaction(ctx: Context = None, success=None):
             await ctx.message.add_reaction('✅')
 
 
-def image_join(img1: str, img2: str):
+def image_join(img1: str, img2: str) -> str:
+    """Joins 2 images into 1, and returns the new image's file path."""
     im1: Image = Image.open(img1)
     im2: Image = Image.open(img2)
     new_image = Image.new('RGB', (im1.width + im2.width, im1.height))
@@ -53,7 +62,8 @@ def image_join(img1: str, img2: str):
     return path
 
 
-def time_set(time: datetime = None, time_format: str = None):
+def time_set(time: datetime = None, time_format: str = None) -> Optional[datetime]:
+    """Sets the time to IST from any other timezone."""
     return time.replace(
         tzinfo=timezone('UTC')).astimezone(
         timezone('Asia/Kolkata')
@@ -63,7 +73,8 @@ def time_set(time: datetime = None, time_format: str = None):
         timezone('Asia/Kolkata'))
 
 
-async def get_emoji(bot: Bot, emoji: int):
+async def get_emoji(bot: Bot, emoji: int) -> Optional[Union[str, Emoji]]:
+    """Getting the emoji from inside a Bot instance."""
     for squad in bot.emojis:
         if squad.id == emoji or squad.name == emoji:
             returned: bool = True
@@ -73,7 +84,8 @@ async def get_emoji(bot: Bot, emoji: int):
     return "" if returned is False else squad
 
 
-async def hypesquad_emoji(bot: Bot, squad: str):
+async def hypesquad_emoji(bot: Bot, squad: str) -> Optional[Union[str, Emoji]]:
+    """Gets the emoji by the ID from https://discord.gg/zt6j4h7ep3"""
     emoji: int = {"Hypesquad Brilliance": 840464223326306305,
              "Hypesquad Balance": 840464223280824320,
              "Hypesquad Bravery": 840464223560663040,
@@ -88,7 +100,8 @@ async def hypesquad_emoji(bot: Bot, squad: str):
     return await get_emoji(bot=bot, emoji=emoji)
 
 
-def timeto(time_str: str):
+def timeto(time_str: str) -> str:
+    """Calculates the difference between the present and any given timestamp."""
     now: datetime = datetime.now()
     num: bool = True if time_str.replace("/", "").replace(":", "").replace(" ", "").isdigit() else False
     time_str: str = time_str.replace(now.strftime("%Y")[-2:], now.strftime("%Y")) if time_str[-2:] == "21" and time_str[-4:] != "2021" else time_str
@@ -136,7 +149,8 @@ def timeto(time_str: str):
     return time_
 
 
-def calculate_position(channel: Union[discord.TextChannel, discord.VoiceChannel], pos: int):
+def calculate_position(channel: Union[discord.TextChannel, discord.VoiceChannel], pos: int) -> int:
+    """Calculates the heirarchy position of channels and categories in a discord server."""
     ctgry_pos = channel.category.position
     index_start = 0
     for category in channel.guild.categories:
@@ -145,7 +159,8 @@ def calculate_position(channel: Union[discord.TextChannel, discord.VoiceChannel]
     return index_start+pos
 
 
-def permission_confirm(perm_key_pair: list):
+def permission_confirm(perm_key_pair: list) -> Union[bool, str, None]:
+    """Converts string versions of bool inputs to raw bool values."""
     if perm_key_pair[1].strip() == 'true': pi = True
     elif perm_key_pair[1].strip() == 'false': pi = False
     elif perm_key_pair[1].strip() == 'none': pi = None
@@ -153,13 +168,15 @@ def permission_confirm(perm_key_pair: list):
     return pi
 
 
-async def role_member_conv(ctx: commands.Context, target: str):
+async def role_member_conv(ctx: commands.Context, target: str) -> Union[Role, Member]:
+    """Converts inputs such as names and IDs to Role or Member instances"""
     try: target: Role = await RoleConverter().convert(ctx, target)
     except RoleNotFound: target: Member = await MemberConverter().convert(ctx, target)
     return target
 
 
-def number_system(num: int):
+def number_system(num: int) -> int:
+    """Converts raw integers to the international number system"""
     num = str(num)
     num = list(num)
     num.reverse()
@@ -171,7 +188,7 @@ def number_system(num: int):
             new_num += f',{numeral}'
             divider = 1
         else: new_num += numeral
-    return new_num[::-1]
+    return int(new_num[::-1])
 
 
 def find_nth_occurrence(string: str, substring: str, n: int) -> Optional[int]:
@@ -185,6 +202,8 @@ def find_nth_occurrence(string: str, substring: str, n: int) -> Optional[int]:
 
 
 async def send_to_paste_service(content: str) -> str:
+    """Redirects and pastes content to https://paste.pythondiscord.com/ in case of
+    message exceeding the discord API's character limit of 4000 for bots."""
     url = 'https://paste.pythondiscord.com/{key}'
     async with aiohttp.ClientSession() as session:
         async with session.post(url.format(key="documents"), data=content) as req:
@@ -195,6 +214,7 @@ async def send_to_paste_service(content: str) -> str:
 chnls = [833995745690517524, 817299815900643348, 817300015176744971]
 
 async def channel_split(bot: Bot, channel_id: int, message: discord.Message) -> List[discord.Message]:
+    """Repeats a message said to one channel in the 'chnls' list to the other 2"""
     if not re.search(r"^`(.*)`:", message.content):
         channels.remove(channel_id)
         messages = []
@@ -205,7 +225,9 @@ async def channel_split(bot: Bot, channel_id: int, message: discord.Message) -> 
         channels.append(channel_id)
         return messages
 
+
 def file_opener(file: str, option: str = 'read') -> str:
+    """Redundant function. Being removed soon."""
     path = re.sub("{}", file, "C:/Users/Shlok/J.A.R.V.I.SV2021/text_files/{}_forbidden_list.txt")
     path = file if "C:/Users" in file else path
     f = open(path, 'r')
@@ -215,6 +237,7 @@ def file_opener(file: str, option: str = 'read') -> str:
 
 
 async def get_prefix(bot: Bot, message: Message) -> str:
+    """Multi-Prefix modifier for the bot."""
     with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/prefixes.json", "r") as f:
         prefixes = json.load(f)
     id: str = str(message.guild.id) if message.guild else "DM(A113)"

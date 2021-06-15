@@ -16,6 +16,8 @@ url = None
 
 class Cricket:
     def __init__(self):
+        self.__doc__ = """A class created for scraping IPL information from https://www.espncricinfo.com/live-cricket-score
+        with the help of BeautifulSoup."""
         global url_time
         global url
         hour: datetime.datetime = datetime.datetime.now().strftime('%I')
@@ -205,12 +207,14 @@ class Cricket:
             'Delhi Capitals': path + 'dc1.png',
             'Rajasthan Royals': path + 'rr1.png'}
 
-    async def load_data(self, url_to_parse: str):
+    async def load_data(self, url_to_parse: str) -> BeautifulSoup:
+        """Loads the HTML data for scraping."""
         async with aiohttp.ClientSession() as session:
             async with session.get(url_to_parse) as req:
                 return BeautifulSoup(await req.text(), 'lxml')
 
     def get_future_match(self, match_number: str = None, match_date: str = None, team1: str = None, team2: str = None):
+        """No function yet."""
         url1 = 'https://www.espncricinfo.com/series/ipl-2021-1249214/match-schedule-fixtures'
         r = requests.get(url1, proxies={'https': None})
         soup = BeautifulSoup(r.text, "html.parser")
@@ -222,16 +226,18 @@ class Cricket:
 
 class WorldoMeter:
     def __init__(self):
-        loop = asyncio.get_event_loop()
         self.url = "https://www.worldometers.info"
+        self.__doc__ = """A class created for scraping Covid-19 information from https://www.worldometers.info"""
 
-    async def load_data(self, url_: str):
+    async def load_data(self, url_: str) -> BeautifulSoup:
+        """Loads HTML data for scraping."""
         async with aiohttp.ClientSession() as session:
             async with session.get(url_) as req:
                 soup = BeautifulSoup(await req.text(), "lxml")
                 self.__setattr__('soup', soup)
 
     def get_wrldomtr_urls(self):
+        """Get's href links to be processed"""
         confirm_url =[possible_url.get('href')
                       for possible_url in
                       self.soup.select('.container .navbar-collapse .nav a')]
@@ -239,7 +245,8 @@ class WorldoMeter:
         self.__setattr__('covid_source', covid_weblink)
         # return covid_weblink
 
-    def get_worldwide_covid_statistics(self):
+    def get_worldwide_covid_statistics(self) -> dict[str: int]:
+        """Get's worldwide covid-19 data in the form of a dictionary."""
         get_event_loop().run_until_complete(self.load_data(self.covid_source))
         raw_data = self.soup.select(".container .row .content-inner .maincounter-number span")
         total, deaths, recovered = int(raw_data[0].text.replace(',', '')), int(raw_data[1].text.replace(',', '')), int(raw_data[2].text.replace(',', ''))
@@ -249,7 +256,8 @@ class WorldoMeter:
                 'Active': number_system(total-(deaths+recovered))}
         return data
 
-    def get_by_country(self):
+    def get_by_country(self) -> dict[str: str]:
+        """Get's each individual country's href link for countryvise data."""
         raw_data = self.soup.find_all('a', {'class': 'mt_a'})
         new_data: dict[str] = {}
         for data in raw_data:
@@ -259,12 +267,14 @@ class WorldoMeter:
                     new_data[data.text] = data.get('href')
         return new_data
 
-    async def compile_data(self):
+    async def compile_data(self) -> dict[str: int]:
+        """Compiles world Covid-19 data."""
         await self.load_data(self.url)
         self.get_wrldomtr_urls()
         return self.get_worldwide_covid_statistics()
 
-    async def compile_by_country(self, country: str):
+    async def compile_by_country(self, country: str) -> dict[str: int]:
+        """Get's covid info of specified country."""
         await self.compile_data()
         countries = self.get_by_country()
         for _country, link in countries.items():

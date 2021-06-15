@@ -1,11 +1,13 @@
 class Version:
     def __init__(self, vers):
+        self.__doc__ = "A class created for keeping track of the bot's version."
         self.version: str = vers
         self.iter_stg_1: str = vers[:1]
         self.iter_stg_2: str = vers[2:4]
         self.iter_stg_3: str = vers[5]
 
     def increment(self, iteration: str = "iter_stg_1", iter_range: int = 1):
+        """Increases the version of the bot by 1 unit."""
         if iteration.lower() == 'iter_stg_1':
             self.iter_stg_1 = iter_range + int(self.iter_stg_1)
             self.version = str(self.iter_stg_1) + self.version[1:]

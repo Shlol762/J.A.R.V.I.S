@@ -2,7 +2,7 @@ import datetime
 from typing import Optional
 import discord
 from discord.ext import commands
-from DiscordClasses.embeds import local_image_inserter, set_timestamp
+from DiscordClasses.embeds import ipl_logo_maker, set_timestamp
 from DiscordClasses.web_scrapers import Cricket
 from . import command_log_and_err
 
@@ -35,7 +35,7 @@ class Sports(commands.Cog):
             else:
                 embed.description += f'Trouble getting info from [`ESPNcricinfo`](https://www.espncricinfo.com/).\n`Please Stand by`'
             await command_log_and_err(ctx, self.client, 'Success')
-            await local_image_inserter(ctx, await set_timestamp(embed, ""), team1=match.team1, team2=match.team2)
+            await ipl_logo_maker(ctx, await set_timestamp(embed, ""), team1=match.team1, team2=match.team2)
 
     @commands.command(name='Ipl table', aliases=['iplt', 'ipltable'],
                       usage='ipltable|iplt (team)',

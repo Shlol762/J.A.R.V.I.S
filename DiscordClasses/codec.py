@@ -34,7 +34,7 @@ morse_code: dict[str: str] = {
 }
 
 
-def encrypt(code: str = None, text: str = None):
+def encrypt(code: str = None, text: str = None) -> str:
     if code:
         if text:
             codec_out: str = ''
@@ -53,7 +53,7 @@ def encrypt(code: str = None, text: str = None):
     return codec_out
 
 
-def decrypt(code: str = None, text: str = None):
+def decrypt(code: str = None, text: str = None) -> str:
     codec_out: str = ''
     if code.lower() == "code":
         for char in text:

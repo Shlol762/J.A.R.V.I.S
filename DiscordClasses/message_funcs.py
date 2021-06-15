@@ -93,6 +93,7 @@ async def farewells(ctx: Context, bot: Bot) -> Union[Message, str]:
 
 
 async def nou(ctx: Context, bot: Bot) -> Union[Message, str]:
+    """Responds with 'No u' for certain keywords."""
     author: Member = ctx.author
     message_text: str = ctx.message.content.strip().lower()
     if re.search(r'\b(kill urself)\b', message_text) or message_text == 'ok':
@@ -103,6 +104,7 @@ async def nou(ctx: Context, bot: Bot) -> Union[Message, str]:
 
 
 async def urnotgod(ctx: Context) -> Union[Message, str]:
+    """Responds with a variety of messages that oppose a person who claims to be god."""
     if re.search(r"\b(i( )?('| a)?( )?m g( )?o( )?d)\b",
                    ctx.message.content.strip().lower()):
         am_i_g_response = random.choice(["🤮, No you're not.",

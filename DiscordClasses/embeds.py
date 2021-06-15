@@ -2,6 +2,7 @@ import datetime
 import os
 from typing import Optional, Union
 import discord
+from discord import Message, Embed
 from discord.ext import commands
 from DiscordClasses.custom_funcs import reaction, image_join, time_set
 from DiscordClasses.web_scrapers import Cricket
@@ -22,11 +23,13 @@ async def command_log_and_err(ctx: commands.Context = None, client: discord.Clie
                               deleted: Optional
                               [Union[discord.Role, discord.abc.GuildChannel, discord.Message]] = None,
                               joined: Optional[discord.VoiceChannel] = None,
-                              left: Optional[discord.VoiceChannel] = None):
+                              left: Optional[discord.VoiceChannel] = None) -> Optional[Message]:
+    """Command logging system for the bot, logging every command's usage(except developer commands) to a channel on
+    J.A.R.V.I.S's home server."""
     status = status if status else err_code
     if ctx and error:
         if isinstance(error, commands.CommandOnCooldown):
-            embed_c = discord.Embed(title=f"{ctx.command.qualified_name} is on cooldown.",
+            embed_c = Embed(title=f"{ctx.command.qualified_name} is on cooldown.",
                                     description=f"Please wait for `{round(error.retry_after, 2)}` more seconds.",
                                     colour=discord.Colour.teal())
             embed_c.add_field(name=f"Cooldown period for {ctx.command.qualified_name}",
@@ -39,7 +42,7 @@ async def command_log_and_err(ctx: commands.Context = None, client: discord.Clie
             except discord.Forbidden:
                 pass
     if ctx and client and err_code and text:
-        embed = discord.Embed(title="Error!", description=f"{text}\n\n", colour=discord.Colour.red())
+        embed = Embed(title="Error!", description=f"{text}\n\n", colour=discord.Colour.red())
         if err_code[-2:] != '24' and err_code[-2:] != '12':
             embed.description += f"`Usage`: {ctx.command.usage if ctx.command else 'Unusable'}"
         else:
@@ -54,7 +57,7 @@ async def command_log_and_err(ctx: commands.Context = None, client: discord.Clie
                                                  str(ctx.command.qualified_name if ctx.command else "Invalid"))) if send is True else None
     com_name: str = ctx.command.qualified_name if ctx.command else f"Invalid Command{f' - `{invalid_comname}`' if not ctx.command else ''}"
     time: datetime.datetime = datetime.datetime.now().strftime("%a, %b %dth %Y %I:%M:%S %p IST")
-    e = discord.Embed(title=f"{com_name}",
+    e = Embed(title=f"{com_name}",
                       description=f"*`Used by`*: {ctx.author.mention}\n *`Timestamp`*: `{time}`\n *`Used in`*: {ctx.channel.mention if ctx.guild else ctx.author.dm_channel}{f'- `{ctx.guild.name}`' if ctx.guild else ''}\n *`Message Link`*: **[`Jump to message`]({ctx.message.jump_url})**\n",
                       colour=discord.Colour.red() if status[:3] == 'Err' else discord.Colour.green())
     chnl: discord.TextChannel = client.get_channel(821677968967467068)
@@ -104,7 +107,9 @@ async def command_log_and_err(ctx: commands.Context = None, client: discord.Clie
     return await chnl.send(embed=e)
 
 
-async def local_image_inserter(ctx: commands.Context, embed: discord.Embed, team1: str, team2: str):
+async def ipl_logo_maker(ctx: commands.Context, embed: discord.Embed, team1: str, team2: str) -> Optional[Message]:
+    """Takes the logos of the 2 teams playing a match and combines them into one, while pasting it into
+    the thumbnail of an Embed."""
     standby = "C:/Users/Shlok/J.A.R.V.I.SV2021/image_resources/pls_stand_by.jpg"
     cricket = Cricket()
     if (team1, team2) != ('N/A', 'N/A') and team1 in cricket.teams_short_long and team2 in cricket.teams_short_long:
@@ -115,12 +120,13 @@ async def local_image_inserter(ctx: commands.Context, embed: discord.Embed, team
     img_name: str = path.split('/')[-1]
     file = discord.File(path, filename=img_name)
     embed.set_thumbnail(url=f"attachment://{img_name}")
-    await ctx.send(file=file, embed=embed)
+    yield await ctx.send(file=file, embed=embed)
     os.remove(path) if path != standby else None
 
 
 async def set_timestamp(embed: discord.Embed,
-                        foot_text: str = "Requested") -> discord.Embed:
+                        foot_text: str = "Requested") -> Embed:
+    """Sets a timestamp in the footnotes of en Embed."""
     embed.timestamp = time_set(datetime.datetime.now())
     if embed.footer:
         if embed._footer.get('text'):
