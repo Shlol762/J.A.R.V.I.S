@@ -28,7 +28,7 @@ class Utilities(commands.Cog):
         author = ctx.message.author
         guild_id = str(ctx.guild.id)
         channel_id = str(ctx.message.channel.id)
-        with open("C:/Users/Shlok/J.A.R.V.I.SV2021/text_files/clear_forbidden_list.txt", "r") as f:
+        with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json", "r") as f:
             settings: dict = json.load(f)
         id: str = channel_id if settings.get(channel_id) else guild_id
         if settings[id]["clear"]:
