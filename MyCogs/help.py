@@ -66,7 +66,6 @@ class Help(Cog):
                 await ctx.send(embed=await set_timestamp(help, ""))
         except HTTPException:
             pass
-        await ctx.send(f"**Note**: New `help` command out this weekend!")
 
 
 def setup(client):

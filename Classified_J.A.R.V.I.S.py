@@ -3,15 +3,15 @@ import json
 import os
 import discord
 from discord.ext import commands
-from DiscordClasses import bot_token, WorldoMeter, CustomHelpCommand, get_prefix
+from DiscordClasses import bot_token, WorldoMeter, get_prefix
 import datetime
 from typing import Union, Mapping
 
 intents = discord.Intents.all()
 client = commands.Bot(command_prefix=get_prefix, case_insensitive=True, intents=intents,
-                      allowed_mentions=discord.AllowedMentions(everyone=False), help_command=CustomHelpCommand(),
+                      allowed_mentions=discord.AllowedMentions(everyone=False),
                       strip_after_prefix=True)
-# client.remove_command('help')
+client.remove_command('help')
 
 
 for cog in os.listdir("C:/Users/Shlok/J.A.R.V.I.SV2021/MyCogs"):
