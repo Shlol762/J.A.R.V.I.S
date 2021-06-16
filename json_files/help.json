@@ -1,0 +1,641 @@
+{
+   "Cac": [
+      {
+         "name": "Create Channel or Category",
+         "aliases": [
+            "ccc",
+            "createcc"
+         ],
+         "number": "\ud83c\udd95501",
+         "usage": "createcc|ccc <name> <text/voice/category> (cateogry new channel will be in)",
+         "help": "Creates a new text channel, voice channel or category. Note that the cateogry arg will not be required if you are creating a category."
+      },
+      {
+         "name": "Delete Channel or Cateogry",
+         "aliases": [
+            "dcc",
+            "delcc"
+         ],
+         "number": "\ud83d\uddd1502",
+         "usage": "delchnlctgry|dcc <channel/category>",
+         "help": "Deletes a text channel, voice channel or category."
+      },
+      {
+         "name": "Pin",
+         "aliases": [
+            "pn"
+         ],
+         "number": "\ud83d\udccc503",
+         "usage": "pin|pn <message link/id>.",
+         "help": "Pins a message with message link or id"
+      },
+      {
+         "name": "Unpin",
+         "aliases": [
+            "unpn"
+         ],
+         "number": "\ud83d\udccc504",
+         "usage": "unpin|unpn <message link/id>.",
+         "help": "Unpins a message with message link or id"
+      },
+      {
+         "name": "Edit Channel",
+         "aliases": [
+            "ec",
+            "editchannel"
+         ],
+         "number": "\u270f505",
+         "usage": "editchannel|ec <attribute to edit/member or role> <attribute value/permissions:True, False or None>",
+         "help": "Edits a channel."
+      }
+   ],
+   "Events": [],
+   "Games": [
+      {
+         "name": "Roll Dice",
+         "aliases": [
+            "rd",
+            "rolldice"
+         ],
+         "number": "\ud83c\udfb2401",
+         "usage": "rolldice|rd",
+         "help": "Rolls an imaginary dice."
+      },
+      {
+         "name": "8ball",
+         "aliases": [
+            "8b",
+            "eightball",
+            "oracle"
+         ],
+         "number": "\ud83c\udfb1402",
+         "usage": "8ball|8b|eightball|oracle <question>",
+         "help": "Answers questions with 8ball ish results."
+      },
+      {
+         "name": "YesNoMaybe",
+         "aliases": [
+            "ynm"
+         ],
+         "number": "\ud83c\udfb1403",
+         "usage": "yesnomaybe|ynm <question>",
+         "help": "Answers questions with Yes, No and Maybe."
+      },
+      {
+         "name": "Hack",
+         "aliases": [
+            "hk"
+         ],
+         "number": "\ud83d\udcbb404",
+         "usage": "hack|hk <member>",
+         "help": "Hacks into a members account and steals all their information.(Not really)"
+      },
+      {
+         "name": "Flipcoin",
+         "aliases": [
+            "fc"
+         ],
+         "number": "\ud83d\udcb0405",
+         "usage": "flipcoin|fc (member)",
+         "help": "Using this command you can either flip a coin by yourself or, challenge another player to flip a coin with you."
+      },
+      {
+         "name": "Encrypt",
+         "aliases": [
+            "ncrpt"
+         ],
+         "number": "\ud83d\udcac406",
+         "usage": "encrypt|ncrpt <code/morse> <text>",
+         "help": "This command currently uses two types of encoding languages to encrypt a sample of text"
+      },
+      {
+         "name": "Decrypt",
+         "aliases": [
+            "dcrpt"
+         ],
+         "number": "\ud83d\udde8407",
+         "usage": "decrypt|dcrypt <code/morse> <encrypt text>",
+         "help": "This command decrypts messages in code and morse."
+      }
+   ],
+   "Help": [
+      {
+         "name": "Help",
+         "aliases": [
+            "hp"
+         ],
+         "number": "\u2709",
+         "usage": null,
+         "help": null
+      }
+   ],
+   "Misc": [
+      {
+         "name": "Ping",
+         "aliases": [
+            "latency"
+         ],
+         "number": "\ud83d\udcf6901",
+         "usage": "ping|latency",
+         "help": "Gets latency of the reply time of the bot in milliseconds"
+      },
+      {
+         "name": "Leap",
+         "aliases": [
+            "le"
+         ],
+         "number": "\ud83d\uddd3902",
+         "usage": "leap <year>",
+         "help": "Checks whether or not a given year is a leap one."
+      },
+      {
+         "name": "Palindrome",
+         "aliases": [
+            "pdm"
+         ],
+         "number": "\ud83d\udd01903",
+         "usage": "palindrome|pdm <text>",
+         "help": "Checks whether or not a snippet of text is a palindrome."
+      },
+      {
+         "name": "Wikipedia",
+         "aliases": [
+            "wk",
+            "wiki"
+         ],
+         "number": "\ud83c\udf10904",
+         "usage": "wiki|wk <query>",
+         "help": "Searches wikipedia and returns info based on a given query."
+      },
+      {
+         "name": "Dictionary",
+         "aliases": [
+            "dct",
+            "dict"
+         ],
+         "number": "\ud83d\udcd4905",
+         "usage": "dct|dict|dictionary <word> (def/syn/ant)",
+         "help": "Searches the internet and returns definitions, synonyms and antonyms."
+      },
+      {
+         "name": "Time to",
+         "aliases": [
+            "tto",
+            "timeto"
+         ],
+         "number": "\u23f1906",
+         "usage": "$timeto|tto <timestamp in format of - \"24hr:mins day/month/year\">",
+         "help": "Returns the countdown to the given timestamp."
+      },
+      {
+         "name": "Covid Data",
+         "aliases": [
+            "cd",
+            "covidata"
+         ],
+         "number": "\u2623907",
+         "usage": "$covidata|cd (country)",
+         "help": "Returns covid statistics for the whole world or a country"
+      }
+   ],
+   "Mslo": [
+      {
+         "name": "Invite",
+         "aliases": [
+            "i"
+         ],
+         "number": "\ud83d\udeaa201",
+         "usage": "invite <user>",
+         "help": "Invites people from outside the server. This can vary from user to user based on their privacy settings."
+      },
+      {
+         "name": "Kick",
+         "aliases": [
+            "k"
+         ],
+         "number": "\u26d4202",
+         "usage": "kick <member> (reason)",
+         "help": "Kicks members from the server. Owners of servers have an option to skip the conformation message as well use the kick command when it is de-activated, to access this, type: \"override 403\" in the place of reason."
+      },
+      {
+         "name": "Ban",
+         "aliases": [
+            "b"
+         ],
+         "number": "\ud83d\udeab203",
+         "usage": "ban <member> (reason)",
+         "help": "Bans members from the server. Owners of servers have an option to skip the conformation message as well use the ban command when it is de-activated, to access this, type: \"override 403\" in the place of reason."
+      },
+      {
+         "name": "Unban",
+         "aliases": [
+            "ub"
+         ],
+         "number": "\ud83d\udec2204",
+         "usage": "unban <user>",
+         "help": "Unbans users from the server and invites them by looking through the servers bans list."
+      }
+   ],
+   "Music": [
+      {
+         "name": "Join",
+         "aliases": [
+            "jn"
+         ],
+         "number": "\u2935601",
+         "usage": "join|jn",
+         "help": "Joins a voice channel."
+      },
+      {
+         "name": "Summon",
+         "aliases": [
+            "smn"
+         ],
+         "number": "\u2199602",
+         "usage": "summon|smn (channel)",
+         "help": "Summons the bot to a voice channel. If no channel was specified, it joins your channel."
+      },
+      {
+         "name": "Leave",
+         "aliases": [
+            "disconnect",
+            "dc"
+         ],
+         "number": "\ud83d\udeaa603",
+         "usage": "leave|disconnect|dc",
+         "help": "Clears the queue and leaves the voice channel."
+      },
+      {
+         "name": "Volume",
+         "aliases": [
+            "v"
+         ],
+         "number": "\ud83d\udd0a604",
+         "usage": "volume|v <volume: out of hundred>",
+         "help": "Sets the volume of the player."
+      },
+      {
+         "name": "Now",
+         "aliases": [
+            "n",
+            "current",
+            "playing"
+         ],
+         "number": "\ud83c\udfb6605",
+         "usage": "now|n|current|playing",
+         "help": "Displays the currently playing song."
+      },
+      {
+         "name": "Pause",
+         "aliases": [
+            "ps"
+         ],
+         "number": "\u23f8606",
+         "usage": "pause|ps",
+         "help": "Pauses the currently playing song."
+      },
+      {
+         "name": "Resume",
+         "aliases": [
+            "res"
+         ],
+         "number": "\u25b6607",
+         "usage": "resume|res",
+         "help": "Resumes a currently paused song."
+      },
+      {
+         "name": "Stop",
+         "aliases": [
+            "sp"
+         ],
+         "number": "\u23f9608",
+         "usage": "stop|sp",
+         "help": "Stops playing song and clears the queue."
+      },
+      {
+         "name": "Skip",
+         "aliases": [
+            "sk"
+         ],
+         "number": "\u23ed609",
+         "usage": "skip|sk",
+         "help": "Vote to skip a song. The requester can automatically skip. 3 skip votes are needed for the song to be skipped."
+      },
+      {
+         "name": "Queue",
+         "aliases": [
+            "q"
+         ],
+         "number": "\u27a1610",
+         "usage": "queue|q (page number)",
+         "help": "Shows the player's queue. You can optionally specify the page to show. Each page contains 10 elements."
+      },
+      {
+         "name": "Shuffle",
+         "aliases": [
+            "shfl"
+         ],
+         "number": "\ud83d\udd00611",
+         "usage": "shuffle|shfl",
+         "help": "Shuffles the queue."
+      },
+      {
+         "name": "Remove",
+         "aliases": [
+            "rem"
+         ],
+         "number": "\u2796612",
+         "usage": "remove <index of song in queue>",
+         "help": "Removes a song from the queue at a given index."
+      },
+      {
+         "name": "Loop",
+         "aliases": [
+            "lp"
+         ],
+         "number": "\ud83d\udd01613",
+         "usage": "loop|lp",
+         "help": "Loops the currently playing song. Invoke this command again to unloop the song."
+      },
+      {
+         "name": "Play",
+         "aliases": [
+            "p"
+         ],
+         "number": "\u25b6614",
+         "usage": "play|p <query or url>",
+         "help": "Plays a song. If there are songs in the queue, this will be queued until the other songs finished playing. This command automatically searches from various sites if no URL is provided."
+      }
+   ],
+   "Python": [
+      {
+         "name": "Evaluate",
+         "aliases": [
+            "e",
+            "eval"
+         ],
+         "number": "\u2328P01",
+         "usage": "$evaluate|eval|e <code>",
+         "help": "Runs python code"
+      },
+      {
+         "name": "PyPi",
+         "aliases": [
+            "package",
+            "pack"
+         ],
+         "number": "P02",
+         "usage": null,
+         "help": "Provide information about a specific package from PyPI."
+      }
+   ],
+   "Roles": [
+      {
+         "name": "Create Role",
+         "aliases": [
+            "cr",
+            "createrole"
+         ],
+         "number": "\ud83c\udd95101",
+         "usage": "createrole|cr (role name)",
+         "help": "Creates a role with a default name \"New role\""
+      },
+      {
+         "name": "Delete Role",
+         "aliases": [
+            "dr",
+            "delrole"
+         ],
+         "number": "\ud83d\uddd1102",
+         "usage": "delrole|dr <role>",
+         "help": "Deleted a selected role."
+      },
+      {
+         "name": "Add Role",
+         "aliases": [
+            "ar",
+            "addrole"
+         ],
+         "number": "\u2795103",
+         "usage": "addrole|ar <member> <role>",
+         "help": "Adds a role onto a member."
+      },
+      {
+         "name": "Remove Role",
+         "aliases": [
+            "rr",
+            "removerole"
+         ],
+         "number": "\u2796104",
+         "usage": "removerole|rr <member> <role>",
+         "help": "Removes a role from a member."
+      },
+      {
+         "name": "Edit Role",
+         "aliases": [
+            "er"
+         ],
+         "number": "\u270f105",
+         "usage": "editrole|er <role> <the attribute to be edited> <val of attr>",
+         "help": "Edits a role. In the \"val of attr\" slot, you type Numbers for Heirarchy, True/False for Permissions and displaying members seperately and Alphabets for Name"
+      },
+      {
+         "name": "Add to all",
+         "aliases": [
+            "addtoall",
+            "ata"
+         ],
+         "number": "\u2795106",
+         "usage": "addtoall|ata <role>",
+         "help": "Adds one role to all members"
+      }
+   ],
+   "Settings": [
+      {
+         "name": "Enable",
+         "aliases": [
+            "en"
+         ],
+         "number": "\u2699701",
+         "usage": "enable|en <feature> <scope>",
+         "help": "Enables the selected setting the bot has for the server."
+      },
+      {
+         "name": "Disable",
+         "aliases": [
+            "da"
+         ],
+         "number": "\u2699702",
+         "usage": "disable|da <feature> <scope>",
+         "help": "Disables the selected setting the bot has for the server."
+      },
+      {
+         "name": "Set Prefix",
+         "aliases": [
+            "setprefix",
+            "spf"
+         ],
+         "number": "\u2699703",
+         "usage": "setprefix|sp <prefix>",
+         "help": "Sets the prefix for the server the command is called in."
+      },
+      {
+         "name": "Settings",
+         "aliases": [
+            "sts"
+         ],
+         "number": "\u2699704",
+         "usage": "settings|sts",
+         "help": "Shows the current settings of the server."
+      }
+   ],
+   "Sports": [
+      {
+         "name": "Ipl score",
+         "aliases": [
+            "ipls",
+            "iplscore"
+         ],
+         "number": "\ud83c\udfcf801",
+         "usage": "iplscore|ipls",
+         "help": "Gets the score of the next or live IPL match"
+      },
+      {
+         "name": "Ipl table",
+         "aliases": [
+            "iplt",
+            "ipltable"
+         ],
+         "number": "\ud83c\udfc6802",
+         "usage": "ipltable|iplt (team)",
+         "help": "Gets the IPL table, or table statistics of a team based on your input"
+      }
+   ],
+   "Utilities": [
+      {
+         "name": "Clear",
+         "aliases": [
+            "cl"
+         ],
+         "number": "\u267b301",
+         "usage": "clear|cl (amt of msgs to be deleted)",
+         "help": "Deletes any number of messages below 20."
+      },
+      {
+         "name": "Calculator",
+         "aliases": [
+            "calc"
+         ],
+         "number": "\ud83e\uddee302",
+         "usage": "calculator|calc <expression>",
+         "help": "Calculates and gives result based on input. If 'help arith' or 'help compare' is put in the expression argument, you'll get a list of Operators."
+      },
+      {
+         "name": "Change nickname",
+         "aliases": [
+            "cn",
+            "changenick"
+         ],
+         "number": "\ud83c\udfad303",
+         "usage": "changenick|cn <member> <new nickname>",
+         "help": "Changes the nickname of a given Member."
+      },
+      {
+         "name": "Member Info",
+         "aliases": [
+            "minfo",
+            "memberinfo"
+         ],
+         "number": "\ud83d\udcc3304",
+         "usage": "memberinfo|minfo (member)",
+         "help": "Displays the info of a given Member."
+      },
+      {
+         "name": "Server Info",
+         "aliases": [
+            "sinfo",
+            "serverinfo"
+         ],
+         "number": "\ud83d\udcdc305",
+         "usage": "serverinfo|sinfo",
+         "help": "Displays info of the server."
+      },
+      {
+         "name": "Error Code List",
+         "aliases": [
+            "ecl",
+            "errorcodelist"
+         ],
+         "number": "\ud83d\udcc4306",
+         "usage": "errorcodelist|ecl <err code>",
+         "help": "Gives a list of error codes that the bot gives out in an error, and the codes' meanings."
+      },
+      {
+         "name": "Client Info",
+         "aliases": [
+            "cinfo",
+            "clientinfo"
+         ],
+         "number": "\ud83d\udcc3307",
+         "usage": "clientinfo|cinfo",
+         "help": "Displays information about the bot"
+      },
+      {
+         "name": "Delinvs",
+         "aliases": [
+            "di"
+         ],
+         "number": "\ud83d\udeb7308",
+         "usage": "delinvs|di",
+         "help": "Deletes all active invites of the server."
+      },
+      {
+         "name": "Status",
+         "aliases": [
+            "st"
+         ],
+         "number": "\ud83d\udcf2309",
+         "usage": "status|st (member)",
+         "help": "Displays the Status of a given member"
+      },
+      {
+         "name": "Add bot to server",
+         "aliases": [
+            "abts",
+            "addbottoserver"
+         ],
+         "number": "\ud83d\udd17310",
+         "usage": "addbottoserver|abts",
+         "help": "Generates and sends a link to add the bot to your server"
+      },
+      {
+         "name": "Announce",
+         "aliases": [
+            "an"
+         ],
+         "number": "\ud83d\udce2311",
+         "usage": "$announce|an <text>",
+         "help": "Announces to every member in the server."
+      },
+      {
+         "name": "Member List",
+         "aliases": [
+            "ml",
+            "members",
+            "memberlist"
+         ],
+         "number": "\ud83d\udccb312",
+         "usage": "$members|memberlist|ml",
+         "help": "Returns a member list of everyone in the server."
+      },
+      {
+         "name": "Define",
+         "aliases": [
+            "de"
+         ],
+         "number": "\ud83d\udccb313",
+         "usage": "$define|de <channel> <word> as <definition>",
+         "help": "Writes a defining statement to a selected channel"
+      }
+   ]
+}
