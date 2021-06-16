@@ -27,11 +27,6 @@ async def del_message(ctx: commands.Context, channel_id: int, message_id: int):
 
 
 @client.command(hidden=True)
-async def test(ctx: commands.Context):
-    await ctx.send(embed=discord.Embed(description="[Hover for info](https://www.youtube.com/watch?v=dQw4w9WgXcQ/ \"hello there\")"))
-
-
-@client.command(hidden=True)
 async def update(ctx: commands.Context):
     channels: list[discord.abc.GuildChannel] = client.get_all_channels()
     url = 'https://pypi.org/'
@@ -55,6 +50,35 @@ If you want to join my home server, click [`J.A.R.V.I.S`]({link})
         if 'general' in channel.name and isinstance(channel, discord.TextChannel):
             message: discord.Message = await channel.send(embed=embed)
             await ctx.send(f'Message: `{message.id}`\nServer: `{channel.guild.name}`\nChannel: `{channel.id}`')
+
+
+@client.command(hidden=True)
+async def test(ctx: commands.Context):
+    await ctx.send(embed=discord.Embed(description="[Hover for info](https://www.youtube.com/watch?v=dQw4w9WgXcQ/ \"hello there\")"))
+
+
+@client.command(hidden=True)
+async def load_help_data(ctx: commands.Context):
+    bot: commands.Bot = ctx.bot
+    cogs: Mapping[str, commands.Cog] = bot.cogs
+    d_cogs = {}
+    for _cog in cogs.values():
+        d_cog = {}
+        d_commands = []
+        comms: list[commands.Command] = _cog.get_commands()
+        if _cog.get_commands() is None: continue
+        for comm in comms:
+            command_details = {
+                "name": comm.name,
+                "aliases": comm.aliases,
+                "number": comm.brief,
+                "usage": comm.usage,
+                "help": comm.help
+            }
+            d_commands.append(command_details) if not comm.hidden else None
+        d_cogs[_cog.qualified_name] = d_cog[_cog.name] = d_commands
+    with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/help.json", "w") as f:
+        json.dump(d_cogs)
 
 
 @client.command(hidden=True)
