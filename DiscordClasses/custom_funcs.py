@@ -219,7 +219,7 @@ async def channel_split(bot: Bot, channel_id: int, message: discord.Message) -> 
         chnls.remove(channel_id)
         messages = []
         text: str = f"`{message.author.name}`: {message.content}"
-        for channel in channels:
+        for channel in chnls:
             conf_chnl: discord.TextChannel = await bot.fetch_channel(channel)
             messages.append(await conf_chnl.send(text))
         chnls.append(channel_id)
