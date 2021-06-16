@@ -30,7 +30,7 @@
       "kick": true,
       "clear": true,
       "message": true,
-      "msghai": true,
+      "msghai": false,
       "noswear": true,
       "convo": true,
       "nou": true,

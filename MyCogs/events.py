@@ -208,6 +208,7 @@ class Events(Cog):
                         else:
                             await ctx.send(f"I'm sorry but I don't think I have that birthday stored anywhere. Contact Shlol#2501 to add the birthday")
                     except AttributeError: pass
+                    except TypeError: print(ctx.message.content)
 
     @Cog.listener()
     async def on_disconnect(self):
