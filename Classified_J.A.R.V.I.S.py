@@ -68,4 +68,28 @@ async def test1(ctx: commands.Context):
         json.dump(prefixes, f, indent=3)
 
 
+@client.command(hidden=True)
+async def load_help_data(ctx: commands.Context):
+    bot: commands.Bot = ctx.bot
+    cogs: Mapping[str, commands.Cog] = bot.cogs
+    d_cogs = {}
+    for _cog in cogs.values():
+        d_cog = {}
+        d_commands = []
+        comms: list[commands.Command] = _cog.get_commands()
+        if _cog.get_commands() is None: continue
+        for comm in comms:
+            command_details = {
+                "name": comm.name,
+                "aliases": comm.aliases,
+                "number": comm.brief,
+                "usage": comm.usage,
+                "help": comm.help
+            }
+            d_commands.append(command_details) if not comm.hidden else None
+        d_cogs[_cog.qualified_name] = d_cog[_cog.name] = d_commands
+    with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/help.json", "w") as f:
+        json.dump(d_cogs, f)
+
+
 client.run(bot_token)
