@@ -11,7 +11,7 @@ class Help(Cog):
         self.client = client
         self.name = 'Help'
 
-    @command(brief='✉', name='Help1', aliases=['hp'])
+    @command(brief='✉', name='Help', aliases=['hp'])
     async def help(self, ctx: Context, *, cog: Optional[str]):
         icon = self.client.user.avatar_url
         help_col = Colour.random()
