@@ -216,13 +216,13 @@ chnls = [833995745690517524, 817299815900643348, 817300015176744971]
 async def channel_split(bot: Bot, channel_id: int, message: discord.Message) -> List[discord.Message]:
     """Repeats a message said to one channel in the 'chnls' list to the other 2"""
     if not re.search(r"^`(.*)`:", message.content):
-        channels.remove(channel_id)
+        chnls.remove(channel_id)
         messages = []
         text: str = f"`{message.author.name}`: {message.content}"
         for channel in channels:
             conf_chnl: discord.TextChannel = await bot.fetch_channel(channel)
             messages.append(await conf_chnl.send(text))
-        channels.append(channel_id)
+        chnls.append(channel_id)
         return messages
 
 
