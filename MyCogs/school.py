@@ -20,11 +20,11 @@ class School(Cog):
         with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/drive_links.json", "r") as f:
             subjects: dict[str: dict[str:str]] = json.load(f)
         if subject:
-            chapters: dict = subjects.get(subject.title())
+            chapters: dict = subjects.get(subject.lower())
             if chapters:
                 embed = await set_timestamp(Embed(title=f"`{subject.title()}`", description="",
                                                   colour=Colour.random(), url=drivify_link(chapters.get("link"))))
-                try: chapter_link: str = drivify_link(chapters.get(chapter.title()))
+                try: chapter_link: str = drivify_link(chapters.get(chapter.lower()))
                 except AttributeError: chapter_link = None
                 if chapter_link:
                     embed.title, embed.url = None, None
@@ -33,7 +33,6 @@ class School(Cog):
                 for chapter, link in chapters.items():
                     if chapter.lower() != 'link':
                         embed.description += f"**{f'• [`{chapter.title()}`]({drivify_link(link)})'}**\n"
-                print(len(embed.description))
                 if len(embed.description) >= 2048:
                     lines = embed.description.split("\n")
                     emb, embed.timestamp, embed._footer = Embed(description="\n".join(lines[15:]),
