@@ -20,41 +20,40 @@ for cog in os.listdir("C:/Users/Shlok/J.A.R.V.I.SV2021/MyCogs"):
 
 
 @client.command(hidden=True)
-async def del_message(ctx: commands.Context, channel_id: int, message_id: int):
-    channel: discord.TextChannel = await client.fetch_channel(channel_id)
-    message: discord.Message = await channel.fetch_message(message_id)
+async def del_message(ctx: commands.Context, message: discord.Message):
+    await ctx.send(f"Deleted message with content: `{message.content}`")
     await message.delete()
 
 
 @client.command(hidden=True)
 async def test(ctx: commands.Context):
-    await ctx.send(embed=discord.Embed(description="[Hover for info](https://www.youtube.com/watch?v=dQw4w9WgXcQ/ \"hello there\")"))
+    message: discord.Message = await ctx.send("Hellooo")
+    await ctx.send(f'`Message link`: https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
 
 
 @client.command(hidden=True)
 async def update(ctx: commands.Context):
     channels: list[discord.abc.GuildChannel] = client.get_all_channels()
-    url = 'https://pypi.org/'
     link = 'https://discord.gg/zt6j4h7ep3'
-    embed = discord.Embed(title='`Update!` - New command: `Set Prefix`',
+    embed = discord.Embed(title='`Update!` - New command: `Settings`',
     description=
 f"""
-**Set Prefix**
+**Settings**
 
-Sets a custom prefix for the server.
+View all the settings the bot has for the server.
 
-`  Name :      SetPrefix     `
-`Aliases:    setprefix, spf  `
+`  Name : settings `
+`Aliases:    sts   `
 
-You can set prefixes by doing:
-`$spf|setprefix <prefix>`
+You can view all settings by doing:
+`$settings`
 
 If you want to join my home server, click [`J.A.R.V.I.S`]({link})
 """, colour=discord.Colour.random())
     for channel in channels:
         if 'general' in channel.name and isinstance(channel, discord.TextChannel):
             message: discord.Message = await channel.send(embed=embed)
-            await ctx.send(f'Message: `{message.id}`\nServer: `{channel.guild.name}`\nChannel: `{channel.id}`')
+            await ctx.send(f'`Message link`: https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
 
 
 @client.command(hidden=True)

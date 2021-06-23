@@ -431,25 +431,6 @@ For Example:- 1)Err_10124 means command '1' under category
             else:
                 await ctx.send(embed=embed)
 
-    @commands.command(name='Define', aliases=['de'], brief = '📋313',
-                      help="Writes a defining statement to a selected channel",
-                      usage="$define|de <channel> <word> as <definition>")
-    async def define_(self, ctx: commands.Context, channel: discord.TextChannel = None, *, text: str = None):
-        status = None
-        err_code = None
-        msg = None
-        if channel:
-            if text:
-                components = text.split(" as ")
-                word = components[0]
-                definition = components[1].split('. - ')[0]
-                time = components[1].split('. - ')[1]
-                await channel.send(f"**{word}** - ***`{definition}`***\n**Time** - `{time}`")
-                status: str = 'Successful'
-            else: err_code, msg = '31348', 'Uh what do you want to define.'
-        else: err_code, msg = '31348', 'Which channel do you wanna define in??'
-        await command_log_and_err(ctx, self.client, status=status, err_code=err_code, text=msg)
-
 
 def setup(client):
     client.add_cog(Utilities(client))
