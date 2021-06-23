@@ -94,7 +94,7 @@ async def load_help_data(ctx: commands.Context):
 @client.command(hidden=True)
 async def devan(ctx: commands.Context, *, text: str):
     if text:
-        embed = discord.Embed(title="Announcement from `central mainframe`", description=text)
+        embed = discord.Embed(title="Announcement from `central mainframe`", description=text, colour=discord.Colour.random())
         for channel in ctx.bot.get_all_channels():
             if 'general' in channel.name and isinstance(channel, discord.TextChannel):
                 message: discord.Message = await channel.send(embed=embed)
