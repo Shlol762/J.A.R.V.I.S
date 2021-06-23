@@ -91,4 +91,15 @@ async def load_help_data(ctx: commands.Context):
         json.dump(d_cogs, f, indent=3)
 
 
+@client.command(hidden=True)
+async def devan(ctx: commands.Context, *, text: str):
+    if text:
+        embed = discord.Embed(title="Announcement from `central mainframe`", description=text)
+        for channel in ctx.bot.get_all_channels():
+            if 'general' in channel.name and isinstance(channel, discord.TextChannel):
+                message: discord.Message = await channel.send(embed=embed)
+                await ctx.send(
+                    f'`Message link`: https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
+
+
 client.run(bot_token)
