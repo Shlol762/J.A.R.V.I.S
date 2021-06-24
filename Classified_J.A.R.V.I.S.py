@@ -27,8 +27,24 @@ async def del_message(ctx: commands.Context, message: discord.Message):
 
 @client.command(hidden=True)
 async def test(ctx: commands.Context):
-    message: discord.Message = await ctx.send("Hellooo")
-    await ctx.send(f'`Message link`: https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
+    if ctx.bot.user not in [webhook.user for webhook in await ctx.channel.webhooks()]:
+        webhook: discord.Webhook = await ctx.channel.create_webhook(name=ctx.bot.user.name, avatar=None)
+        await webhook.send("I am Shlol and no one can argue with that.",
+                           username=ctx.author.nick,
+                           avatar_url=ctx.author.avatar_url)
+        with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/webhooks.json", "r") as f:
+            webhooks: dict = json.load(f)
+            webhooks[str(ctx.channel.id)] = str(webhook.id)
+        with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/webhooks.json", "w") as f:
+            json.dump(webhooks, f, indent=3)
+    else:
+        with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/webhooks.json", "r") as f:
+            webhooks: dict = json.load(f)
+        webhook: discord.Webhook = await ctx.bot.fetch_webhook(int(webhooks.get(str(ctx.channel.id))))
+        await webhook.send("I am Shlol and no one can argue with that.",
+                           username=ctx.author.nick,
+                           avatar_url=ctx.author.avatar_url)
+
 
 
 @client.command(hidden=True)
