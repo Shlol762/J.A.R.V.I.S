@@ -5,6 +5,7 @@ from MyCogs import encrypt, decrypt, command_log_and_err,\
     commands, Cog, command, cooldown, BucketType, Context,\
     Member, guild_only, Client, Embed, Colour, Message,\
     choice, randint
+import json
 #
 
 class Games(Cog):
@@ -293,6 +294,30 @@ Password: {hack_pass}
         else:
             await command_log_and_err(ctx=ctx, client=self.client, err_code="Err_40748",
                                       text="Specify the coding type you want to decrypt your code in")
+
+    #408
+    @command(aliases=['imp'], name="Impersonate", brief="🎭408",
+             help="Of course it impersonates people.",
+             usage="impersonate|imp (member) (text)")
+    async def _impersonate(self, ctx: Context, member: Member = None, text: str = None):
+        member: Member = member or ctx.author
+        if ctx.bot.user not in [webhook.user for webhook in await ctx.channel.webhooks()]:
+            webhook: discord.Webhook = await ctx.channel.create_webhook(name=ctx.bot.user.name, avatar=None)
+            await webhook.send(text or f"I have no idea who to impersonate so I'll just impersonate you.",
+                               username=member.display_name,
+                               avatar_url=member.avatar_url)
+            with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/webhooks.json", "r") as f:
+                webhooks: dict = json.load(f)
+                webhooks[str(ctx.channel.id)] = str(webhook.id)
+            with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/webhooks.json", "w") as f:
+                json.dump(webhooks, f, indent=3)
+        else:
+            with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/webhooks.json", "r") as f:
+                webhooks: dict = json.load(f)
+            webhook: discord.Webhook = await ctx.bot.fetch_webhook(int(webhooks.get(str(ctx.channel.id))))
+            await webhook.send(text or f"I have no idea who to impersonate so I'll just impersonate you.",
+                               username=member.display_name,
+                               avatar_url=member.avatar_url)
 
 
 def setup(client):

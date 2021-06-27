@@ -175,7 +175,7 @@ async def role_member_conv(ctx: commands.Context, target: str) -> Union[Role, Me
     return target
 
 
-def number_system(num: int) -> int:
+def number_system(num: int) -> str:
     """Converts raw integers to the international number system"""
     num = str(num)
     num = list(num)
@@ -188,7 +188,7 @@ def number_system(num: int) -> int:
             new_num += f',{numeral}'
             divider = 1
         else: new_num += numeral
-    return int(new_num[::-1])
+    return new_num[::-1]
 
 
 def find_nth_occurrence(string: str, substring: str, n: int) -> Optional[int]:

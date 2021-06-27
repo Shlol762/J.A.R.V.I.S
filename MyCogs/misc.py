@@ -156,9 +156,9 @@ class Misc(commands.Cog):
                                         val += ')'
                                     embed.description += f"""- {val[0].upper() + val[1:].replace('`', "'")}\n"""
                     if not synantdef or synantdef.lower() == 'syn':
-                        embed.description += f"""\n**`Synonyms`**:\n {', '.join((await dcnry.synonym(word))[:10]).title() if dcnry.synonym(word) is not None else f'`{word}` does not have synonyms'}\n"""
+                        embed.description += f"""\n**`Synonyms`**:\n {', '.join((await dcnry.synonym(word))[:10]).title() if await dcnry.synonym(word) is not None else f'`{word}` does not have synonyms'}\n"""
                     if not synantdef or synantdef.lower() == 'ant':
-                        embed.description += f"""\n**`Antonyms`**:\n {', '.join((await dcnry.antonym(word))[:10]).title() if dcnry.antonym(word) is not None else f'`{word}` does not have antonyms'}"""
+                        embed.description += f"""\n**`Antonyms`**:\n {', '.join((await dcnry.antonym(word))[:10]).title() if await dcnry.antonym(word) is not None else f'`{word}` does not have antonyms'}"""
                     await command_log_and_err(ctx, self.client, 'Success')
                 await ctx.send(embed=embed)
             except requests.exceptions.ProxyError:
