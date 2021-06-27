@@ -299,7 +299,7 @@ Password: {hack_pass}
     @command(aliases=['imp'], name="Impersonate", brief="🎭408",
              help="Of course it impersonates people.",
              usage="impersonate|imp (member) (text)")
-    async def _impersonate(self, ctx: Context, member: Member = None, text: str = None):
+    async def _impersonate(self, ctx: Context, member: Member = None, *, text: str = None):
         member: Member = member or ctx.author
         if ctx.bot.user not in [webhook.user for webhook in await ctx.channel.webhooks()]:
             webhook: discord.Webhook = await ctx.channel.create_webhook(name=ctx.bot.user.name, avatar=None)
