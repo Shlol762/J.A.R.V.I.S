@@ -36,8 +36,9 @@ class Mslo(Cog):
                 msg = await command_log_and_err(ctx=ctx, client=self.client, status="Success",
                                                 used_on=member)
             except HTTPException:
-                error = command_log_and_err(ctx=ctx, client=self.client, used_on=member, err_code="Err_20112",
+                error = await command_log_and_err(ctx=ctx, client=self.client, used_on=member, err_code="Err_20112",
                                             text=f"Unable to invite {member.mention}")
+                invite, msg = None, None
         else:
             await command_log_and_err(ctx=ctx, client=self.client, err_code="Err_20148",
                                       text="Specify the person to be invited.")
