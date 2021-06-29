@@ -44,6 +44,7 @@ def encrypt(code: str = None, text: str = None) -> str:
                         if char == key:
                             codec_out += val
             elif code.lower() == 'morse':
+                text = text.replace(".", "•")
                 morse_char: str = ''
                 for char in text.lower():
                     for key, val in morse_code.items():
@@ -62,6 +63,7 @@ def decrypt(code: str = None, text: str = None) -> str:
                     codec_out += key
         codec_out = codec_out[:1].upper() + codec_out[1:]
     elif code.lower() == "morse":
+        text = text.replace(".", "•")
         letters: list = text.split()
         for letter in letters:
             for key, val in morse_code.items():
