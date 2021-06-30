@@ -59,7 +59,7 @@ async def command_log_and_err(ctx: commands.Context = None, client: discord.Clie
     time: datetime.datetime = datetime.datetime.now().strftime("%a, %b %dth %Y %I:%M:%S %p IST")
     e = Embed(title=f"{com_name}",
                       description=f"*`Used by`*: {ctx.author.mention}\n *`Timestamp`*: `{time}`\n *`Used in`*: {ctx.channel.mention if ctx.guild else ctx.author.dm_channel}{f'- `{ctx.guild.name}`' if ctx.guild else ''}\n *`Message Link`*: **[`Jump to message`]({ctx.message.jump_url})**\n",
-                      colour=discord.Colour.red() if status[:3] == 'Err' else discord.Colour.green())
+                      colour=discord.Colour.red() if err_code else discord.Colour.green())
     chnl: discord.TextChannel = client.get_channel(821677968967467068)
     if used_on:
         e.description += f'*`Used on`*: {used_on.mention}\n'
@@ -101,7 +101,7 @@ async def command_log_and_err(ctx: commands.Context = None, client: discord.Clie
             e.description += f'*`Left`*: {joined.mention}\n'
         else:
             raise TypeDefError(f'{created} of type: {str(type(created))[1:-1]} cannot be used in command_log_and_err')
-    e.description += f"*`Status`*: `{status}`"
+    e.description += f"*`Status`*: `{status + 'Err_' if status[:2].lower() != 'err' else status}`"
     e = await set_timestamp(e, "Logged")
     await reaction(ctx, True) if not err_code else None
     await comm_log_local(ctx, status)
