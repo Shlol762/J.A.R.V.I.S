@@ -24,7 +24,7 @@ class Misc(commands.Cog):
                       usage="ping|latency", brief='📶901')
     async def ping(self, ctx: commands.Context):
         await command_log_and_err(ctx, self.client, 'Success')
-        await ctx.send(embed=await set_timestamp(
+        await ctx.reply(embed=await set_timestamp(
             Embed(title='Ping', description=f'`{round(self.client.latency * 1000)}` ms',
                           colour=discord.Colour.random())))
 
@@ -47,16 +47,16 @@ class Misc(commands.Cog):
                     was_is = 'is{}a `leap year`'
                 if year[2] != '0':
                     if int_yr % 4 == 0:
-                        await ctx.send(f'`{str(year)}` {was_is.format(" ")}')
+                        await ctx.reply(f'`{str(year)}` {was_is.format(" ")}')
                     else:
-                        await ctx.send(f"{str(year)} {was_is.format(' ')}")
+                        await ctx.reply(f"{str(year)} {was_is.format(' ')}")
                 else:
                     if int_yr % 400 == 0:
-                        await ctx.send(f'{str(year)} {was_is.format(" ")}')
+                        await ctx.reply(f'{str(year)} {was_is.format(" ")}')
                     else:
-                        await ctx.send(f'{str(year)} {was_is.format(" ")}')
+                        await ctx.reply(f'{str(year)} {was_is.format(" ")}')
             else:
-                await ctx.send("I'm *not* calculating years with more than 5 digits.")
+                await ctx.reply("I'm *not* calculating years with more than 5 digits.")
             await command_log_and_err(ctx, self.client, 'Success')
         else:
             await command_log_and_err(ctx, self.client, err_code="Err_90248", text="Specify year pls.")
@@ -72,11 +72,11 @@ class Misc(commands.Cog):
                 bckwd_idx = word_len - 1
                 for char in word:
                     if word[fwd_idx] != word[bckwd_idx]:
-                        await ctx.send(f"{word} is not a palindrome")
+                        await ctx.reply(f"{word} is not a palindrome")
                         break
                     else:
                         if bckwd_idx - fwd_idx < 0:
-                            await ctx.send(f"{word} is a palindrome.")
+                            await ctx.reply(f"{word} is a palindrome.")
                             break
                     fwd_idx += 1
                     bckwd_idx -= 1
@@ -99,7 +99,7 @@ class Misc(commands.Cog):
                     # print(results)
                     msg = wikipedia.summary("'" + query + "'").split('\n')[0]
                     await command_log_and_err(ctx, self.client, 'Success')
-                    await ctx.send(embed=await set_timestamp(
+                    await ctx.reply(embed=await set_timestamp(
                         Embed(title=f'Result for "`{query[0].upper() + query[1:]}`"\n\n{results}',
                                       description=msg,
                                       colour=discord.Colour.random())))
@@ -120,7 +120,7 @@ class Misc(commands.Cog):
                                             description=' '.join(msg[:300]), colour=discord.Colour.random()))
                     await ctx.author.send(
                         embed=Embed(description=' '.join(msg[300:]), colour=discord.Colour.random()))
-                    await ctx.send(
+                    await ctx.reply(
                         embed=Embed(title=f'Result for "`{query[0].upper() + query[1:]}`"\n\n{results}',
                                             description=f'Since the results for this search exceeds the character limit of 2048, the info will be sent to you through DMs. Click [here]({message.jump_url}) to jump.',
                                             colour=discord.Colour.random())) if ctx.guild else None
@@ -160,7 +160,7 @@ class Misc(commands.Cog):
                     if not synantdef or synantdef.lower() == 'ant':
                         embed.description += f"""\n**`Antonyms`**:\n {', '.join((await dcnry.antonym(word))[:10]).title() if await dcnry.antonym(word) is not None else f'`{word}` does not have antonyms'}"""
                     await command_log_and_err(ctx, self.client, 'Success')
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
             except requests.exceptions.ProxyError:
                 await command_log_and_err(ctx, self.client, err_code="Err_90512",
                                           text=f'N/A: `Internet Connection Failure\\: Unable to retrieve information for "{word}"` {ctx.author.mention}')
@@ -172,7 +172,7 @@ class Misc(commands.Cog):
         async with ctx.typing():
             if time_str:
                 try:
-                    await ctx.send(tt(time_str))
+                    await ctx.reply(tt(time_str))
                     await command_log_and_err(ctx, self.client, status="Success")
                 except ValueError:
                     await command_log_and_err(ctx, self.client, err_code='Err_90612',
@@ -189,7 +189,7 @@ class Misc(commands.Cog):
             wm_logo = 'https://www.worldometers.info/img/worldometers-logo.gif'
             if country:
                 cdata = await self.cocase.compile_by_country(country.strip().lower())
-                await ctx.send(embed=await set_timestamp(Embed(title=f'`{country.strip().title()}` - Covid Statistics',
+                await ctx.reply(embed=await set_timestamp(Embed(title=f'`{country.strip().title()}` - Covid Statistics',
                  description=
                  f"""
 `Total     - {cdata.get("Total"):^12}`
@@ -199,7 +199,7 @@ class Misc(commands.Cog):
 """, colour=Colour.random()).set_thumbnail(url=wm_logo)))
             else:
                 cdata = await self.cocase.compile_data()
-                await ctx.send(embed=await set_timestamp(Embed(title='Worldwide Covid Statistics',
+                await ctx.reply(embed=await set_timestamp(Embed(title='Worldwide Covid Statistics',
                 description=
 f"""
 `Total     - {cdata.get("Total"):^12}`

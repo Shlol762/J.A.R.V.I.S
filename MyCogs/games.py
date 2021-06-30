@@ -23,7 +23,7 @@ class Games(Cog):
         author: Member = ctx.message.author
         dice_num: int = randint(1, 6)
         await command_log_and_err(ctx=ctx, client=self.client, status="Success")
-        await ctx.send(f'You rolled {dice_num}, {author.mention}')
+        await ctx.reply(f'You rolled {dice_num}, {author.mention}')
 
     # 402
     @command(aliases=['8b', 'eightball', 'oracle'], name='8ball', brief='🎱402',
@@ -43,7 +43,7 @@ class Games(Cog):
                                                  'Without a doubt.', 'Yes',
                                                  'Yes - definitely.', 'You may rely on it.'])
             await command_log_and_err(ctx=ctx, client=self.client, status="Success")
-            await ctx.send(embed=Embed(title="8ball",
+            await ctx.reply(embed=Embed(title="8ball",
                                                description=f"`Seeker`: {ctx.author.mention}\n\n `Question`: {question}\n\n `Reply`: {eight_ball_response}",
                                                colour=Colour.random()))
         else:
@@ -57,7 +57,7 @@ class Games(Cog):
     @cooldown(1, 1.5, BucketType.member)
     async def yesnomaybe(self, ctx: Context, *, question: str = None):
         if question:
-            await ctx.send(embed=Embed(title="YesNoMaybe",
+            await ctx.reply(embed=Embed(title="YesNoMaybe",
                                                description=f"`Seeker`: {ctx.author.mention}\n\n `Question`: {question}\n\n `Reply`: {choice(['Yes', 'No', 'Maybe'])}",
                                                colour=Colour.random()))
             await command_log_and_err(ctx=ctx, client=self.client, status="Success")
@@ -76,14 +76,14 @@ class Games(Cog):
         if member:
             await command_log_and_err(ctx=ctx, client=self.client, status="Success", used_on=member)
             if member == author:
-                await ctx.send("Ya can't hack yourself dummy!")
+                await ctx.reply("Ya can't hack yourself dummy!")
                 await ctx.message.add_reaction('⁉')
             elif member == self.client.user:
                 await ctx.message.add_reaction('⁉')
-                await ctx.send("You would ask me to infect myself with a virus?")
+                await ctx.reply("You would ask me to infect myself with a virus?")
             else:
                 disc: str = f'`{member.discriminator}`'
-                hack_msg: Message = await ctx.send(f"Hacking {member.name}...")
+                hack_msg: Message = await ctx.reply(f"Hacking {member.name}...")
                 email_tag: str = choice(['gmail.com', 'yahoo.com', 'outlook.com', 'discord.gg', 'insta.com', 'xbox.com',
                              'apple.com'])
                 hack_pass: str = choice(['discord.pass23', 'fghdAHj4952lldO', 'Pass108asimDisc', '12euRiuSH96', 'weirdo245dep',
@@ -151,7 +151,7 @@ Password: {hack_pass}
                 await hack_msg.add_reaction('🇪')
                 await hack_msg.add_reaction('🇩')
                 await hack_msg.edit(content=f'Finished hacking `{member.name}`')
-                await ctx.send('*Totally* hacked that person...')
+                await ctx.reply('*Totally* hacked that person...')
                 await sleep(2)
                 await hack_msg.clear_reactions()
         else:
@@ -169,91 +169,91 @@ Password: {hack_pass}
         if member:
             if member != author:
                 if member.id == self.client.user.id:
-                    await ctx.send("Oooh you wish to challenge me eh? It's on like donkey kong! What do you choose?")
+                    await ctx.reply("Oooh you wish to challenge me eh? It's on like donkey kong! What do you choose?")
                     try:
                         msg: Message = await self.client.wait_for(event="message", timeout=7, check=lambda
                             message: message.author == author and message.channel == ctx.message.channel)
                         if msg.content.lower() == 'heads':
-                            await ctx.send("I get tails then...")
+                            await ctx.reply("I get tails then...")
                             if h_t_r == 'heads':
                                 await command_log_and_err(ctx=ctx, client=self.client, status=f"I won ",
                                                           used_on=member if member else None)
-                                await ctx.send(
+                                await ctx.reply(
                                     f"Dang it! Fine. The coin flipped heads... You win this round {author.mention}...")
                             elif h_t_r == 'tails':
                                 await command_log_and_err(ctx=ctx, client=self.client, status=f"I won ",
                                                           used_on=member if member else None)
-                                await ctx.send("Told ya I'd win ;), the coin flipped tails!")
+                                await ctx.reply("Told ya I'd win ;), the coin flipped tails!")
                         elif msg.content.lower() == 'tails':
-                            await ctx.send("I get heads then...")
+                            await ctx.reply("I get heads then...")
                             if h_t_r == 'tails':
                                 await command_log_and_err(ctx=ctx, client=self.client,
                                                           status=f"I lost",
                                                           used_on=member if member else None)
-                                await ctx.send(
+                                await ctx.reply(
                                     f"Dang it! Fine. The coin flipped tails... You win this round {author.mention}...")
                             elif h_t_r == 'heads':
                                 await command_log_and_err(ctx=ctx, client=self.client, status=f"I won ",
                                                           used_on=member if member else None)
-                                await ctx.send("Told ya I'd win ;), the coin flipped heads!")
+                                await ctx.reply("Told ya I'd win ;), the coin flipped heads!")
                     except TimeoutError:
                         await command_log_and_err(ctx=ctx, client=self.client,
                                                   status=f"{author.mention} is a big sissy",
                                                   used_on=member if member else None)
-                        await ctx.send("WUSS! Come back and finish the game ya bum!")
+                        await ctx.reply("WUSS! Come back and finish the game ya bum!")
                 else:
-                    await ctx.send(
+                    await ctx.reply(
                         f"Alright {author.mention} and {member.mention} playing the flippin game. {author.mention} heads or tails?")
                     try:
                         msg: Message = await self.client.wait_for(event='message', timeout=7, check=lambda
                             message: message.author == author and message.channel == ctx.message.channel)
                         if msg.content.lower() == 'heads':
-                            await ctx.send(
+                            await ctx.reply(
                                 f"So you choose heads, that makes {member.mention}'s choice tails....")
                             if msg.content.lower() == h_t_r:
                                 await command_log_and_err(ctx=ctx, client=self.client,
                                                           status=f"Idk who played against {author.mention} but Success",
                                                           used_on=member if member else None)
-                                await ctx.send(
+                                await ctx.reply(
                                     f"{author.mention} your luck seems to better... You win! Congrats! Tough break {member.mention}... better luck next time")
                             else:
                                 await command_log_and_err(ctx=ctx, client=self.client,
                                                           status=f"Idk who played against {author.mention} but Success",
                                                           used_on=member if member else None)
-                                await ctx.send(
+                                await ctx.reply(
                                     f"{member.mention} your luck seems to better... You win! Congrats! Tough break {author.mention}... better luck next time")
                         elif msg.content.lower() == 'tails':
-                            await ctx.send(
+                            await ctx.reply(
                                 f"So you choose tails, that makes {member.mention}'s choice heads....")
                             if msg.content.lower() == h_t_r:
                                 await command_log_and_err(ctx=ctx, client=self.client,
                                                           status=f"Idk who played against {author.mention} but Success",
                                                           used_on=member if member else None)
-                                await ctx.send(
+                                await ctx.reply(
                                     f"{author.mention} your luck seems to better... You win! Congrats! Tough break {member.mention}... better luck next time")
                             else:
                                 await command_log_and_err(ctx=ctx, client=self.client,
                                                           status=f"Idk who played against {author.mention} but Success",
                                                           used_on=member if member else None)
-                                await ctx.send(
+                                await ctx.reply(
                                     f"{member.mention} your luck seems to better... You win! Congrats! Tough break {author.mention}... better luck next time")
                         else:
                             await command_log_and_err(ctx=ctx, client=self.client,
                                                       status=f"Wrong argument",
                                                       used_on=member if member else None)
-                            await ctx.send("Heads or tails only dum dum...")
+                            await ctx.reply("Heads or tails only dum dum...")
                     except TimeoutError:
-                        await ctx.send("Wuss, why'd you give up?")
+                        await ctx.reply("Wuss, why'd you give up?")
             else:
                 await command_log_and_err(ctx=ctx, client=self.client,
                                           status=f"Success",
                                           used_on=member if member else None)
-                await ctx.send(f"{author.mention} you got {h_t_r}")
+                await ctx.reply(f"{author.mention} you got {h_t_r}")
         else:
             await command_log_and_err(ctx=ctx, client=self.client,
                                       status=f"Success",
                                       used_on=member if member else None)
-            await ctx.send(f"{author.mention} you got {h_t_r}")
+            await ctx.reply(f"{author.mention} you got {h_t_r}")
 
     # 406
     @command(aliases=['ncrpt'], name='Encrypt', brief='💬406',

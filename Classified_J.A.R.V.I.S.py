@@ -21,7 +21,7 @@ for cog in os.listdir("C:/Users/Shlok/J.A.R.V.I.SV2021/MyCogs"):
 
 @client.command(hidden=True)
 async def del_message(ctx: commands.Context, message: discord.Message):
-    await ctx.send(f"Deleted message with content: `{message.content}`")
+    await ctx.reply(f"Deleted message with content: `{message.content}`")
     await message.delete()
 
 
@@ -69,7 +69,7 @@ If you want to join my home server, click [`J.A.R.V.I.S`]({link})
     for channel in channels:
         if 'general' in channel.name and isinstance(channel, discord.TextChannel):
             message: discord.Message = await channel.send(embed=embed)
-            await ctx.send(f'`Message link`: https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
+            await ctx.reply(f'`Message link`: https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
 
 
 @client.command(hidden=True)
@@ -78,7 +78,7 @@ async def test1(ctx: commands.Context):
     for guild in ctx.bot.guilds:
         guild: discord.Guild = guild
         prefixes[str(guild.id)] = '$'
-        await ctx.send(f"Def `prefix` set for `{guild.name}`")
+        await ctx.reply(f"Def `prefix` set for `{guild.name}`")
     with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/prefixes.json", "w") as f:
         json.dump(prefixes, f, indent=3)
 
@@ -114,7 +114,7 @@ async def devan(ctx: commands.Context, *, text: str):
         for channel in ctx.bot.get_all_channels():
             if 'general' in channel.name and isinstance(channel, discord.TextChannel):
                 message: discord.Message = await channel.send(embed=embed)
-                await ctx.send(
+                await ctx.reply(
                     f'`Message link`: https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
 
 

@@ -19,6 +19,7 @@ class School(Cog):
 
         with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/drive_links.json", "r") as f:
             subjects: dict[str: dict[str:str]] = json.load(f)
+        await command_log_and_err()
         if subject:
             chapters: dict = subjects.get(subject.lower())
             if chapters:
@@ -29,7 +30,7 @@ class School(Cog):
                 if chapter_link:
                     embed.title, embed.url = None, None
                     embed.description = f"[**`{chapter.title()}`**]({chapter_link})"
-                    return await ctx.send(embed=embed)
+                    return await ctx.reply(embed=embed)
                 for chapter, link in chapters.items():
                     if chapter.lower() != 'link':
                         embed.description += f"**{f'• [`{chapter.title()}`]({drivify_link(link)})'}**\n"
@@ -41,15 +42,15 @@ class School(Cog):
                     )\
                         , Embed.Empty, None
                     embed.description = "\n".join(lines[:15])
-                    await ctx.send(embed=embed)
-                    await ctx.send(embed=emb)
+                    await ctx.reply(embed=embed)
+                    await ctx.reply(embed=emb)
                     return
-                else: return await ctx.send(embed=embed)
+                else: return await ctx.reply(embed=embed)
         else:
             embed = Embed(title="NCERT Textbooks", description="", colour=Colour.random())
             for subject, chapters in subjects.items():
                 embed.description += f"""**{f'• [`{subject.title()}`]({drivify_link(chapters["link"])})'}**\n"""
-            return await ctx.send(embed=embed)
+            return await ctx.reply(embed=embed)
 
 
     @command(name='Homework', aliases=['hw'], brief = '📋sc2',

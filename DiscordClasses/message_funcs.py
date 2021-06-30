@@ -20,7 +20,7 @@ async def forbidden_word(ctx: Context, bot: Bot) -> Union[Message, str]:
             except Forbidden:
                 await message_hai_kick.delete()
                 await invite_link.delete()
-                return await ctx.send(f"Sorry guys.. can't kick {author.mention}... No perms!")
+                return await ctx.reply(f"Sorry guys.. can't kick {author.mention}... No perms!")
         else: return src_was_bot
     else: return x_was_not_in_msg.format("forbidden word")
 
@@ -38,7 +38,7 @@ async def noswear(ctx: Context, bot: Bot) -> Union[Message, str]:
                 'https://tenor.com/view/avengers-language-captain-america-age-of-ultron-gif-5285201',
                 'https://tenor.com/view/watch-your-language-words-talk-dont-be-harsh-derek-luke-gif-15626011',
                 'https://tenor.com/view/iron-man-language-galactic-republic-gif-20457940'])
-            return await ctx.send(watch_ur_lang_gifs)
+            return await ctx.reply(watch_ur_lang_gifs)
         else: return src_was_bot
     else: return x_was_not_in_msg.format("swear words")
 
@@ -65,7 +65,7 @@ async def greetings(ctx: Context, bot: Bot) -> Union[Message, str]:
                                               'Howdy {}!',
                                               'Ciao!'
                                               ])
-            if response: return await ctx.send(hi_response.format(author.mention))
+            if response: return await ctx.reply(hi_response.format(author.mention))
         else: return x_was_not_in_msg
     else: return x_was_not_in_msg.format("greetings")
 
@@ -87,7 +87,7 @@ async def farewells(ctx: Context, bot: Bot) -> Union[Message, str]:
                                                'Bye!',
                                                'Ciao!'
                                                ])
-            if response: await ctx.send(bye_response.format(author.name))
+            if response: await ctx.reply(bye_response.format(author.name))
         else: return src_was_bot
     else: return x_was_not_in_msg.format("farewells")
 
@@ -98,7 +98,7 @@ async def nou(ctx: Context, bot: Bot) -> Union[Message, str]:
     message_text: str = ctx.message.content.strip().lower()
     if re.search(r'\b(kill urself)\b', message_text) or message_text == 'ok':
         if author.name != bot.user.name:
-            return await ctx.send('No u')
+            return await ctx.reply('No u')
         else: return src_was_bot
     else: return x_was_not_in_msg.format("nou deserving content")
 
@@ -111,7 +111,7 @@ async def urnotgod(ctx: Context) -> Union[Message, str]:
                                      "I strongly disagree",
                                      "*cough* The person who proclaims him/herself god, is no god at all."
                                      ])
-        return await ctx.send(am_i_g_response)
+        return await ctx.reply(am_i_g_response)
     else: return x_was_not_in_msg.format("conceitedness")
 
 

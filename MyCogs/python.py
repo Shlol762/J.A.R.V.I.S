@@ -145,7 +145,7 @@ class Python(Cog):
         if code.startswith("exit"):
             self.ln = 0
             self.env = {}
-            return await ctx.send("```Reset history!```")
+            return await ctx.reply("```Reset history!```")
 
         env = {
             "message": ctx.message,
@@ -202,14 +202,14 @@ async def func():  # (None,) -> Any
             else:
                 paste_text = "failed to upload contents to paste service."
 
-            await ctx.send(
+            await ctx.reply(
                 f"```py\n{out[:truncate_index]}\n```"
                 f"... response truncated; {paste_text}",
                 embed=embed
             )
             return
 
-        await ctx.send(embed=Embed(title="Python 3.9 Evaluation",
+        await ctx.reply(embed=Embed(title="Python 3.9 Evaluation",
                                    description=f"```{'py' if 'Traceback' not in out else 'nim'}\n{out}```",
                                    colour=Colour.random() if 'Traceback' not in out else Colour.dark_red()))
 
@@ -222,7 +222,7 @@ async def func():  # (None,) -> Any
             caution_url = 'https://cdn.discordapp.com/emojis/849902617185484810.png?v=1'
             if 'C:/Users/Shlok' in code and ctx.author.id != 613044385910620190:
                 await command_log_and_err(ctx, self.client, status="Security threat", send=False)
-                await ctx.send(embed=Embed(title="🛑 `SECURITY WARNING!` 🛑",
+                await ctx.reply(embed=Embed(title="🛑 `SECURITY WARNING!` 🛑",
                 description="Apologies for the warning signs, but you are not allowed to access files from"
                             " Shlok's computer.", colour=Colour.dark_red()).set_thumbnail(
                     url=caution_url).set_footer(text='SECRUITY HAZARD!',
@@ -277,8 +277,8 @@ async def func():  # (None,) -> Any
                             else: embed.description = "There was an error when fetching your PyPi package."
                         await session.close()
 
-                if error: await ctx.send(embed=embed)
-                else: await ctx.send(embed=embed)
+                if error: await ctx.reply(embed=embed)
+                else: await ctx.reply(embed=embed)
             else: await command_log_and_err(ctx, self.client, err_code='P0248', text="You haven't given a package to search for...")
 
 

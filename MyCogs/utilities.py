@@ -34,7 +34,7 @@ class Utilities(commands.Cog):
         if settings[id]["clear"]:
             if amount > 20:
                 await command_log_and_err(ctx, self.client, 'Amt exceeded limit'.format(amount))
-                await ctx.send(f"Sorry {author.mention}, can't clear more than 20 messages")
+                await ctx.reply(f"Sorry {author.mention}, can't clear more than 20 messages")
             else:
                 try:
                     await command_log_and_err(ctx, self.client, f'Deleted {amount} messages')
@@ -43,7 +43,7 @@ class Utilities(commands.Cog):
                     await command_log_and_err(ctx, self.client, err_code='Err_30124',
                                               text='Unable to comply. Check $ecl for more info.')
         else:
-            await ctx.send(f"`Clear` is disabled in `{ctx.guild.name}`")
+            await ctx.reply(f"`Clear` is disabled in `{ctx.guild.name}`")
             await command_log_and_err(ctx, self.client, 'Command disabled')
 
     # 303
@@ -56,7 +56,7 @@ class Utilities(commands.Cog):
         if expression:
             if expression.lower() == 'help arith':
                 await command_log_and_err(ctx, self.client, 'Success')
-                await ctx.send(embed=await set_timestamp(discord.Embed(title='Calculator - `Matchematical Operators`',
+                await ctx.reply(embed=await set_timestamp(discord.Embed(title='Calculator - `Matchematical Operators`',
                                                                        description=
                                                                        f"""
 `{'Addition':^30}-{"'+'":^15}`
@@ -68,7 +68,7 @@ class Utilities(commands.Cog):
 """, colour=discord.Colour.random())))
             elif expression.lower() == 'help compare':
                 await command_log_and_err(ctx, self.client, 'Success')
-                await ctx.send(embed=await set_timestamp(discord.Embed(title='Calculator - `Comparison Operators`',
+                await ctx.reply(embed=await set_timestamp(discord.Embed(title='Calculator - `Comparison Operators`',
                                                                        description=
                                                                        f"""
 `{'Equivalence Check':^30}-{"'=='":^15}`
@@ -80,7 +80,7 @@ class Utilities(commands.Cog):
 """, colour=discord.Colour.random())))
             elif expression.lower() == 'help logical':
                 await command_log_and_err(ctx, self.client, 'Success')
-                await ctx.send(embed=await set_timestamp(discord.Embed(title='Calculator - `Logical Operators`',
+                await ctx.reply(embed=await set_timestamp(discord.Embed(title='Calculator - `Logical Operators`',
                                                                        description=
                                                                        f"""
 `{'And':^5}- {"'True' if both conidtions are True":^50}`
@@ -92,7 +92,7 @@ class Utilities(commands.Cog):
                     expression = expression.replace("^", "**")
                     result = eval(expression)
                     await command_log_and_err(ctx, self.client, 'Success')
-                    await ctx.send(embed=await set_timestamp(discord.Embed(title='Calculator',
+                    await ctx.reply(embed=await set_timestamp(discord.Embed(title='Calculator',
                                                                            description=f"*`Expression`*: `{expression}`\n\n*`Result`*: `{result}`",
                                                                            colour=discord.Colour.random())))
                 except SyntaxError:
@@ -123,11 +123,11 @@ class Utilities(commands.Cog):
                     if new_nick.lower() == 'reset':
                         await member.edit(nick=None)
                         await command_log_and_err(ctx, self.client, 'Success', used_on=member)
-                        await ctx.send(f"{member.mention}'s nickname has been reset")
+                        await ctx.reply(f"{member.mention}'s nickname has been reset")
                     else:
                         await member.edit(nick=new_nick)
                         await command_log_and_err(ctx, self.client, 'Success', used_on=member)
-                        await ctx.send(f"{member.name}'s nickname has been changed to {member.mention}")
+                        await ctx.reply(f"{member.name}'s nickname has been changed to {member.mention}")
                 except discord.Forbidden:
                     await command_log_and_err(ctx, self.client, err_code="Err_30324",
                                               text=f"Unable to comply {author.mention}. Check $ecl for more info.")
@@ -186,7 +186,7 @@ class Utilities(commands.Cog):
             emb1.set_footer(icon_url=pfp, text=f"Status: {status}\nActivities: {activities}")
             emb1 = await set_timestamp(emb1)
             await command_log_and_err(ctx, self.client, 'Success', used_on=member)
-            await ctx.send(embed=emb1)
+            await ctx.reply(embed=emb1)
 
     # 306
     @commands.command(aliases=['sinfo', 'serverinfo'], usage='serverinfo|sinfo',
@@ -214,7 +214,7 @@ class Utilities(commands.Cog):
             server_info.set_thumbnail(url=server.icon_url)
             server_info = await set_timestamp(server_info)
             await command_log_and_err(ctx, self.client, 'Success')
-            await ctx.send(embed=server_info)
+            await ctx.reply(embed=server_info)
 
     # 307
     @commands.command(aliases=['ecl', 'errorcodelist'], name="Error Code List",
@@ -224,7 +224,7 @@ class Utilities(commands.Cog):
         async with ctx.typing():
             if not error:
                 await command_log_and_err(ctx, self.client, 'Success')
-                await ctx.send(
+                await ctx.reply(
                     embed=await set_timestamp(discord.Embed(title=f'{self.client.user.name} - Error Code List', description=
                     """
 `Error Code Classification`
@@ -279,7 +279,7 @@ For Example:- 1)Err_10124 means command '1' under category
                         discord.Embed(title=f'Error - `{error}`', description='', colour=discord.Colour.random()),
                         "Decrypted")
                     embed.description += f'`{"Error Type":^15}:{err_type:^25}`\n`{"Command":^15}:{err_comm:^25}`\n`{"Category":^15}:{err_ctgry:^25}`'
-                    await ctx.send(embed=embed)
+                    await ctx.reply(embed=embed)
                 elif error[-3:] == '404':
                     err_comm = None
                     if error[:-3] == 'A113':
@@ -299,7 +299,7 @@ For Example:- 1)Err_10124 means command '1' under category
                         discord.Embed(title=f'Error - `{error}`', description='', colour=discord.Colour.random()),
                         "Decrypted")
                     embed.description += f'`{"Error Type":^20}:{"Not found":^25}`\n`{"Item not found":^20}:{err_comm:^25}`'
-                    await ctx.send(embed=embed)
+                    await ctx.reply(embed=embed)
                 else:
                     await command_log_and_err(ctx, self.client, err_code="Err_30612",
                                               text="Not a valid error code or info option...")
@@ -322,7 +322,7 @@ For Example:- 1)Err_10124 means command '1' under category
     `{"Created on":^15}-{time_set(c.created_at, "%d %b %Y at %I:%M %p"):^25}`"""
             await command_log_and_err(ctx, self.client, 'Success')
             cinfo.set_thumbnail(url=c.avatar_url)
-            await ctx.send(embed=cinfo)
+            await ctx.reply(embed=cinfo)
 
     # 309
     @commands.command(aliases=['di'], name='Delinvs',
@@ -331,12 +331,12 @@ For Example:- 1)Err_10124 means command '1' under category
     @commands.guild_only()
     async def delinvs(self, ctx: commands.Context):
         async with ctx.typing():
-            await ctx.send(f"Deleting all access points to `{ctx.guild.name}`...")
+            await ctx.reply(f"Deleting all access points to `{ctx.guild.name}`...")
             invites = await ctx.guild.invites()
             for invite in invites:
                 await invite.delete()
             await command_log_and_err(ctx, self.client, 'Success')
-            await ctx.send(f"Breaches sealed. `{ctx.guild.name}` is in comfirmed isolation for the time being")
+            await ctx.reply(f"Breaches sealed. `{ctx.guild.name}` is in comfirmed isolation for the time being")
 
     # 314
     @commands.command(aliases=['st'], name='Status',
@@ -349,9 +349,9 @@ For Example:- 1)Err_10124 means command '1' under category
             if m.activities:
                 for s in m.activities:
                     if isinstance(s, discord.CustomActivity):
-                        await ctx.send(f"{m.mention}'s status is: `{s}`")
+                        await ctx.reply(f"{m.mention}'s status is: `{s}`")
                     elif isinstance(s, discord.Spotify):
-                        await ctx.send(embed=discord.Embed(title=s.title,
+                        await ctx.reply(embed=discord.Embed(title=s.title,
                                                            description="{0} is Listening to:\n*`{1:^6}`*`: {2:<}`\n*`{3:^6}`*`: {4:<}`\n*`{5:^6}`*`: {6:<}`".format(
                                                                m.mention, 'Song',
                                                                s.title,
@@ -363,17 +363,17 @@ For Example:- 1)Err_10124 means command '1' under category
                                                            colour=s.colour).set_thumbnail(url=s.album_cover_url))
                     elif isinstance(s, discord.Activity):
                         if s.type == discord.ActivityType.watching:
-                            await ctx.send(f"{m.mention} is watching `{s}`")
+                            await ctx.reply(f"{m.mention} is watching `{s}`")
                         elif s.type == discord.ActivityType.playing:
-                            await ctx.send(f"{m.mention} is playing `{s}`")
+                            await ctx.reply(f"{m.mention} is playing `{s}`")
                         elif s.type == discord.ActivityType.streaming:
-                            await ctx.send(f"{m.mention} is streaming `{s}`")
+                            await ctx.reply(f"{m.mention} is streaming `{s}`")
             else:
                 if m.status == discord.Status.offline:
-                    await ctx.send(f"""{m.mention}'s: ```py
+                    await ctx.reply(f"""{m.mention}'s: ```py
     Status = Offline```""")
                 else:
-                    await ctx.send(f"""{m.mention}'s: ```py
+                    await ctx.reply(f"""{m.mention}'s: ```py
     Status = None```""")
             await command_log_and_err(ctx, self.client, 'Success')
 
@@ -381,7 +381,7 @@ For Example:- 1)Err_10124 means command '1' under category
                       usage='addbottoserver|abts', help='Generates and sends a link to add the bot to your server')
     async def addbottoserver(self, ctx: commands.Context):
         await command_log_and_err(ctx, self.client, 'Success')
-        await ctx.send(embed=discord.Embed(title=f'Hello my name is `{self.client.user.name}`',
+        await ctx.reply(embed=discord.Embed(title=f'Hello my name is `{self.client.user.name}`',
                                            description='It stands for `Just A Rather Very Intelligent System`\n\nClick [`J.A.R.V.I.S`]({}) to add me to your server.'.format(
                                                'https://discord.com/api/oauth2/authorize?client_id=749830638982529065&permissions=8&scope=bot%20applications.commands'
                                            ), colour=discord.Colour.random()).set_thumbnail(
@@ -404,10 +404,10 @@ For Example:- 1)Err_10124 means command '1' under category
                                                                       colour=discord.Colour.random()).set_thumbnail(
                                     url=self.client.user.avatar_url))
                             except discord.HTTPException:
-                                await ctx.send(f"Cant send message to {member}")
+                                await ctx.reply(f"Cant send message to {member}")
                 else:
                     await command_log_and_err(ctx, self.client, f'{ctx.author.name} is not owner')
-                    await ctx.send(f"{ctx.author.mention}, you are not the owner of `{ctx.guild.name}`")
+                    await ctx.reply(f"{ctx.author.mention}, you are not the owner of `{ctx.guild.name}`")
             else: await command_log_and_err(ctx, self.client, err_code='31148', text="You haven't given anything to announce pal")
 
     @commands.command(name='Member List', aliases=['ml', 'members', 'memberlist'], brief='📋312',
@@ -425,11 +425,11 @@ For Example:- 1)Err_10124 means command '1' under category
                 third_2 = '\n'.join(embed.description.split('\n')[20:40])
                 third_3 = '\n'.join(embed.description.split('\n')[40:])
                 embed.description = third_1
-                await ctx.send(embed=embed)
-                await ctx.send(embed=discord.Embed(description=third_2, colour=discord.Colour.random()))
-                await ctx.send(embed=discord.Embed(description=third_3, colour=discord.Colour.random()))
+                await ctx.reply(embed=embed)
+                await ctx.reply(embed=discord.Embed(description=third_2, colour=discord.Colour.random()))
+                await ctx.reply(embed=discord.Embed(description=third_3, colour=discord.Colour.random()))
             else:
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
 
 
 def setup(client):

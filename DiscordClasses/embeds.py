@@ -34,9 +34,9 @@ async def command_log_and_err(ctx: commands.Context = None, client: discord.Clie
                                     colour=discord.Colour.teal())
             embed_c.add_field(name=f"Cooldown period for {ctx.command.qualified_name}",
                               value=f"`{int(ctx.command._buckets._cooldown.per)}` seconds")
-            await ctx.send(embed=await set_timestamp(embed_c, "Cooldown"))
+            await ctx.reply(embed=await set_timestamp(embed_c, "Cooldown"))
         elif isinstance(error, commands.NoPrivateMessage):
-            await ctx.send(f'**`{ctx.command.qualified_name}`** cannot be used in DMs')
+            await ctx.reply(f'**`{ctx.command.qualified_name}`** cannot be used in DMs')
             try:
                 await reaction(ctx, False)
             except discord.Forbidden:
@@ -53,7 +53,7 @@ async def command_log_and_err(ctx: commands.Context = None, client: discord.Clie
             pass
         embed.set_footer(icon_url=client.user.avatar_url)
         embed.add_field(name="Code:", value=f"`{err_code}`")
-        await ctx.send(embed=await set_timestamp(embed,
+        await ctx.reply(embed=await set_timestamp(embed,
                                                  str(ctx.command.qualified_name if ctx.command else "Invalid"))) if send is True else None
     com_name: str = ctx.command.qualified_name if ctx.command else f"Invalid Command{f' - `{invalid_comname}`' if not ctx.command else ''}"
     time: datetime.datetime = datetime.datetime.now().strftime("%a, %b %dth %Y %I:%M:%S %p IST")
@@ -121,7 +121,7 @@ async def ipl_logo_maker(ctx: commands.Context, embed: discord.Embed, team1: str
     img_name: str = path.split('/')[-1]
     file = discord.File(path, filename=img_name)
     embed.set_thumbnail(url=f"attachment://{img_name}")
-    yield await ctx.send(file=file, embed=embed)
+    yield await ctx.reply(file=file, embed=embed)
     os.remove(path) if path != standby else None
 
 

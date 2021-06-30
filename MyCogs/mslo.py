@@ -70,21 +70,21 @@ class Mslo(Cog):
                 success = 0
             if success == 1:
                 await command_log_and_err(ctx=ctx, client=self.client, status='Success', used_on=member)
-                await ctx.send(
+                await ctx.reply(
                     f"{member.mention} you have been deemed unworthy to stay in this server by {author.mention}")
             else:
                 await command_log_and_err(ctx=ctx, client=self.client, err_code="Err_20224", used_on=member,
                                           text="Sorry I can't do that, missing permissions.")
         elif reason.lower() == 'override 403' and author.id != ctx.guild.owner_id:
-            await ctx.send("Oi your not allowed to override me! Do it the old way peasant this only for owners!")
+            await ctx.reply("Oi your not allowed to override me! Do it the old way peasant this only for owners!")
             await command_log_and_err(ctx=ctx, client=self.client, status='Not owner.', used_on=member)
         else:
             if settings[id]["kick"]:
                 if member:
                     if member == author:
-                        await ctx.send("Ya can't kick yourself dummy!")
+                        await ctx.reply("Ya can't kick yourself dummy!")
                     else:
-                        await ctx.send(f"Are you sure {author.mention}?")
+                        await ctx.reply(f"Are you sure {author.mention}?")
                         try:
                             msg = await self.client.wait_for("message", timeout=10, check=lambda
                                 message: message.author == author and message.channel == ctx.channel)
@@ -103,7 +103,7 @@ class Mslo(Cog):
                                 if success == 1:
                                     await command_log_and_err(ctx=ctx, client=self.client, status='Success',
                                                               used_on=member)
-                                    await ctx.send(
+                                    await ctx.reply(
                                         f"{member.mention} you have been deemed unworthy to stay in this server by {author.mention}")
                                 else:
                                     await command_log_and_err(ctx=ctx, client=self.client, err_code="Err_20224",
@@ -111,18 +111,18 @@ class Mslo(Cog):
                                                               text="Sorry I can't do that, missing permissions.")
                             else:
                                 await command_log_and_err(ctx=ctx, client=self.client, status='Request Timeout')
-                                await ctx.send(
+                                await ctx.reply(
                                     f"It's your lucky day {member.mention}, {msg.author.mention} seems to have pity for you.")
                         except asyncio.TimeoutError:
                             await command_log_and_err(ctx=ctx, client=self.client, status='Confirmation Missing')
-                            await ctx.send('No kicking then.')
+                            await ctx.reply('No kicking then.')
                 else:
                     await command_log_and_err(ctx=ctx, client=self.client, err_code="Err_20248",
                                               text="You haven't given me a member to kick...")
             else:
                 await command_log_and_err(ctx=ctx, client=self.client, status='Command disabled',
                                           used_on=member)
-                await ctx.send(f"`Kick` has been `disabled` for {ctx.channel.mention}")
+                await ctx.reply(f"`Kick` has been `disabled` for {ctx.channel.mention}")
 
     # 203
     @command(name="Ban", aliases=['b'], usage='ban <member> (reason)', brief='🚫203',
@@ -144,22 +144,22 @@ class Mslo(Cog):
                 success = 0
             if success == 1:
                 await command_log_and_err(ctx=ctx, client=self.client, status='Success', used_on=member)
-                await ctx.send(f'I am forced to ban you {member.mention}... Well I sorta agreed to it too but... :)')
+                await ctx.reply(f'I am forced to ban you {member.mention}... Well I sorta agreed to it too but... :)')
             else:
                 await command_log_and_err(ctx=ctx, client=self.client, err_code="Err_20324", used_on=member,
                                           text="Sorry I can't do that, missing permissions.")
         elif reason.lower() == 'override 403' and author.id != ctx.guild.owner_id:
             await command_log_and_err(ctx=ctx, client=self.client, status='Not owner.', used_on=member)
-            await ctx.send("Oi your not allowed to override me! Do it the old way peasant this only for owners!")
+            await ctx.reply("Oi your not allowed to override me! Do it the old way peasant this only for owners!")
         else:
             if settings[id]["ban"]:
                 if member:
                     if member == author:
-                        await ctx.send(
+                        await ctx.reply(
                             "Now I can't pretend I understand your motives, but what are you gonna gain by banning yourself?")
                         await command_log_and_err(ctx=ctx, client=self.client, status='Paradox', used_on=author)
                     else:
-                        await ctx.send(f"Are you sure {author.mention}? Respond with yes or no.")
+                        await ctx.reply(f"Are you sure {author.mention}? Respond with yes or no.")
                         try:
                             msg = await self.client.wait_for("message", timeout=10, check=lambda
                                 message: message.author == author and message.channel == ctx.channel)
@@ -172,7 +172,7 @@ class Mslo(Cog):
                                 if success == 1:
                                     await command_log_and_err(ctx=ctx, client=self.client, status='Success',
                                                               used_on=member)
-                                    await ctx.send(
+                                    await ctx.reply(
                                         f'I am forced to ban you {member.mention}... Well I sorta agreed to it too but... :)')
                                 else:
                                     await command_log_and_err(ctx=ctx, client=self.client, err_code="Err_20324",
@@ -181,13 +181,13 @@ class Mslo(Cog):
                         except asyncio.TimeoutError:
                             await command_log_and_err(ctx=ctx, client=self.client, status="Request Timeout",
                                                       used_on=member)
-                            await ctx.send(f"Well then, no banning {member.mention} I suppose...")
+                            await ctx.reply(f"Well then, no banning {member.mention} I suppose...")
                 else:
                     await command_log_and_err(ctx=ctx, client=self.client, err_code="Err_20248",
                                               text="Gimme someone to ban...")
             else:
                 await command_log_and_err(ctx=ctx, client=self.client, status="Command disabled here.", used_on=member)
-                await ctx.send(f"`Ban` is `disabled` in {ctx.channel.mention}")
+                await ctx.reply(f"`Ban` is `disabled` in {ctx.channel.mention}")
 
     # 204
     @command(name="Unban", aliases=['ub'], usage='unban <user>',
@@ -206,7 +206,7 @@ class Mslo(Cog):
                         await ctx.guild.unban(user)
                         await command_log_and_err(ctx=ctx, client=self.client,
                                 status='Success', used_on=user)
-                        await ctx.send(f"{user.mention} hath been"
+                        await ctx.reply(f"{user.mention} hath been"
                                        f" unbanned.")
                         invite,\
                         error, msg, invitelnk = await self.invite(ctx,

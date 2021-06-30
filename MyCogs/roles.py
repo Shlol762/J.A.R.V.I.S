@@ -30,7 +30,7 @@ class Roles(Cog):
                 role = await guild.create_role(name=name)
                 await command_log_and_err(ctx, self.client, status='Success',
                                           created=role)
-                await ctx.send(f"New role {role.mention} has been created")
+                await ctx.reply(f"New role {role.mention} has been created")
             except Forbidden:
                 await command_log_and_err(ctx=ctx, client=self.client, err_code='Err_10124',
                         text=f'Unable to comply {author.mention}. Check $ecl for more info.')
@@ -51,7 +51,7 @@ class Roles(Cog):
             try:
                 await command_log_and_err(ctx, self.client, 'Success', deleted=role)
                 await role.delete(reason=None)
-                await ctx.send(f"The role {role_b4_del} has been deleted!")
+                await ctx.reply(f"The role {role_b4_del} has been deleted!")
             except Forbidden:
                 await command_log_and_err(ctx=ctx, client=self.client, err_code='Err_10224',
                         text=f'Unable to comply {author.mention}. Check $ecl for more info.')
@@ -72,7 +72,7 @@ class Roles(Cog):
         if member:
             if role:
                 if role.permissions.administrator:
-                    await ctx.send(
+                    await ctx.reply(
     f"Well {author.mention}... Your trying to add a role that has admin permissions. Sorry!")
                     await command_log_and_err(ctx, self.client,
                                            f'{role.mention} has `Administrator` permissions')
@@ -81,7 +81,7 @@ class Roles(Cog):
                         await command_log_and_err(
                             ctx, self.client, 'Success', used_on=member)
                         await member.add_roles(role)
-                        await ctx.send(
+                        await ctx.reply(
                             f'{member.mention} has been given the role `{role.name}`.')
                     except Forbidden:
                         await command_log_and_err(ctx=ctx, client=self.client, err_code='Err_10324',
@@ -107,7 +107,7 @@ class Roles(Cog):
                 try:
                     await command_log_and_err(ctx, self.client, 'Success', used_on=member)
                     await member.remove_roles(role)
-                    await ctx.send(f'{member.mention} has been removed from the role `{role.name}`.')
+                    await ctx.reply(f'{member.mention} has been removed from the role `{role.name}`.')
                 except Forbidden:
                     await command_log_and_err(ctx=ctx, client=self.client, err_code='Err_10424',
                             text=f'Unable to comply {author.mention}. Check $ecl for more info.')
@@ -485,7 +485,7 @@ class Roles(Cog):
                         elif confirm is None: await command_log_and_err(ctx, self.client, err_code='10512', text="Please give only `True` or `False` while setting `mentionable` and `display seperately`")
                         else:
                             await command_log_and_err(ctx, self.client, status="Success")
-                            await ctx.send(embed=await set_timestamp(Embed(title='Edited Role', description=
+                            await ctx.reply(embed=await set_timestamp(Embed(title='Edited Role', description=
                             f"""
         {role.mention if role.name != '@everyone' else '@everyone'}'s `{attribute}`{' permission' if pi else ''} has been set to `{attr_v_l.capitalize()}`""".replace("@@everyone", "@everyone"),
                                                                colour=colour), 'Edited'))
@@ -509,8 +509,8 @@ class Roles(Cog):
                 try:
                     await member.add_roles(role)
                 except Forbidden:
-                    await ctx.send(f"Can't add the role `{role.name}` to `{member.name}`'s roles", delete_after=10)
-            await ctx.send("I've done all I can")
+                    await ctx.reply(f"Can't add the role `{role.name}` to `{member.name}`'s roles", delete_after=10)
+            await ctx.reply("I've done all I can")
 
 
 def setup(client):

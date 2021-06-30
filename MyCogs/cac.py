@@ -46,7 +46,7 @@ class Cac(Cog):
                         name='ID: ', value=f"`{chnl.id}`").add_field(name='Category: ',
                                                                      value=f"`{ctgry.name if ctgry != 'None' else ctgry}`")
                     await command_log_and_err(ctx, self.client, status='success', created=chnl)
-                    await ctx.send(embed=await set_timestamp(embed, ""))
+                    await ctx.reply(embed=await set_timestamp(embed, ""))
                 except Forbidden: await command_log_and_err(ctx, self.client, err_code="Err_50124",
                                               text=f"Can't do that {author.mention}, sorry I'm missing permissions")
             else: await command_log_and_err(ctx, self.client, err_code="Err_50148",
@@ -73,7 +73,7 @@ class Cac(Cog):
                 await channel.delete(reason=None)
                 await command_log_and_err(ctx, self.client, status="Success",
                                           deleted=del_chnl)
-                await ctx.send(
+                await ctx.reply(
                     embed=await set_timestamp(
                         Embed(title=f'Deleted `{type}`', description=f"{channel.mention} - `{channel.name}`",
                                       colour=Colour.random()), "Created"))
@@ -95,7 +95,7 @@ class Cac(Cog):
                 await command_log_and_err(ctx, self.client, status='Success', created=message)
                 time: str = message.created_at.replace(tzinfo=timezone("UTC")).astimezone(timezone("Asia/Kolkata")).strftime(
                     "%d %b %Y at %I:%M %p")
-                await ctx.send(embed=await set_timestamp(Embed(title="Pinned a message.",
+                await ctx.reply(embed=await set_timestamp(Embed(title="Pinned a message.",
                                description=f"ID: `{message.id}`\n Content: {message.content}\n Author: {message.author.mention}\n Time of sending: `{time}`\n Pinned by: {author.mention}",
                                colour=Colour.random()), "Pinned"))
             except Forbidden: await command_log_and_err(ctx, self.client, err_code="Err_50324",
@@ -118,7 +118,7 @@ class Cac(Cog):
                 await command_log_and_err(ctx=ctx, client=self.client, status="Success", deleted=message)
                 time = message.created_at.replace(tzinfo=timezone("UTC")).astimezone(timezone("Asia/Kolkata")).strftime(
                     "%d %b %Y at %I:%M %p")
-                await ctx.send(embed=await set_timestamp(discord.Embed(title="Unpinned a message.",
+                await ctx.reply(embed=await set_timestamp(discord.Embed(title="Unpinned a message.",
                                                                        description=f"ID: `{message.id}`\n Content: {message.content}\n Author: {message.author.mention}\n Time of sending: `{time}`",
                                                                        colour=discord.Colour.random()), "Unpinned"))
             except Forbidden:
@@ -362,7 +362,7 @@ class Cac(Cog):
                     elif confirm is None: await command_log_and_err(ctx, self.client, err_code='50512', text="Please give only `True` or `False` while setting `sync perms` and `nsfw`", used_on=channel)
                     else:
                         await command_log_and_err(ctx, self.client, status="Success", used_on=channel)
-                        await ctx.send(embed=await set_timestamp(Embed(title='Edited Channel', description=
+                        await ctx.reply(embed=await set_timestamp(Embed(title='Edited Channel', description=
                         f"""{channel.mention}'s `{attribute.capitalize()}` has been changed to `{attr_v_l.capitalize().strip()}`""" if pi == '' else
                                                                                f"""{"@everyone" if attr_l == '@everyone' else target.mention}'s `{perm_key_pair[0].capitalize()}` permissions in {channel.mention} have been set to `{perm_key_pair[1].strip().capitalize()}`""",
                         colour=colour), 'Edited'))

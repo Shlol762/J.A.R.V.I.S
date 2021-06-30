@@ -53,7 +53,7 @@ class Sports(commands.Cog):
                     embed.description += f'`{team[0]:<28}{team[1]:^9}{team[2]:^5}{team[3]:^6}{team[4]:^5}{team[5]:^4}{team[6]:^5}{team[7]:<6}`\n'
                 embed.set_footer(icon_url=cricket.pt_ipl_logo, text="NR: No Result\nNRR: Net Run Rate")
                 await command_log_and_err(ctx, self.client, 'Success')
-                await ctx.send(embed=await set_timestamp(embed, ""))
+                await ctx.reply(embed=await set_timestamp(embed, ""))
             else:
                 if cricket.teams_short_long.get(team.lower()):
                     value = cricket.teams_short_long.get(team.lower())
@@ -65,7 +65,7 @@ class Sports(commands.Cog):
                         else:
                             value = 'N/A'
                     if value == 'N/A':
-                        return await ctx.send(f"{team} ain't a known IPL team...")
+                        return await ctx.reply(f"{team} ain't a known IPL team...")
                 logo_url = None
                 for team1, link in cricket.ipl_team_logos_web.items():
                     if value == team1:
@@ -80,7 +80,7 @@ class Sports(commands.Cog):
                             embed.description += f"`{team_attr_names[team_attr_names_index]:<14} - {attr:>8}`\n"
                             team_attr_names_index += 1
                         embed.set_thumbnail(url=logo_url)
-                        await ctx.send(embed=await set_timestamp(embed, ""))
+                        await ctx.reply(embed=await set_timestamp(embed, ""))
                         break
 
 

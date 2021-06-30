@@ -28,7 +28,7 @@ class Help(Cog):
                     if str(x).lower() != 'help' and str(x).lower() != 'events':
                         cogs_desc += f'__**{y.name}**__ - `{y.description}`\n'
                 help.add_field(name='_ _', value=cogs_desc[0:len(cogs_desc) - 1], inline=False)
-                await ctx.send(embed=await set_timestamp(help, ""))
+                await ctx.reply(embed=await set_timestamp(help, ""))
             else:
                 found = False
                 for key, val in self.client.cogs.items():
@@ -63,7 +63,7 @@ class Help(Cog):
                                               send=False)
                 else:
                     await command_log_and_err(ctx, self.client, 'Help - {}'.format(cog))
-                await ctx.send(embed=await set_timestamp(help, ""))
+                await ctx.reply(embed=await set_timestamp(help, ""))
         except HTTPException:
             pass
 
