@@ -3,7 +3,8 @@ from datetime import datetime
 import discord
 from PIL import Image
 from discord.ext import commands
-from discord.ext.commands import RoleNotFound, RoleConverter, MemberConverter, Bot, Context, when_mentioned_or
+from discord.ext.commands import RoleNotFound, RoleConverter, MemberConverter, Bot, Context, when_mentioned_or,\
+    MessageConverter
 from discord import Role, Member, Message, Emoji
 from pytz import timezone
 from typing import Union, Optional, List, Coroutine
@@ -218,7 +219,11 @@ async def channel_split(bot: Bot, channel_id: int, message: discord.Message) -> 
     if not re.search(r"^`(.*)`:", message.content):
         chnls.remove(channel_id)
         messages = []
-        text: str = f"`{message.author.name}`: {message.content}"
+        text: str = f"`{message.author.name}`: {message.content}\n_ _"
+        if message.reference:
+            ref: Message = await MessageConverter().convert(await bot.get_context(message), message.reference.jump_url)
+            text: str = f"`╔═`***`{ref.author.name}`***: {ref.content}\n`{message.author.name}`: {message.content}\n_ _"
+
         for channel in chnls:
             conf_chnl: discord.TextChannel = await bot.fetch_channel(channel)
             messages.append(await conf_chnl.send(text))

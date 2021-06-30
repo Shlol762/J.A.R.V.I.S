@@ -165,8 +165,9 @@ class Events(Cog):
         if ctx.guild:
             if self.client.user.mentioned_in(message)\
                     and not ctx.command and not\
-                    re.search(r"(@everyone|@here)", message.content.lower()): await ctx.reply("What can I do for ya?")
-            if channel.id in chnls: await channel_split(self.client, ctx.channel.id, message)
+                    re.search(r"(@everyone|@here)", message.content.lower())\
+                    and not ctx.message.reference: await ctx.reply("What can I do for ya?")
+            if channel.id in chnls and message.author.id != self.client.user.id: await channel_split(self.client, ctx.channel.id, message)
             else:
                 try:
                     channel_id: str = str(channel.id)
