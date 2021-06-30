@@ -19,7 +19,7 @@ class School(Cog):
 
         with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/drive_links.json", "r") as f:
             subjects: dict[str: dict[str:str]] = json.load(f)
-        await command_log_and_err()
+        await command_log_and_err(ctx, self.bot, status="Success")
         if subject:
             chapters: dict = subjects.get(subject.lower())
             if chapters:
