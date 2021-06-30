@@ -52,7 +52,7 @@ async def command_log_and_err(ctx: commands.Context = None, client: discord.Clie
         except discord.Forbidden:
             pass
         embed.set_footer(icon_url=client.user.avatar_url)
-        embed.add_field(name="Code:", value=f"`{err_code}`")
+        embed.add_field(name="Code:", value=f"`{'Err_' + err_code if err_code[:2].lower() != 'err' else err_code}`")
         await ctx.reply(embed=await set_timestamp(embed,
                                                  str(ctx.command.qualified_name if ctx.command else "Invalid"))) if send is True else None
     com_name: str = ctx.command.qualified_name if ctx.command else f"Invalid Command{f' - `{invalid_comname}`' if not ctx.command else ''}"
@@ -101,7 +101,7 @@ async def command_log_and_err(ctx: commands.Context = None, client: discord.Clie
             e.description += f'*`Left`*: {joined.mention}\n'
         else:
             raise TypeDefError(f'{created} of type: {str(type(created))[1:-1]} cannot be used in command_log_and_err')
-    e.description += f"*`Status`*: `{status + 'Err_' if status[:2].lower() != 'err' else status}`"
+    e.description += f"*`Status`*: `{'Err_' + status if status[:2].lower() != 'err' else status}`"
     e = await set_timestamp(e, "Logged")
     await reaction(ctx, True) if not err_code else None
     await comm_log_local(ctx, status)
