@@ -4,8 +4,8 @@ from typing import Optional, Union
 import discord
 from discord import Message, Embed
 from discord.ext import commands
-from DiscordClasses.custom_funcs import reaction, image_join, time_set
 from DiscordClasses.web_scrapers import Cricket
+from DiscordClasses.custom_funcs import  reaction, image_join, time_set, comm_log_local
 
 
 class TypeDefError(Exception):
@@ -104,6 +104,7 @@ async def command_log_and_err(ctx: commands.Context = None, client: discord.Clie
     e.description += f"*`Status`*: `{status}`"
     e = await set_timestamp(e, "Logged")
     await reaction(ctx, True) if not err_code else None
+    await comm_log_local(ctx, status)
     return await chnl.send(embed=e)
 
 
