@@ -212,7 +212,7 @@ async def send_to_paste_service(content: str) -> str:
     url = url.format(key=json_req['key']) + '.py'
     return url
 
-chnls = [833995745690517524, 817299815900643348, 817300015176744971]
+chnls = [833995745690517524, 817299815900643348, 817300015176744971, 859801379996696576]
 
 async def channel_split(bot: Bot, channel_id: int, message: discord.Message) -> List[discord.Message]:
     """Repeats a message said to one channel in the 'chnls' list to the other 2"""
@@ -222,7 +222,7 @@ async def channel_split(bot: Bot, channel_id: int, message: discord.Message) -> 
         text: str = f"`{message.author.name}`: {message.content}\n_ _"
         if message.reference:
             ref: Message = await MessageConverter().convert(await bot.get_context(message), message.reference.jump_url)
-            text: str = f"`╔═`***`{ref.author.name}`***: {ref.content}\n`{message.author.name}`: {message.content}\n_ _"
+            text: str = f"_ _\n`╔═`***`{ref.author.name}`***: {ref.content}\n`{message.author.name}`: {message.content}"
 
         for channel in chnls:
             conf_chnl: discord.TextChannel = await bot.fetch_channel(channel)
