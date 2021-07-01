@@ -219,7 +219,7 @@ async def channel_split(bot: Bot, channel_id: int, message: discord.Message) -> 
     if not re.search(r"^`(.*)`:", message.content):
         chnls.remove(channel_id)
         messages = []
-        text: str = f"`{message.author.name}`: {message.content}\n_ _"
+        text: str = f"_ _\n`{message.author.name}`: {message.content}\n"
         if message.reference:
             ref: Message = await MessageConverter().convert(await bot.get_context(message), message.reference.jump_url)
             text: str = f"_ _\n`╔═`***`{ref.author.name}`***: {ref.content}\n`{message.author.name}`: {message.content}"
