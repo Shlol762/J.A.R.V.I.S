@@ -118,4 +118,10 @@ async def devan(ctx: commands.Context, *, text: str):
                     f'`Message link`: https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
 
 
+@client.command(hidden=True)
+async def msg_dts(ctx: commands.Context, message: discord.Message):
+    await ctx.send(f"Content: {message.content}")
+    print(f"Content: {message.content}")
+
+
 client.run(bot_token)
