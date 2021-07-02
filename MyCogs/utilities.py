@@ -165,7 +165,7 @@ class Utilities(commands.Cog):
                         activities.append(f'Playing "{activity.name}"')
                     elif activity.type == discord.ActivityType.streaming:
                         activities.append(f'Streaming "{activity.name}"')
-            activities = ', '.join(activities) if len(activities) > 0 else 'None'
+            activities = ', '.join(activities) if None not in activities else 'None'
             public_flags = ', '.join(
                 [str(house).replace("UserFlags.", "").replace("_", " ").title() for house in member.public_flags.all()])
             flag_logos = ''.join([str(await hypesquad_emoji(self.client, emoji)) for emoji in public_flags.split(", ")])
