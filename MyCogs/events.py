@@ -4,16 +4,14 @@ from . import hypesquad_emoji, command_log_and_err, set_timestamp,\
     Member, NotFound, Status, Activity, ActivityType, Embed, Colour, Invite,\
     Forbidden, GuildChannel, MemberConverter, CommandError, CommandNotFound,\
     CommandOnCooldown, MemberNotFound, UserNotFound, RoleNotFound, MessageNotFound,\
-    ChannelNotFound, NoPrivateMessage, Message, channel_split, chnls, file_opener,\
+    ChannelNotFound, NoPrivateMessage, Message, MessageConverter,\
     trim, forbidden_word, noswear, greetings, farewells, nou, urnotgod, timeto
 
 severed_time = 0
 connect_time = 0
-msg_count = 0
-auth_id = 0
-prev_ch = 0
+chnls = [833995745690517524, 817299815900643348, 817300015176744971, 859801379996696576]
+prev_messages = []
 members = {}
-
 
 class Events(Cog):
     def __init__(self, client: Client):
@@ -154,9 +152,8 @@ class Events(Cog):
 
     @Cog.listener()
     async def on_message(self, message: Message):
-        global msg_count
-        global auth_id
-        global prev_ch
+        global chnls
+        global prev_messages
         ctx: Context = await self.client.get_context(message)
         channel: TextChannel = ctx.channel
         author: Member = ctx.author
@@ -167,7 +164,32 @@ class Events(Cog):
                     and not ctx.command and not\
                     re.search(r"(@everyone|@here)", message.content.lower())\
                     and not ctx.message.reference: await ctx.reply("What can I do for ya?")
-            if channel.id in chnls and message.author.id != self.client.user.id: await channel_split(self.client, ctx.channel.id, message)
+            if channel.id in chnls and ctx.author != ctx.bot.user:
+                text: str = f"_ _\n`{message.author.name}`: {message.content}\n"
+                if message.reference:
+                    ref: Message = await MessageConverter().convert(await self.client.get_context(message),
+                                                                    message.reference.jump_url)
+                    text: str = f"_ _\n`╔═`***`{ref.author.name}`***: {ref.content}\n`{message.author.name}`: {message.content}"
+                if channel.id == chnls[0]:
+                    ch2, ch3, ch4 = await self.client.fetch_channel(chnls[1]), await self.client.fetch_channel(chnls[2]), await self.client.fetch_channel(chnls[3])
+                    await ch3.send(text)
+                    await ch4.send(text)
+                    await ch2.send(text)
+                elif channel.id == chnls[1]:
+                    ch3, ch4, ch1 = await self.client.fetch_channel(chnls[2]), await self.client.fetch_channel(chnls[3]), await self.client.fetch_channel(chnls[0])
+                    await ch3.send(text)
+                    await ch4.send(text)
+                    await ch1.send(text)
+                elif channel.id == chnls[2]:
+                    ch4, ch1, ch2 = await self.client.fetch_channel(chnls[3]), await self.client.fetch_channel(chnls[0]), await self.client.fetch_channel(chnls[1])
+                    await ch4.send(text)
+                    await ch1.send(text)
+                    await ch2.send(text)
+                elif channel.id == chnls[3]:
+                    ch1, ch2, ch3 = await self.client.fetch_channel(chnls[0]), await self.client.fetch_channel(chnls[1]), await self.client.fetch_channel(chnls[2])
+                    await ch3.send(text)
+                    await ch1.send(text)
+                    await ch2.send(text)
             else:
                 try:
                     channel_id: str = str(channel.id)

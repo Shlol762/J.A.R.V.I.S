@@ -212,24 +212,6 @@ async def send_to_paste_service(content: str) -> str:
     url = url.format(key=json_req['key']) + '.py'
     return url
 
-chnls = [833995745690517524, 817299815900643348, 817300015176744971, 859801379996696576]
-
-async def channel_split(bot: Bot, channel_id: int, message: discord.Message) -> List[discord.Message]:
-    """Repeats a message said to one channel in the 'chnls' list to the other 2"""
-    if not re.search(r"^`(.*)`:", message.content):
-        chnls.remove(channel_id)
-        messages = []
-        text: str = f"_ _\n`{message.author.name}`: {message.content}\n"
-        if message.reference:
-            ref: Message = await MessageConverter().convert(await bot.get_context(message), message.reference.jump_url)
-            text: str = f"_ _\n`╔═`***`{ref.author.name}`***: {ref.content}\n`{message.author.name}`: {message.content}"
-
-        for channel in chnls:
-            conf_chnl: discord.TextChannel = await bot.fetch_channel(channel)
-            messages.append(await conf_chnl.send(text))
-        chnls.append(channel_id)
-        return messages
-
 
 def file_opener(file: str, option: str = 'read') -> str:
     """Redundant function. Being removed soon."""
@@ -247,7 +229,7 @@ async def get_prefix(bot: Bot, message: Message) -> str:
         prefixes = json.load(f)
     id: str = str(message.guild.id) if message.guild else "DM(A113)"
     for_guild = prefixes[id]
-    return when_mentioned_or(for_guild)(bot, message)
+    return for_guild
 
 async def comm_log_local(ctx: Context, status: str):
     """Logs all command movement into a local text file."""
