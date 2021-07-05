@@ -152,7 +152,7 @@ Password: {hack_pass}
                 await hack_msg.add_reaction('🇩')
                 await hack_msg.edit(content=f'Finished hacking `{member.name}`')
                 await ctx.reply('*Totally* hacked that person...')
-                await sleep(2)
+                await asyncio.sleep(2)
                 await hack_msg.clear_reactions()
         else:
             await command_log_and_err(ctx=ctx, client=self.client, err_code='Err_40448',

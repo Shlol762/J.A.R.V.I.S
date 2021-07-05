@@ -243,8 +243,8 @@ async def comm_log_local(ctx: Context, status: str):
     date: str = time_set(ctx.message.created_at, "%d-%m-%y")
     com_name = ctx.command.name[:6] if ctx.command else "Invalid"
     cog_name = ctx.command.cog_name[:4] if ctx.command else "Invalid"
-    cog_brief = ctx.command.brief[1:] if ctx.command else "Invalid"
-    lines.append(f"|{sl_no:^11}|{com_name:^9}|{cog_name:^10}|{cog_brief:^8}|{status:^44}|{time:^6}|{date:^8}| {ctx.author.id} | {ctx.channel.id} | {ctx.guild.id} |")
+    com_brief = ctx.command.brief[1:] if ctx.command else "Invalid"
+    lines.append(f"|{sl_no:^11}|{com_name:^9}|{cog_name:^10}|{com_brief:^8}|{status:^44}|{time:^6}|{date:^8}| {ctx.author.id} | {ctx.channel.id} | {ctx.guild.id} |")
     f = open("C:/Users/Shlok/bot_stuff/command_logs.txt", "w")
     f.write("\n".join(lines))
     f.close()
