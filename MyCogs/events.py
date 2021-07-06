@@ -10,6 +10,7 @@ from . import hypesquad_emoji, command_log_and_err, set_timestamp,\
 severed_time = 0
 connect_time = 0
 chnls = [833995745690517524, 817299815900643348, 817300015176744971, 859801379996696576]
+webhooks = [861660340617084968, 861660166193807430, 861660711037960243, 861660517746999356]
 prev_messages = []
 members = {}
 
@@ -164,32 +165,17 @@ class Events(Cog):
                     and not ctx.command and not\
                     re.search(r"(@everyone|@here)", message.content.lower())\
                     and not ctx.message.reference: await ctx.reply("What can I do for ya?")
-            if channel.id in chnls and ctx.author != ctx.bot.user:
-                text: str = f"_ _\n`{message.author.name}`: {message.content}\n"
+            if channel.id in chnls and ctx.message.webhook_id not in webhooks:
+                text: str = f"{message.content}"
                 if message.reference:
                     ref: Message = await MessageConverter().convert(await self.client.get_context(message),
                                                                     message.reference.jump_url)
-                    text: str = f"_ _\n`╔═`***`{ref.author.name}`***: {ref.content}\n`{message.author.name}`: {message.content}"
-                if channel.id == chnls[0]:
-                    ch2, ch3, ch4 = await self.client.fetch_channel(chnls[1]), await self.client.fetch_channel(chnls[2]), await self.client.fetch_channel(chnls[3])
-                    await ch3.send(text)
-                    await ch4.send(text)
-                    await ch2.send(text)
-                elif channel.id == chnls[1]:
-                    ch3, ch4, ch1 = await self.client.fetch_channel(chnls[2]), await self.client.fetch_channel(chnls[3]), await self.client.fetch_channel(chnls[0])
-                    await ch3.send(text)
-                    await ch4.send(text)
-                    await ch1.send(text)
-                elif channel.id == chnls[2]:
-                    ch4, ch1, ch2 = await self.client.fetch_channel(chnls[3]), await self.client.fetch_channel(chnls[0]), await self.client.fetch_channel(chnls[1])
-                    await ch4.send(text)
-                    await ch1.send(text)
-                    await ch2.send(text)
-                elif channel.id == chnls[3]:
-                    ch1, ch2, ch3 = await self.client.fetch_channel(chnls[0]), await self.client.fetch_channel(chnls[1]), await self.client.fetch_channel(chnls[2])
-                    await ch3.send(text)
-                    await ch1.send(text)
-                    await ch2.send(text)
+                    text: str = f"`╔═`***`{ref.author.name}`***: {ref.content}\n{message.content}"
+                ch1, ch2, ch3, ch4 = await self.client.fetch_webhook(webhooks[0]), await self.client.fetch_webhook(webhooks[1]), await self.client.fetch_webhook(webhooks[2]), await self.client.fetch_webhook(webhooks[3])
+                await ch1.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar_url) if channel.id != chnls[0] else None
+                await ch2.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar_url) if channel.id != chnls[1] else None
+                await ch3.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar_url) if channel.id != chnls[2] else None
+                await ch4.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar_url) if channel.id != chnls[3] else None
             else:
                 try:
                     channel_id: str = str(channel.id)
