@@ -27,23 +27,16 @@ async def del_message(ctx: commands.Context, message: discord.Message):
 
 @client.command(hidden=True)
 async def test(ctx: commands.Context):
-    if ctx.bot.user not in [webhook.user for webhook in await ctx.channel.webhooks()]:
-        webhook: discord.Webhook = await ctx.channel.create_webhook(name=ctx.bot.user.name, avatar=None)
-        await webhook.send("I am Shlol and no one can argue with that.",
-                           username=ctx.author.nick,
-                           avatar_url=ctx.author.avatar_url)
-        with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/webhooks.json", "r") as f:
-            webhooks: dict = json.load(f)
-            webhooks[str(ctx.channel.id)] = str(webhook.id)
-        with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/webhooks.json", "w") as f:
-            json.dump(webhooks, f, indent=3)
-    else:
-        with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/webhooks.json", "r") as f:
-            webhooks: dict = json.load(f)
-        webhook: discord.Webhook = await ctx.bot.fetch_webhook(int(webhooks.get(str(ctx.channel.id))))
-        await webhook.send("I am Shlol and no one can argue with that.",
-                           username=ctx.author.nick,
-                           avatar_url=ctx.author.avatar_url)
+    await ctx.send(
+"""
+`1|The bots integrated interface Role on this Server    ` - <@&819518757617664021>
+`2|Access to Admin. Use wisely. More than 9 year req.   ` - <@&839069357581139998>
+`3|Access to bot code snips. More than 6 months req.    ` - <@&839427298075476019>
+`4|Access to VCs. More than 3 months required.          ` - <@&839427084219842561>
+`5|Access to Core Logs. More than 14 days required.     ` - <@&839069487113699358>
+`6|Access to Cross connect. More than 10 mins required. ` - <@&839068777521479691>
+`7|Anyone who volunteers for Tests.                     ` - <@&839079368910438421>
+""")
 
 
 
@@ -122,6 +115,12 @@ async def devan(ctx: commands.Context, *, text: str):
 async def msg_dts(ctx: commands.Context, message: discord.Message):
     await ctx.send(f"Content: {message.content}")
     print(f"Content: {message.content}")
+
+
+@client.command(hidden=True)
+async def create_webhooks(ctx: commands.Context):
+    webhook: discord.Webhook = await ctx.channel.create_webhook(name="cross-connect", avatar=None)
+    await ctx.reply(webhook.id)
 
 
 client.run(bot_token)
