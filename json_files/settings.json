@@ -78,8 +78,8 @@
       "iamgod": true
    },
    "841630950252478515": {
-      "ban": true,
-      "kick": true,
+      "ban": false,
+      "kick": false,
       "clear": true,
       "message": true,
       "msghai": false,
