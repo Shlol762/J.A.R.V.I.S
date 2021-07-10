@@ -1,11 +1,12 @@
 import asyncio
 import json
+import re
 from typing import Optional, Union
 import discord
 from MyCogs import command_log_and_err, set_timestamp, Context,\
     Cog, Client, command, cooldown, guild_only, User, Member,\
     BucketType, UserNotFound, Embed, Colour, HTTPException,\
-    Forbidden, commands
+    Forbidden, commands, has_guild_permissions, Message
 #commands.
 
 class Mslo(Cog):
@@ -129,6 +130,7 @@ class Mslo(Cog):
                       help='Bans members from the server. Owners of servers have an option to skip the conformation message as well use the ban command when it is de-activated, to access this, type: "override 403" in the place of reason.')
     @cooldown(1, 15, BucketType.guild)
     @guild_only()
+    @has_guild_permissions(ban_members=True)
     async def ban(self, ctx: Context, member: Member = None, *, reason: Optional[str] = 'None'):
         author = ctx.message.author
         guild_id = str(ctx.guild.id)
@@ -230,8 +232,48 @@ class Mslo(Cog):
     @command(name="Timeout", aliases=['to', 'isolate', 'isl'], usage="timeout|to|isolate|isl <member>",
              brief="205")
     @guild_only()
-    async def g(self, ctx: Context):
-        pass
+    @has_guild_permissions(administrator=True)
+    async def _timeout(self, ctx: Context, member: Member = None):
+        if member:
+            role_names: list[str] = [role.name.lower() for role in ctx.guild.roles]
+            channel_names: list[str] = [channel.name.lower() for channel in ctx.guild.text_channels]
+            if "timeout" not in role_names or "isolation" not in role_names:
+                try:
+                    await ctx.reply(f"{ctx.author.mention}, **I need to create a role** called 'isolation' for this to work"
+                                    f" and there seem to be no roles like this in the server. **May I create one?** Respond "
+                                    f"with Y(es) or N(o) in the next 15 seconds.")
+                    message: Message = await self.client.wait_for("message", check=lambda m: m.author == ctx.author and\
+                                                         m.channel == ctx.channel and (re.search(r"(y(es)*|n(o)*)", m.content.lower())), timeout=15.0)
+                    if re.search(r"y(es)*", message.content.lower()):
+                        await ctx.reply("Creating a role named `isolation`")
+                        try: await ctx.guild.create_role(name="isolation")
+                        except Forbidden: return await command_log_and_err(ctx, self.client, err_code="20524",
+                                                                    text="Missing permissions to create role.")
+                    elif re.search(r"n(o)*", message.content.lower()):
+                        return await ctx.reply("Well then you would have to create a role called 'isolation' or 'timeout' and "
+                                        "try this command again.")
+                except TimeoutError:
+                    return await ctx.reply(f"Stopping `timeout` procedure for {member.name}")
+            if "timeout" not in channel_names or "isolation" not in channel_names:
+                try:
+                    await ctx.reply(f"{ctx.author.mention}, **I need to create a channel** called 'isolation' for this to work"
+                                    f" and there seem to be no channels like this in the server. **May I create one?** Respond "
+                                    f"with Y(es) or N(o) in the next 15 seconds.")
+                    message: Message = await self.client.wait_for("message", check=lambda m: m.author == ctx.author and\
+                                                         m.channel == ctx.channel and (re.search(r"(y(es)*|n(o)*)", m.content.lower())), timeout=15.0)
+                    if re.search(r"y(es)*", message.content.lower()):
+                        await ctx.reply("Creating a channel named `isolation`")
+                        try: await ctx.guild.create_text_channel(name="isolation")
+                        except Forbidden: return command_log_and_err(ctx, self.client, err_code="20524",
+                                                                    text="Missing permissions to create channel.")
+                    elif re.search(r"n(o)*", message.content.lower()):
+                        return await ctx.reply("Well then you would have to create a channel called 'isolation' or 'timeout' and "
+                                        "try this command again.")
+                except TimeoutError:
+                    return await ctx.reply(f"Stopping `timeout` procedure for {member.name}")
+
+
+        else: await command_log_and_err(ctx, self.client, err_code="20548", text="You've not given me who to isolte by the way.")
 
 
 def setup(client):
