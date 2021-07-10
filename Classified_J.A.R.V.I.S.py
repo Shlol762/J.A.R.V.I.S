@@ -30,7 +30,7 @@ async def test(ctx: commands.Context):
     await ctx.send(
 """
 `1|The bots integrated interface Role on this Server    ` - <@&819518757617664021>
-`2|Access to Admin. Use wisely. More than 9 year req.   ` - <@&839069357581139998>
+`2|Access to Admin. Use wisely. More than 9 months req. ` - <@&839069357581139998>
 `3|Access to bot code snips. More than 6 months req.    ` - <@&839427298075476019>
 `4|Access to VCs. More than 3 months required.          ` - <@&839427084219842561>
 `5|Access to Core Logs. More than 14 days required.     ` - <@&839069487113699358>
