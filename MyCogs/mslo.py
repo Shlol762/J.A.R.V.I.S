@@ -15,7 +15,7 @@ class Mslo(Cog):
         self.name = 'Mslo'
 
     # 201
-    @command(name="Invite", aliases=['i'], usage='invite <user>',
+    @command(name="Invite", aliases=['i'], usage='invite|i <user>',
                       brief='🚪201',
     help='Invites people from outside the server. This can vary from user to user based on their privacy settings.')
     @cooldown(1, 5, BucketType.member)
@@ -45,7 +45,7 @@ class Mslo(Cog):
         return [invite, error, msg, invitelink]
 
     # 202
-    @command(name="Kick", aliases=['k'], usage='kick <member> (reason)', brief='⛔202',
+    @command(name="Kick", aliases=['k'], usage='kick|k <member> (reason)', brief='⛔202',
                       help='Kicks members from the server. Owners of servers have an option to skip the conformation message as well use the kick command when it is de-activated, to access this, type: "override 403" in the place of reason.')
     @guild_only()
     async def kick(self, ctx: Context, member: Member = None, *, reason: Optional[str] = ''):
@@ -125,7 +125,7 @@ class Mslo(Cog):
                 await ctx.reply(f"`Kick` has been `disabled` for {ctx.channel.mention}")
 
     # 203
-    @command(name="Ban", aliases=['b'], usage='ban <member> (reason)', brief='🚫203',
+    @command(name="Ban", aliases=['b'], usage='ban|b <member> (reason)', brief='🚫203',
                       help='Bans members from the server. Owners of servers have an option to skip the conformation message as well use the ban command when it is de-activated, to access this, type: "override 403" in the place of reason.')
     @cooldown(1, 15, BucketType.guild)
     @guild_only()
@@ -190,12 +190,12 @@ class Mslo(Cog):
                 await ctx.reply(f"`Ban` is `disabled` in {ctx.channel.mention}")
 
     # 204
-    @command(name="Unban", aliases=['ub'], usage='unban <user>',
+    @command(name="Unban", aliases=['ub'], usage='unban|ub <user>',
                       brief='🛂204', help='Unbans users from the server'
                       ' and invites them by looking through the servers'
                       ' bans list.')
     @guild_only()
-    async def unban(self, ctx, *, member: User = None):
+    async def unban(self, ctx: Context, *, member: User = None):
         author = ctx.message.author
         if member:
             banned_users = await ctx.guild.bans()
@@ -225,6 +225,13 @@ class Mslo(Cog):
                     client=self.client, err_code="Err_20448",
                     text=f"Unbanning a person requires their username"
                          f" {author.mention}.")
+
+    #205
+    @command(name="Timeout", aliases=['to', 'isolate', 'isl'], usage="timeout|to|isolate|isl <member>",
+             brief="205")
+    @guild_only()
+    async def g(self, ctx: Context):
+        pass
 
 
 def setup(client):
