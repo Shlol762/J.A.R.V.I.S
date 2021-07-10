@@ -184,7 +184,7 @@ class Misc(commands.Cog):
     @commands.command(aliases=['cd', 'covidata'], name='Covid Data',
                       help='Returns covid statistics for the whole world or a country',
                       usage='$covidata|cd (country)', brief='☣907')
-    async def covidata(self, ctx: commands.Context, *, country: str = None):
+    async def covidata(self, ctx: commands.Context, *, country: str = 'None'):
         async with ctx.typing():
             wm_logo = 'https://www.worldometers.info/img/worldometers-logo.gif'
             cdata = await self.cocase.compile_by_country(country.strip().lower())
