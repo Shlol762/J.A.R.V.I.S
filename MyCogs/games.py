@@ -301,6 +301,7 @@ Password: {hack_pass}
              usage="impersonate|imp (member) (text)")
     async def _impersonate(self, ctx: Context, member: Member = None, *, text: str = None):
         member: Member = member or ctx.author
+        await command_log_and_err(ctx, self.client, "Success", used_on=member)
         await ctx.message.delete()
         if ctx.bot.user not in [webhook.user for webhook in await ctx.channel.webhooks()]:
             webhook: discord.Webhook = await ctx.channel.create_webhook(name=ctx.bot.user.name, avatar=None)
