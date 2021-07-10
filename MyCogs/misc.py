@@ -187,8 +187,8 @@ class Misc(commands.Cog):
     async def covidata(self, ctx: commands.Context, *, country: str = None):
         async with ctx.typing():
             wm_logo = 'https://www.worldometers.info/img/worldometers-logo.gif'
-            if country:
-                cdata = await self.cocase.compile_by_country(country.strip().lower())
+            cdata = await self.cocase.compile_by_country(country.strip().lower())
+            if country and cdata:
                 await ctx.reply(embed=await set_timestamp(Embed(title=f'`{country.strip().title()}` - Covid Statistics',
                  description=
                  f"""

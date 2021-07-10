@@ -280,6 +280,7 @@ class WorldoMeter:
         for _country, link in countries.items():
             if country.lower().strip() in _country.lower(): break
             else: _country = None
+        if _country is None: return None
         await self.load_data(self.covid_source + link)
         data = self.soup.select('.container .maincounter-number span')
         total, deaths, recovered = int(data[0].text.replace(',', '')), int(data[1].text.replace(',', '')), int(data[2].text.replace(',', ''))
