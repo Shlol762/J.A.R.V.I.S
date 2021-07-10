@@ -431,6 +431,14 @@ For Example:- 1)Err_10124 means command '1' under category
             else:
                 await ctx.reply(embed=embed)
 
+    @commands.command(name="Profile Pic", aliases=['pfp', 'profilepic'], brief="🎭313",
+                      help="Displays the profile picture of a given user.",
+                      usage="$profilepic|pfp (user)")
+    async def _pfp(self, ctx: commands.Context, user: discord.User = None):
+        user = user or ctx.author
+        await command_log_and_err(ctx, self.client, status="Success")
+        await ctx.send(embed=await set_timestamp(discord.Embed(description="_ _", colour=discord.Colour.random()).set_image(url=user.avatar_url)))
+
 
 def setup(client):
     client.add_cog(Utilities(client))
