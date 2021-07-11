@@ -44,18 +44,20 @@ async def test(ctx: commands.Context):
 async def update(ctx: commands.Context):
     channels: list[discord.abc.GuildChannel] = client.get_all_channels()
     link = 'https://discord.gg/zt6j4h7ep3'
-    embed = discord.Embed(title='`Update!` - New command: `Settings`',
+    embed = discord.Embed(title='`Update!` - New command: `Timeout`',
     description=
 f"""
-**Settings**
+**Timeout**
 
-View all the settings the bot has for the server.
+Keeps an annoying person in a timeout channel 
+with no contact except those who have access
+to that channel.
 
-`  Name : settings `
-`Aliases:    sts   `
+`  Name :     timeout    `
+`Aliases: to|isl|isolate `
 
-You can view all settings by doing:
-`$settings`
+You can banish the annoying person by doing:
+`$timeout <member>`
 
 If you want to join my home server, click [`J.A.R.V.I.S`]({link})
 """, colour=discord.Colour.random())
