@@ -231,7 +231,8 @@ class Mslo(Cog):
 
     #205
     @command(name="Timeout", aliases=['to', 'isolate', 'isl'], usage="timeout|to|isolate|isl <member>",
-             brief="205")
+             brief="205", help="Keeps an annoying person in a timeout channel with no contact except those who have "
+                               "access to that channel.")
     @guild_only()
     @has_guild_permissions(administrator=True)
     async def _timeout(self, ctx: Context, member: Member = None):
