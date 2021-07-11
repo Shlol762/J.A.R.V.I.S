@@ -83,7 +83,7 @@
       "clear": true,
       "message": true,
       "msghai": false,
-      "noswear": false,
+      "noswear": true,
       "convo": false,
       "nou": true,
       "greetings": true,
