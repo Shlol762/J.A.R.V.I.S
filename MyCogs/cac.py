@@ -118,7 +118,7 @@ class Cac(Cog):
                 await command_log_and_err(ctx=ctx, client=self.client, status="Success", deleted=message)
                 time = message.created_at.replace(tzinfo=timezone("UTC")).astimezone(timezone("Asia/Kolkata")).strftime(
                     "%d %b %Y at %I:%M %p")
-                await ctx.reply(embed=await set_timestamp(discord.Embed(title="Unpinned a message.",
+                await ctx.reply(embed=await set_timestamp(Embed(title="Unpinned a message.",
                                                                        description=f"ID: `{message.id}`\n Content: {message.content}\n Author: {message.author.mention}\n Time of sending: `{time}`",
                                                                        colour=discord.Colour.random()), "Unpinned"))
             except Forbidden:
