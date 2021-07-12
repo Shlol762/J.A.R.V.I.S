@@ -302,24 +302,27 @@ Password: {hack_pass}
     async def _impersonate(self, ctx: Context, member: Member = None, *, text: str = None):
         member: Member = member or ctx.author
         await command_log_and_err(ctx, self.client, "Success", used_on=member)
-        await ctx.message.delete()
-        if ctx.bot.user not in [webhook.user for webhook in await ctx.channel.webhooks()]:
-            webhook: discord.Webhook = await ctx.channel.create_webhook(name=ctx.bot.user.name, avatar=None)
-            await webhook.send(text or f"I have no idea who to impersonate so I'll just impersonate you.",
-                               username=member.display_name,
-                               avatar_url=member.avatar_url)
-            with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/webhooks.json", "r") as f:
-                webhooks: dict = json.load(f)
-                webhooks[str(ctx.channel.id)] = str(webhook.id)
-            with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/webhooks.json", "w") as f:
-                json.dump(webhooks, f, indent=3)
+        if member.id == self.client.user.id:
+            await ctx.reply("Go away don't twist my opinions you idiot.")
         else:
-            with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/webhooks.json", "r") as f:
-                webhooks: dict = json.load(f)
-            webhook: discord.Webhook = await ctx.bot.fetch_webhook(int(webhooks.get(str(ctx.channel.id))))
-            await webhook.send(text or f"I have no idea who to impersonate so I'll just impersonate you.",
-                               username=member.display_name,
-                               avatar_url=member.avatar_url)
+            await ctx.message.delete()
+            if ctx.bot.user not in [webhook.user for webhook in await ctx.channel.webhooks()]:
+                webhook: discord.Webhook = await ctx.channel.create_webhook(name=ctx.bot.user.name, avatar=None)
+                await webhook.send(text or f"I have no idea who to impersonate so I'll just impersonate you.",
+                                   username=member.display_name,
+                                   avatar_url=member.avatar_url)
+                with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/webhooks.json", "r") as f:
+                    webhooks: dict = json.load(f)
+                    webhooks[str(ctx.channel.id)] = str(webhook.id)
+                with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/webhooks.json", "w") as f:
+                    json.dump(webhooks, f, indent=3)
+            else:
+                with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/webhooks.json", "r") as f:
+                    webhooks: dict = json.load(f)
+                webhook: discord.Webhook = await ctx.bot.fetch_webhook(int(webhooks.get(str(ctx.channel.id))))
+                await webhook.send(text or f"I have no idea who to impersonate so I'll just impersonate you.",
+                                   username=member.display_name,
+                                   avatar_url=member.avatar_url)
 
 
 def setup(client):
