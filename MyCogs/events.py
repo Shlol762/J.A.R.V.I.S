@@ -69,7 +69,7 @@ class Events(Cog):
         [`{self.client.user.name}`]({url}) - Version - `{version}`
         """
         embed = Embed(title=f"Build info - {self.client.user}", description=string, colour=Colour.random())
-        embed.set_footer(text="At your service!", icon_url=(await hypesquad_emoji("Staff")).url)
+        embed.set_footer(text="At your service!", icon_url=(await hypesquad_emoji(self.client, "Staff")).url)
         ch: TextChannel = self.client.get_channel(
             840478960478847006)
         msg: Message = await ch.fetch_message(840639817293496330)
