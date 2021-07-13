@@ -17,7 +17,7 @@ class Help(Cog):
         help_col = Colour.random()
         try:
             if not cog:
-                await command_log_and_err(ctx, self.client, status='Only Help')
+                await command_log_and_err(ctx, status='Only Help')
                 help = Embed(title='Category Listing',
                                      description='Use `$help <category>` to find out more about them!',
                                      colour=help_col)
@@ -59,10 +59,10 @@ class Help(Cog):
                 if not found:
                     help = Embed(title='Error!', description='How do you even use "' + cog + '"?',
                                          color=Colour.red())
-                    await command_log_and_err(ctx, self.client, text='No cat or com found', err_code='Err_help007',
+                    await command_log_and_err(ctx, text='No cat or com found', err_code='Err_help007',
                                               send=False)
                 else:
-                    await command_log_and_err(ctx, self.client, 'Help - {}'.format(cog))
+                    await command_log_and_err(ctx, 'Help - {}'.format(cog))
                 await ctx.reply(embed=await set_timestamp(help, ""))
         except HTTPException:
             pass

@@ -268,7 +268,7 @@ class Music(Cog):
     def get_voice_state(self, ctx: Context):
         state = self.voice_states.get(ctx.guild.id)
         if not state:
-            state = VoiceState(self.client, ctx)
+            state = VoiceState(ctx)
             self.voice_states[ctx.guild.id] = state
         return state
 
@@ -294,7 +294,7 @@ class Music(Cog):
     @guild_only()
     async def _join(self, ctx: Context):
         destination = ctx.author.voice.channel
-        await command_log_and_err(ctx, self.client, status='Success', joined=destination)
+        await command_log_and_err(ctx, status='Success', joined=destination)
         if ctx.voice_state.voice:
             await ctx.voice_state.voice.move_to(destination)
             return
@@ -312,7 +312,7 @@ class Music(Cog):
             await ctx.voice_state.voice.move_to(destination)
             return
         ctx.voice_state.voice = await destination.connect()
-        await command_log_and_err(ctx, self.client, status='Success', joined=destination)
+        await command_log_and_err(ctx, status='Success', joined=destination)
 
     @command(name='Leave', aliases=['disconnect', 'dc'],
                       help="Clears the queue and leaves the voice channel.",
@@ -321,7 +321,7 @@ class Music(Cog):
     async def _leave(self, ctx: Context):
         if not ctx.voice_state.voice:
             return await ctx.reply('Not connected to any voice channel.')
-        await command_log_and_err(ctx, self.client, status='Success', left=ctx.author.voice.channel)
+        await command_log_and_err(ctx, status='Success', left=ctx.author.voice.channel)
         await ctx.voice_state.stop()
         del self.voice_states[ctx.guild.id]
 
@@ -336,7 +336,7 @@ class Music(Cog):
         if 0 > volume > 100:
             return await ctx.reply('Volume must be between 0 and 100')
 
-        await command_log_and_err(ctx, self.client, status='Success')
+        await command_log_and_err(ctx, status='Success')
         ctx.voice_state.volume = volume / 100
         await ctx.reply(f'Volume of the player set to {volume}%')
 
@@ -345,7 +345,7 @@ class Music(Cog):
                       usage='now|n|current|playing')
     @guild_only()
     async def _now(self, ctx: Context):
-        await command_log_and_err(ctx, self.client, status='Success')
+        await command_log_and_err(ctx, status='Success')
         await ctx.reply(embed=ctx.voice_state.current.create_embed())
 
     @command(name='Pause', aliases=['ps'], brief='⏸606',
@@ -353,7 +353,7 @@ class Music(Cog):
                       usage='pause|ps')
     @guild_only()
     async def _pause(self, ctx: Context):
-        await command_log_and_err(ctx, self.client, status='Success')
+        await command_log_and_err(ctx, status='Success')
         if ctx.voice_state.voice.is_playing():
             ctx.voice_state.voice.pause()
 
@@ -362,7 +362,7 @@ class Music(Cog):
                       usage='resume|res')
     @guild_only()
     async def _resume(self, ctx: Context):
-        await command_log_and_err(ctx, self.client, status='Success')
+        await command_log_and_err(ctx, status='Success')
         if ctx.voice_state.voice.is_paused():
             ctx.voice_state.voice.resume()
 
@@ -372,7 +372,7 @@ class Music(Cog):
     @guild_only()
     async def _stop(self, ctx: Context):
         ctx.voice_state.songs.clear()
-        await command_log_and_err(ctx, self.client, status='Success')
+        await command_log_and_err(ctx, status='Success')
         if ctx.voice_state.voice.is_playing:
             ctx.voice_state.voice.stop()
 
@@ -384,7 +384,7 @@ class Music(Cog):
         if not ctx.voice_state.is_playing:
             return await ctx.reply('Not playing any music right now...')
         voter = ctx.message.author
-        await command_log_and_err(ctx, self.client, status='Success')
+        await command_log_and_err(ctx, status='Success')
         if voter == ctx.voice_state.current.requester:
             ctx.voice_state.skip()
 
@@ -420,7 +420,7 @@ class Music(Cog):
 
         embed = (Embed(description='**{} tracks:**\n\n{}'.format(len(ctx.voice_state.songs), queue))
                  .set_footer(text='Viewing page {}/{}'.format(page, pages)))
-        await command_log_and_err(ctx, self.client, status='Success')
+        await command_log_and_err(ctx, status='Success')
         await ctx.reply(embed=embed)
 
     @command(name='Shuffle', aliases=['shfl'],
@@ -431,7 +431,7 @@ class Music(Cog):
         if len(ctx.voice_state.songs) == 0:
             return await ctx.reply('Empty queue.')
 
-        await command_log_and_err(ctx, self.client, status='Success')
+        await command_log_and_err(ctx, status='Success')
         ctx.voice_state.songs.shuffle()
 
     @command(name='Remove', aliases=['rem'], brief='➖612',
@@ -442,7 +442,7 @@ class Music(Cog):
         if len(ctx.voice_state.songs) == 0:
             return await ctx.reply('Empty queue.')
 
-        await command_log_and_err(ctx, self.client, status='Success')
+        await command_log_and_err(ctx, status='Success')
         ctx.voice_state.songs.remove(index - 1)
 
     @command(name='Loop', aliases=['lp'], brief='🔁613',
@@ -454,7 +454,7 @@ class Music(Cog):
             return await ctx.reply('Nothing being played at the moment.')
 
         # Inverse boolean value to loop and unloop.
-        await command_log_and_err(ctx, self.client, status='Success')
+        await command_log_and_err(ctx, status='Success')
         ctx.voice_state.loop = not ctx.voice_state.loop
 
     @command(name='Play', aliases=['p'], brief='▶614',
@@ -473,7 +473,7 @@ class Music(Cog):
                 song = Song(source)
 
                 await ctx.voice_state.songs.put(song)
-                await command_log_and_err(ctx, self.client, status='Success')
+                await command_log_and_err(ctx, status='Success')
                 await ctx.reply(f'Enqueued {str(source)}')
 
     @_join.before_invoke

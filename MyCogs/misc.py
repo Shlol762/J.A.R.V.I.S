@@ -23,7 +23,7 @@ class Misc(commands.Cog):
                       help='Gets latency of the reply time of the bot in milliseconds', name='Ping',
                       usage="ping|latency", brief='📶901')
     async def ping(self, ctx: commands.Context):
-        await command_log_and_err(ctx, self.client, 'Success')
+        await command_log_and_err(ctx, 'Success')
         await ctx.reply(embed=await set_timestamp(
             Embed(title='Ping', description=f'`{round(self.client.latency * 1000)}` ms',
                           colour=discord.Colour.random())))
@@ -57,9 +57,9 @@ class Misc(commands.Cog):
                         await ctx.reply(f'{str(year)} {was_is.format(" ")}')
             else:
                 await ctx.reply("I'm *not* calculating years with more than 5 digits.")
-            await command_log_and_err(ctx, self.client, 'Success')
+            await command_log_and_err(ctx, 'Success')
         else:
-            await command_log_and_err(ctx, self.client, err_code="Err_90248", text="Specify year pls.")
+            await command_log_and_err(ctx, err_code="Err_90248", text="Specify year pls.")
 
     @commands.command(aliases=['pdm'], name='Palindrome',
                       help='Checks whether or not a snippet of text is a palindrome.',
@@ -80,12 +80,12 @@ class Misc(commands.Cog):
                             break
                     fwd_idx += 1
                     bckwd_idx -= 1
-                await command_log_and_err(ctx, self.client, 'Success')
+                await command_log_and_err(ctx, 'Success')
             else:
-                await command_log_and_err(ctx, self.client, err_code="Err_90312",
+                await command_log_and_err(ctx, err_code="Err_90312",
                                           text="Max characters for a word is 14.")
         else:
-            await command_log_and_err(ctx, self.client, err_code="Err_90348", text="Word = Give pls?")
+            await command_log_and_err(ctx, err_code="Err_90348", text="Word = Give pls?")
 
     @commands.command(aliases=['wk', 'wiki'], name='Wikipedia',
                       help='Searches wikipedia and returns info based on a given query.',
@@ -98,19 +98,19 @@ class Misc(commands.Cog):
                     results = wikipedia.search(query, 1)[0]
                     # print(results)
                     msg = wikipedia.summary("'" + query + "'").split('\n')[0]
-                    await command_log_and_err(ctx, self.client, 'Success')
+                    await command_log_and_err(ctx, 'Success')
                     await ctx.reply(embed=await set_timestamp(
                         Embed(title=f'Result for "`{query[0].upper() + query[1:]}`"\n\n{results}',
                                       description=msg,
                                       colour=discord.Colour.random())))
                 except wikipedia.DisambiguationError:
-                    await command_log_and_err(ctx, self.client, err_code="Err_90412",
+                    await command_log_and_err(ctx, err_code="Err_90412",
                                               text=f"Too many results found for '`{query}`'. Check spelling or try adding more keywords.")
                 except IndexError:
-                    await command_log_and_err(ctx, self.client, err_code="Err_90412",
+                    await command_log_and_err(ctx, err_code="Err_90412",
                                               text=f"No results found for '`{query}`'. Check spelling or try adding more keywords.")
                 except wikipedia.PageError:
-                    await command_log_and_err(ctx, self.client, err_code="Err_90412",
+                    await command_log_and_err(ctx, err_code="Err_90412",
                                               text=f"No results found for '`{query}`'. Check spelling or try adding more keywords.")
                 except discord.HTTPException:
                     msg = msg.split()

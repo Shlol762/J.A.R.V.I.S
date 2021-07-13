@@ -34,7 +34,7 @@ class Sports(commands.Cog):
         `{'Time':^12} - {match.match_tim:^12}`"""
             else:
                 embed.description += f'Trouble getting info from [`ESPNcricinfo`](https://www.espncricinfo.com/).\n`Please Stand by`'
-            await command_log_and_err(ctx, self.client, 'Success')
+            await command_log_and_err(ctx, 'Success')
             await ipl_logo_maker(ctx, await set_timestamp(embed, ""), team1=match.team1, team2=match.team2)
 
     @commands.command(name='Ipl table', aliases=['iplt', 'ipltable'],
@@ -52,7 +52,7 @@ class Sports(commands.Cog):
                 for team in ipl_table:
                     embed.description += f'`{team[0]:<28}{team[1]:^9}{team[2]:^5}{team[3]:^6}{team[4]:^5}{team[5]:^4}{team[6]:^5}{team[7]:<6}`\n'
                 embed.set_footer(icon_url=cricket.pt_ipl_logo, text="NR: No Result\nNRR: Net Run Rate")
-                await command_log_and_err(ctx, self.client, 'Success')
+                await command_log_and_err(ctx, 'Success')
                 await ctx.reply(embed=await set_timestamp(embed, ""))
             else:
                 if cricket.teams_short_long.get(team.lower()):

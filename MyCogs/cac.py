@@ -45,13 +45,13 @@ class Cac(Cog):
                                                                                    value=f"`{chnl.name}`").add_field(
                         name='ID: ', value=f"`{chnl.id}`").add_field(name='Category: ',
                                                                      value=f"`{ctgry.name if ctgry != 'None' else ctgry}`")
-                    await command_log_and_err(ctx, self.client, status='success', created=chnl)
+                    await command_log_and_err(ctx, status='success', created=chnl)
                     await ctx.reply(embed=await set_timestamp(embed, ""))
-                except Forbidden: await command_log_and_err(ctx, self.client, err_code="Err_50124",
+                except Forbidden: await command_log_and_err(ctx, err_code="Err_50124",
                                               text=f"Can't do that {author.mention}, sorry I'm missing permissions")
-            else: await command_log_and_err(ctx, self.client, err_code="Err_50148",
+            else: await command_log_and_err(ctx, err_code="Err_50148",
                                           text="Give channel type please.")
-        else: await command_log_and_err(ctx, self.client, err_code="Err_50148",
+        else: await command_log_and_err(ctx, err_code="Err_50148",
                                       text='Give name for new channel please...')
 
     # 502
@@ -71,15 +71,15 @@ class Cac(Cog):
             elif isinstance(channel, str): raise ChannelNotFound(argument=channel)
             try:
                 await channel.delete(reason=None)
-                await command_log_and_err(ctx, self.client, status="Success",
+                await command_log_and_err(ctx, status="Success",
                                           deleted=del_chnl)
                 await ctx.reply(
                     embed=await set_timestamp(
                         Embed(title=f'Deleted `{type}`', description=f"{channel.mention} - `{channel.name}`",
                                       colour=Colour.random()), "Created"))
-            except Forbidden: await command_log_and_err(ctx, self.client, err_code="Err_50224",
+            except Forbidden: await command_log_and_err(ctx, err_code="Err_50224",
                                           text=f"Missing permissions to delete `{type}` - {channel.mention}")
-        else: await command_log_and_err(ctx, self.client, err_code="Err_50248",
+        else: await command_log_and_err(ctx, err_code="Err_50248",
                                       text=f"{author.mention}, Channel was not given to be deleted.")
 
     # 503
@@ -92,17 +92,17 @@ class Cac(Cog):
         if message:
             try:
                 await message.pin()
-                await command_log_and_err(ctx, self.client, status='Success', created=message)
+                await command_log_and_err(ctx, status='Success', created=message)
                 time: str = message.created_at.replace(tzinfo=timezone("UTC")).astimezone(timezone("Asia/Kolkata")).strftime(
                     "%d %b %Y at %I:%M %p")
                 await ctx.reply(embed=await set_timestamp(Embed(title="Pinned a message.",
                                description=f"ID: `{message.id}`\n Content: {message.content}\n Author: {message.author.mention}\n Time of sending: `{time}`\n Pinned by: {author.mention}",
                                colour=Colour.random()), "Pinned"))
-            except Forbidden: await command_log_and_err(ctx, self.client, err_code="Err_50324",
+            except Forbidden: await command_log_and_err(ctx, err_code="Err_50324",
                                           text="Missing permissions to pin message.")
-            except HTTPException: await command_log_and_err(ctx, self.client, err_code="Err_50312",
+            except HTTPException: await command_log_and_err(ctx, err_code="Err_50312",
                                           text="Max pins reached. Unpin a message and try again.")
-        else: await command_log_and_err(ctx, self.client, err_code="Err_50348",
+        else: await command_log_and_err(ctx, err_code="Err_50348",
                                       text="Give message to pin.")
 
     # 504
@@ -115,17 +115,17 @@ class Cac(Cog):
         if message:
             try:
                 await message.unpin()
-                await command_log_and_err(ctx=ctx, client=self.client, status="Success", deleted=message)
+                await command_log_and_err(ctx=ctx, status="Success", deleted=message)
                 time = message.created_at.replace(tzinfo=timezone("UTC")).astimezone(timezone("Asia/Kolkata")).strftime(
                     "%d %b %Y at %I:%M %p")
                 await ctx.reply(embed=await set_timestamp(Embed(title="Unpinned a message.",
                                                                        description=f"ID: `{message.id}`\n Content: {message.content}\n Author: {message.author.mention}\n Time of sending: `{time}`",
                                                                        colour=discord.Colour.random()), "Unpinned"))
             except Forbidden:
-                await command_log_and_err(ctx=ctx, client=self.client, err_code="Err_50424",
+                await command_log_and_err(ctx=ctx, err_code="Err_50424",
                                           text=f"Missing permissions {author.mention}")
         else:
-            await command_log_and_err(ctx=ctx, client=self.client, err_code="Err_50448",
+            await command_log_and_err(ctx=ctx, err_code="Err_50448",
                                       text="Give message to unpin.")
 
     # 505
@@ -357,19 +357,19 @@ class Cac(Cog):
                         try: await channel.set_permissions(target, manage_permissions=pi)
                         except Forbidden: f_error = f"Sorry {author.mention}, I can't set {channel.mention}'s {attribute.capitalize()} permission to {attr_val}"
 
-                    if f_error or u_error: await command_log_and_err(ctx, self.client, err_code='50524' if f_error and not u_error else '10512', text=f_error or u_error, used_on=channel)
-                    elif pi == 'None': await command_log_and_err(ctx, self.client, err_code='50512',  text="Please give only `True`, `False` or `None` while setting `permissions`", used_on=channel)
-                    elif confirm is None: await command_log_and_err(ctx, self.client, err_code='50512', text="Please give only `True` or `False` while setting `sync perms` and `nsfw`", used_on=channel)
+                    if f_error or u_error: await command_log_and_err(ctx, err_code='50524' if f_error and not u_error else '10512', text=f_error or u_error, used_on=channel)
+                    elif pi == 'None': await command_log_and_err(ctx, err_code='50512',  text="Please give only `True`, `False` or `None` while setting `permissions`", used_on=channel)
+                    elif confirm is None: await command_log_and_err(ctx, err_code='50512', text="Please give only `True` or `False` while setting `sync perms` and `nsfw`", used_on=channel)
                     else:
-                        await command_log_and_err(ctx, self.client, status="Success", used_on=channel)
+                        await command_log_and_err(ctx, status="Success", used_on=channel)
                         await ctx.reply(embed=await set_timestamp(Embed(title='Edited Channel', description=
                         f"""{channel.mention}'s `{attribute.capitalize()}` has been changed to `{attr_v_l.capitalize().strip()}`""" if pi == '' else
                                                                                f"""{"@everyone" if attr_l == '@everyone' else target.mention}'s `{perm_key_pair[0].capitalize()}` permissions in {channel.mention} have been set to `{perm_key_pair[1].strip().capitalize()}`""",
                         colour=colour), 'Edited'))
-                else: await command_log_and_err(ctx, self.client, err_code='50548', text=f"Can't edit {channel.mention}'s `{attribute}` without knowing the attributes value.",
+                else: await command_log_and_err(ctx, err_code='50548', text=f"Can't edit {channel.mention}'s `{attribute}` without knowing the attributes value.",
                                                 used_on=channel)
-            else: await command_log_and_err(ctx, self.client, err_code='50548', text=f"You haven't mentioned what you want to change in {channel.mention}", used_on=channel)
-        else: await command_log_and_err(ctx, self.client, err_code='50548', text=f"You haven't mentioned the channel you want to edit.")
+            else: await command_log_and_err(ctx, err_code='50548', text=f"You haven't mentioned what you want to change in {channel.mention}", used_on=channel)
+        else: await command_log_and_err(ctx, err_code='50548', text=f"You haven't mentioned the channel you want to edit.")
 
 
 def setup(client):

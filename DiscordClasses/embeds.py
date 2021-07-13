@@ -12,8 +12,7 @@ class TypeDefError(Exception):
     pass
 
 
-async def command_log_and_err(ctx: commands.Context = None, client: commands.Bot = None,
-                              status: Optional[str] = None,error: Optional
+async def command_log_and_err(ctx: commands.Context = None, status: Optional[str] = None,error: Optional
                                 [Union[commands.CommandOnCooldown, commands.NoPrivateMessage]] = None,
                               used_on: Optional[Union[discord.User, discord.Member, discord.Role, discord.abc.GuildChannel]] = None,
                               send=True, err_code: Optional[str] = None, text: Optional[str] = None,
@@ -27,6 +26,7 @@ async def command_log_and_err(ctx: commands.Context = None, client: commands.Bot
     """Command logging system for the bot, logging every command's usage(except developer commands) to a channel on
     J.A.R.V.I.S's home server."""
     status = status if status else err_code
+    bot: commands.Bot = ctx.bot
     if ctx and error:
         if isinstance(error, commands.CommandOnCooldown):
             embed_c = Embed(title=f"{ctx.command.qualified_name} is on cooldown.",
@@ -37,21 +37,16 @@ async def command_log_and_err(ctx: commands.Context = None, client: commands.Bot
             await ctx.reply(embed=await set_timestamp(embed_c, "Cooldown"))
         elif isinstance(error, commands.NoPrivateMessage):
             await ctx.reply(f'**`{ctx.command.qualified_name}`** cannot be used in DMs')
-            try:
-                await reaction(ctx, False)
-            except discord.Forbidden:
-                pass
-    if ctx and client and err_code and text:
+            try: await reaction(ctx, False)
+            except discord.Forbidden: pass
+    if ctx and bot and err_code and text:
         embed = Embed(title="Error!", description=f"{text}\n\n", colour=discord.Colour.red())
         if err_code[-2:] != '24' and err_code[-2:] != '12':
             embed.description += f"`Usage`: {ctx.command.usage if ctx.command else 'Unusable'}"
-        else:
-            pass
-        try:
-            await reaction(ctx, False)
-        except discord.Forbidden:
-            pass
-        embed.set_footer(icon_url=client.user.avatar_url)
+        else: pass
+        try: await reaction(ctx, False)
+        except discord.Forbidden: pass
+        embed.set_footer(icon_url=bot.user.avatar_url)
         embed.add_field(name="Code:", value=f"`{'Err_' + err_code if err_code[:2].lower() != 'err' and err_code[:-2].isnumeric() else err_code}`")
         await ctx.reply(embed=await set_timestamp(embed,
                                                  str(ctx.command.qualified_name if ctx.command else "Invalid"))) if send is True else None
@@ -60,9 +55,8 @@ async def command_log_and_err(ctx: commands.Context = None, client: commands.Bot
     e = Embed(title=f"{com_name}",
                       description=f"*`Used by`*: {ctx.author.mention}\n *`Timestamp`*: `{time}`\n *`Used in`*: {ctx.channel.mention if ctx.guild else ctx.author.dm_channel}{f'- `{ctx.guild.name}`' if ctx.guild else ''}\n *`Message Link`*: **[`Jump to message`]({ctx.message.jump_url})**\n",
                       colour=discord.Colour.red() if err_code else discord.Colour.green())
-    chnl: discord.TextChannel = client.get_channel(821677968967467068)
-    if used_on:
-        e.description += f'*`Used on`*: {used_on.mention}\n'
+    chnl: discord.TextChannel = bot.get_channel(821677968967467068)
+    if used_on: e.description += f'*`Used on`*: {used_on.mention}\n'
     if created:
         if isinstance(created, discord.Role):
             e.description += f'*`Created role`*: {created.mention}\n'
@@ -75,8 +69,7 @@ async def command_log_and_err(ctx: commands.Context = None, client: commands.Bot
                 e.description += f'*`Created category`*: `{created.mention}`\n'
         elif isinstance(created, discord.Message):
             e.description += f'*`Pinned Message`*: **[`Jump to message`]({created.jump_url})**\n'
-        else:
-            raise TypeDefError(f'{created} of type: {str(type(created))[1:-1]} cannot be used in command_log_and_err')
+        else: raise TypeDefError(f'{created} of type: {str(type(created))[1:-1]} cannot be used in command_log_and_err')
     if deleted:
         if isinstance(deleted, discord.Role):
             e.description += f'*`Deleted role`*: {deleted.name}\n'

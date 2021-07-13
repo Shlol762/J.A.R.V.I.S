@@ -28,14 +28,14 @@ class Roles(Cog):
             try:
                 guild = ctx.guild
                 role = await guild.create_role(name=name)
-                await command_log_and_err(ctx, self.client, status='Success',
+                await command_log_and_err(ctx, status='Success',
                                           created=role)
                 await ctx.reply(f"New role {role.mention} has been created")
             except Forbidden:
-                await command_log_and_err(ctx=ctx, client=self.client, err_code='Err_10124',
+                await command_log_and_err(ctx=ctx, err_code='Err_10124',
                         text=f'Unable to comply {author.mention}. Check $ecl for more info.')
         else:
-            await command_log_and_err(ctx=ctx, client=self.client, err_code='Err_10148',
+            await command_log_and_err(ctx=ctx, err_code='Err_10148',
                                       text=f'Give the new role a name {author.mention}.')
 
     # 102
@@ -49,14 +49,14 @@ class Roles(Cog):
         role_b4_del = role.name
         if role:
             try:
-                await command_log_and_err(ctx, self.client, 'Success', deleted=role)
+                await command_log_and_err(ctx, 'Success', deleted=role)
                 await role.delete(reason=None)
                 await ctx.reply(f"The role {role_b4_del} has been deleted!")
             except Forbidden:
-                await command_log_and_err(ctx=ctx, client=self.client, err_code='Err_10224',
+                await command_log_and_err(ctx=ctx, err_code='Err_10224',
                         text=f'Unable to comply {author.mention}. Check $ecl for more info.')
         else:
-            await command_log_and_err(ctx=ctx, client=self.client, err_code='Err_10248',
+            await command_log_and_err(ctx=ctx, err_code='Err_10248',
                                       text=f'Give a role to delete {author.mention}.')
 
     # 103
@@ -79,19 +79,19 @@ class Roles(Cog):
                 else:
                     try:
                         await command_log_and_err(
-                            ctx, self.client, 'Success', used_on=member)
+                            ctx, 'Success', used_on=member)
                         await member.add_roles(role)
                         await ctx.reply(
                             f'{member.mention} has been given the role `{role.name}`.')
                     except Forbidden:
-                        await command_log_and_err(ctx=ctx, client=self.client, err_code='Err_10324',
+                        await command_log_and_err(ctx=ctx, err_code='Err_10324',
                                     text='Unable to comply {}. Check $ecl for more info.'.format(
                                                       author.mention))
             else:
-                await command_log_and_err(ctx, self.client, err_code='Err_10348',
+                await command_log_and_err(ctx, err_code='Err_10348',
                                           text=f'Uhh {author.mention}, mention role please?')
         else:
-            await command_log_and_err(ctx, self.client, err_code='Err_10348',
+            await command_log_and_err(ctx, err_code='Err_10348',
                                       text=f'Mention member, dumdum {author.mention}...')
 
     # 104
@@ -105,17 +105,17 @@ class Roles(Cog):
         if member:
             if role:
                 try:
-                    await command_log_and_err(ctx, self.client, 'Success', used_on=member)
+                    await command_log_and_err(ctx, 'Success', used_on=member)
                     await member.remove_roles(role)
                     await ctx.reply(f'{member.mention} has been removed from the role `{role.name}`.')
                 except Forbidden:
-                    await command_log_and_err(ctx=ctx, client=self.client, err_code='Err_10424',
+                    await command_log_and_err(ctx=ctx, err_code='Err_10424',
                             text=f'Unable to comply {author.mention}. Check $ecl for more info.')
             else:
-                await command_log_and_err(ctx, self.client, err_code='Err_10448',
+                await command_log_and_err(ctx, err_code='Err_10448',
                                           text=f'Uhh {author.mention}, mention role please?')
         else:
-            await command_log_and_err(ctx, self.client, err_code='Err_10448',
+            await command_log_and_err(ctx, err_code='Err_10448',
                                       text=f'Mention member, dumdum {author.mention}...')
 
     # 105
@@ -480,21 +480,21 @@ class Roles(Cog):
                             except Forbidden: f_error = f"Sorry {author.mention}, can't set {role.mention}'s `{attribute.capitalize()}` to {attr_v_l}"
                             except HTTPException: f_error = f"Sorry {author.mention}, can't set {role.mention}'s `{attribute.capitalize()}` to {attr_v_l}"
                             except InvalidArgument: f_error = f"Sorry {author.mention}, can't set {role.mention}'s `{attribute.capitalize()}` to below {len(ctx.guild.roles)-1}"
-                        if f_error or u_error: await command_log_and_err(ctx, self.client, err_code='10524' if f_error and not u_error else '10512', text=f_error or u_error)
-                        elif pi is None: await command_log_and_err(ctx, self.client, err_code='10512', text="Please give only `True` or `False` while setting `permissions`")
-                        elif confirm is None: await command_log_and_err(ctx, self.client, err_code='10512', text="Please give only `True` or `False` while setting `mentionable` and `display seperately`")
+                        if f_error or u_error: await command_log_and_err(ctx, err_code='10524' if f_error and not u_error else '10512', text=f_error or u_error)
+                        elif pi is None: await command_log_and_err(ctx, err_code='10512', text="Please give only `True` or `False` while setting `permissions`")
+                        elif confirm is None: await command_log_and_err(ctx, err_code='10512', text="Please give only `True` or `False` while setting `mentionable` and `display seperately`")
                         else:
-                            await command_log_and_err(ctx, self.client, status="Success")
+                            await command_log_and_err(ctx, status="Success")
                             await ctx.reply(embed=await set_timestamp(Embed(title='Edited Role', description=
                             f"""
         {role.mention if role.name != '@everyone' else '@everyone'}'s `{attribute}`{' permission' if pi else ''} has been set to `{attr_v_l.capitalize()}`""".replace("@@everyone", "@everyone"),
                                                                colour=colour), 'Edited'))
                     else:
-                        await command_log_and_err(ctx, self.client, err_code="10548", text=f"{author.mention}, you haven't specified the value of {attribute}")
+                        await command_log_and_err(ctx, err_code="10548", text=f"{author.mention}, you haven't specified the value of {attribute}")
                 else:
-                    await command_log_and_err(ctx, self.client, err_code="10548", text=f"{author.mention}, you haven't given what to edit...")
+                    await command_log_and_err(ctx, err_code="10548", text=f"{author.mention}, you haven't given what to edit...")
             else:
-                await command_log_and_err(ctx, self.client, err_code="10548", text=f"{author.mention}, you haven't given a role to edit.")
+                await command_log_and_err(ctx, err_code="10548", text=f"{author.mention}, you haven't given a role to edit.")
 
     @command(name="Add to all", aliases=['addtoall', 'ata'],
                       usage='addtoall|ata <role>',

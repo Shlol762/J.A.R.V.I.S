@@ -221,14 +221,14 @@ async def func():  # (None,) -> Any
         async with ctx.typing():
             caution_url = 'https://cdn.discordapp.com/emojis/849902617185484810.png?v=1'
             if 'C:/Users/Shlok' in code and ctx.author.id != 613044385910620190:
-                await command_log_and_err(ctx, self.client, status="Security threat", send=False)
+                await command_log_and_err(ctx, status="Security threat", send=False)
                 await ctx.reply(embed=Embed(title="🛑 `SECURITY WARNING!` 🛑",
                 description="Apologies for the warning signs, but you are not allowed to access files from"
                             " Shlok's computer.", colour=Colour.dark_red()).set_thumbnail(
                     url=caution_url).set_footer(text='SECRUITY HAZARD!',
                                                 icon_url=caution_url))
             elif ('C:/Users/Shlok' in code and ctx.author.id == 613044385910620190) or 'C:/Users/Shlok' not in code:
-                await command_log_and_err(ctx, self.client, status="Successfully Excecuted.")
+                await command_log_and_err(ctx, status="Successfully Excecuted.")
                 code = code.strip("`")
                 if re.match('py(thon)?\n', code):
                     code = "\n".join(code.split("\n")[1:])
@@ -246,7 +246,7 @@ async def func():  # (None,) -> Any
         """Provide information about a specific package from PyPI."""
         async with ctx.typing():
             if package:
-                await command_log_and_err(ctx, self.client, status='Success')
+                await command_log_and_err(ctx, status='Success')
                 embed = Embed(title=random.choice(NEGATIVE_REPLIES), colour=0xcd6d6d)
                 embed.set_thumbnail(url=PYPI_ICON)
                 error = True
@@ -279,7 +279,7 @@ async def func():  # (None,) -> Any
 
                 if error: await ctx.reply(embed=embed)
                 else: await ctx.reply(embed=embed)
-            else: await command_log_and_err(ctx, self.client, err_code='P0248', text="You haven't given a package to search for...")
+            else: await command_log_and_err(ctx, err_code='P0248', text="You haven't given a package to search for...")
 
 
 def setup(client: Bot):

@@ -69,7 +69,7 @@ class Events(Cog):
         [`{self.client.user.name}`]({url}) - Version - `{version}`
         """
         embed = Embed(title=f"Build info - {self.client.user}", description=string, colour=Colour.random())
-        embed.set_footer(text="At your service!", icon_url=(await hypesquad_emoji(self.client, "Staff")).url)
+        embed.set_footer(text="At your service!", icon_url=(await hypesquad_emoji("Staff")).url)
         ch: TextChannel = self.client.get_channel(
             840478960478847006)
         msg: Message = await ch.fetch_message(840639817293496330)
@@ -144,7 +144,7 @@ class Events(Cog):
         # [`Jump to Custom funtions`]()
         # """
         # embed = discord.Embed(description=local_str, colour=discord.Colour.random())
-        # emb2.set_footer(icon_url=(await hypesquad_emoji(self.client, "Staff")).url)
+        # emb2.set_footer(icon_url=(await hypesquad_emoji("Staff")).url)
         # await self.client.get_channel(840478960478847006).send(embed=emb1)
         # await self.client.get_channel(840478960478847006).send(embed=embed)
         try: self.birthday.start()
@@ -247,7 +247,7 @@ class Events(Cog):
         channels: list[GuildChannel] = await member.guild.fetch_channels()
         try:
             for channel in channels:
-                if 'hello' in channel.name or 'welcome' in channel.name or 'ello' in channel.name:
+                if ('hello' in channel.name or 'welcome' in channel.name or 'ello' in channel.name) and isinstance(channel, TextChannel):
                     await channel.send(f"Hello {member.name}, Welcome to {member.guild.name}.")
         except Forbidden:
             pass
@@ -265,31 +265,31 @@ class Events(Cog):
     @Cog.listener()
     async def on_command_error(self, ctx: Context, error: CommandError):
         if isinstance(error, CommandNotFound):
-            await command_log_and_err(ctx=ctx, client=self.client, err_code="Err_A113",
+            await command_log_and_err(ctx=ctx, err_code="Err_A113",
                                       text=f"Command not found {ctx.author.mention}",
                                       invalid_comname=error.args[0][9:-14])
         elif isinstance(error, CommandOnCooldown):
             if ctx.author.id == 613044385910620190:
                 await ctx.reinvoke()
             else:
-                await command_log_and_err(ctx=ctx, client=self.client, status='Cooldown', error=error)
+                await command_log_and_err(ctx=ctx, status='Cooldown', error=error)
         elif isinstance(error, MemberNotFound):
-            await command_log_and_err(ctx=ctx, client=self.client, err_code="Err_α11404",
+            await command_log_and_err(ctx=ctx, err_code="Err_α11404",
                                       text=f"**`The Member:`**` `*`'{error.argument}'`*` doesn't exist` I don't know what you're looking for.")
         elif isinstance(error, RoleNotFound):
-            await command_log_and_err(ctx=ctx, client=self.client, err_code="Err_β20404",
+            await command_log_and_err(ctx=ctx, err_code="Err_β20404",
                                       text=f"**`The Role:`**` `*`'{error.argument}'`*` doesn't exist` I don't know what you're looking for.")
         elif isinstance(error, MessageNotFound):
-            await command_log_and_err(ctx=ctx, client=self.client, err_code="Err_θ30404",
+            await command_log_and_err(ctx=ctx, err_code="Err_θ30404",
                                       text=f"**`The Message:`**` `*`'{error.argument}'`*` doesn't exist` I don't know what you're looking for.")
         elif isinstance(error, UserNotFound):
-            await command_log_and_err(ctx=ctx, client=self.client, err_code="Err_40βθ404",
+            await command_log_and_err(ctx=ctx, err_code="Err_40βθ404",
                                       text=f"**`The User:`**` `*`'{error.argument}'`*` doesn't exist` I don't know what you're looking for.")
         elif isinstance(error, ChannelNotFound):
-            await command_log_and_err(ctx=ctx, client=self.client, err_code="Err_50θβ404",
+            await command_log_and_err(ctx=ctx, err_code="Err_50θβ404",
                                       text=f"**`The Channel:`**` `*`'{error.argument}'`*` doesn't exist` I don't know what you're looking for.")
         elif isinstance(error, NoPrivateMessage):
-            await command_log_and_err(ctx=ctx, client=self.client, status='Server Only', error=error)
+            await command_log_and_err(ctx=ctx, status='Server Only', error=error)
         else:
             raise error
 

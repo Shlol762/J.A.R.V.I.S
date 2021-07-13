@@ -25,7 +25,7 @@ class Settings(Cog):
             author = ctx.message.author
             if author.id == ctx.guild.owner_id:
                 if c_low == 'none':
-                    await command_log_and_err(ctx, self.client, err_code="Err_70148",
+                    await command_log_and_err(ctx, err_code="Err_70148",
                                               text="Choose what you want to change please.")
                 else:
                     json_file = "C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json"
@@ -113,13 +113,13 @@ class Settings(Cog):
                             else: await ctx.reply(f"There isn't any setting called `{_command}`")
 
                     with open(json_file, "w") as f: json.dump(bot_comm_config, f, indent=3)
-                    await command_log_and_err(ctx, self.client, 'Success')
+                    await command_log_and_err(ctx, 'Success')
             else:
-                await command_log_and_err(ctx, self.client, 'Not owner')
+                await command_log_and_err(ctx, 'Not owner')
                 await ctx.reply("You need to be owner to change settings.")
         else:
             await ctx.reply(f"You are not owner of this server {ctx.author.mention}")
-            await command_log_and_err(ctx, self.client, "Not onwer")
+            await command_log_and_err(ctx, "Not onwer")
 
     @command(name='Disable', aliases=['da'],
       help='Disables the selected setting the bot has for the server.',
@@ -134,7 +134,7 @@ class Settings(Cog):
             author = ctx.message.author
             if author.id == ctx.guild.owner_id:
                 if c_low == 'none':
-                    await command_log_and_err(ctx, self.client, err_code="Err_70248",
+                    await command_log_and_err(ctx, err_code="Err_70248",
                                               text="Choose what you want to change please.")
                 else:
                     json_file = "C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json"
@@ -219,13 +219,13 @@ class Settings(Cog):
                             else: await ctx.reply(f"There isn't any setting called `{_command}`")
 
                     with open(json_file, "w") as f: json.dump(bot_comm_config, f, indent=3)
-                    await command_log_and_err(ctx, self.client, 'Success')
+                    await command_log_and_err(ctx, 'Success')
             else:
-                await command_log_and_err(ctx, self.client, 'Not owner')
+                await command_log_and_err(ctx, 'Not owner')
                 await ctx.reply("You need to be owner to change settings.")
         else:
             await ctx.reply(f"You are not owner of this server {ctx.author.mention}")
-            await command_log_and_err(ctx, self.client, "Not onwer")
+            await command_log_and_err(ctx, "Not onwer")
 
     @command(name='Set Prefix', aliases=['setprefix', 'spf'],
              help='Sets the prefix for the server the command is called in.',
@@ -241,9 +241,9 @@ class Settings(Cog):
 
             with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/prefixes.json", "w") as f:
                 json.dump(prefixes, f, indent=3)
-            await command_log_and_err(ctx, self.client, status=f"Prefix set to {prefix}")
+            await command_log_and_err(ctx, status=f"Prefix set to {prefix}")
             await ctx.reply(f"My prefix in this server has been set to `{prefix}`")
-        else: await command_log_and_err(ctx, self.client, err_code="70248",
+        else: await command_log_and_err(ctx, err_code="70248",
                                         text="Haven't given any prefix to set bub.")
 
     @command(name='Settings', aliases=['sts'],
@@ -265,7 +265,7 @@ class Settings(Cog):
             config: dict = settings.get(str(ctx.guild.id))
             for setting, bool_val in config.items():
                 embed.description += f"`{setting.title():^10} - {'True' if bool_val == 1 else 'False':^7}`\n"
-        await command_log_and_err(ctx, self.client, "Success")
+        await command_log_and_err(ctx, "Success")
         await ctx.reply(embed=embed)
 
 

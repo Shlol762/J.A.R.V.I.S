@@ -22,7 +22,7 @@ class Games(Cog):
     async def rolldice(self, ctx: Context):
         author: Member = ctx.message.author
         dice_num: int = randint(1, 6)
-        await command_log_and_err(ctx=ctx, client=self.client, status="Success")
+        await command_log_and_err(ctx=ctx, status="Success")
         await ctx.reply(f'You rolled {dice_num}, {author.mention}')
 
     # 402
@@ -42,12 +42,12 @@ class Games(Cog):
                                                  'Signs point to yes.', 'Very doubtful',
                                                  'Without a doubt.', 'Yes',
                                                  'Yes - definitely.', 'You may rely on it.'])
-            await command_log_and_err(ctx=ctx, client=self.client, status="Success")
+            await command_log_and_err(ctx=ctx, status="Success")
             await ctx.reply(embed=Embed(title="8ball",
                                                description=f"`Seeker`: {ctx.author.mention}\n\n `Question`: {question}\n\n `Reply`: {eight_ball_response}",
                                                colour=Colour.random()))
         else:
-            await command_log_and_err(ctx=ctx, client=self.client, err_code='Err_40248',
+            await command_log_and_err(ctx=ctx, err_code='Err_40248',
                                       text='Ask a question maybe??')
 
     # 403
@@ -60,9 +60,9 @@ class Games(Cog):
             await ctx.reply(embed=Embed(title="YesNoMaybe",
                                                description=f"`Seeker`: {ctx.author.mention}\n\n `Question`: {question}\n\n `Reply`: {choice(['Yes', 'No', 'Maybe'])}",
                                                colour=Colour.random()))
-            await command_log_and_err(ctx=ctx, client=self.client, status="Success")
+            await command_log_and_err(ctx=ctx, status="Success")
         else:
-            await command_log_and_err(ctx=ctx, client=self.client, err_code='Err_40348',
+            await command_log_and_err(ctx=ctx, err_code='Err_40348',
                                       text='Ask me a question dummy!')
 
     # 404
@@ -74,7 +74,7 @@ class Games(Cog):
     async def hack(self, ctx: Context, member: Member = None):
         author: Member = ctx.message.author
         if member:
-            await command_log_and_err(ctx=ctx, client=self.client, status="Success", used_on=member)
+            await command_log_and_err(ctx=ctx, status="Success", used_on=member)
             if member == author:
                 await ctx.reply("Ya can't hack yourself dummy!")
                 await ctx.message.add_reaction('⁉')
@@ -155,7 +155,7 @@ Password: {hack_pass}
                 await asyncio.sleep(2)
                 await hack_msg.clear_reactions()
         else:
-            await command_log_and_err(ctx=ctx, client=self.client, err_code='Err_40448',
+            await command_log_and_err(ctx=ctx, err_code='Err_40448',
                                       text='Hack who??')
 
     # 405
@@ -176,28 +176,28 @@ Password: {hack_pass}
                         if msg.content.lower() == 'heads':
                             await ctx.reply("I get tails then...")
                             if h_t_r == 'heads':
-                                await command_log_and_err(ctx=ctx, client=self.client, status=f"I won ",
+                                await command_log_and_err(ctx=ctx, status=f"I won ",
                                                           used_on=member if member else None)
                                 await ctx.reply(
                                     f"Dang it! Fine. The coin flipped heads... You win this round {author.mention}...")
                             elif h_t_r == 'tails':
-                                await command_log_and_err(ctx=ctx, client=self.client, status=f"I won ",
+                                await command_log_and_err(ctx=ctx, status=f"I won ",
                                                           used_on=member if member else None)
                                 await ctx.reply("Told ya I'd win ;), the coin flipped tails!")
                         elif msg.content.lower() == 'tails':
                             await ctx.reply("I get heads then...")
                             if h_t_r == 'tails':
-                                await command_log_and_err(ctx=ctx, client=self.client,
+                                await command_log_and_err(ctx=ctx, self.client,
                                                           status=f"I lost",
                                                           used_on=member if member else None)
                                 await ctx.reply(
                                     f"Dang it! Fine. The coin flipped tails... You win this round {author.mention}...")
                             elif h_t_r == 'heads':
-                                await command_log_and_err(ctx=ctx, client=self.client, status=f"I won ",
+                                await command_log_and_err(ctx=ctx, status=f"I won ",
                                                           used_on=member if member else None)
                                 await ctx.reply("Told ya I'd win ;), the coin flipped heads!")
                     except TimeoutError:
-                        await command_log_and_err(ctx=ctx, client=self.client,
+                        await command_log_and_err(ctx=ctx, self.client,
                                                   status=f"{author.mention} is a big sissy",
                                                   used_on=member if member else None)
                         await ctx.reply("WUSS! Come back and finish the game ya bum!")
@@ -211,13 +211,13 @@ Password: {hack_pass}
                             await ctx.reply(
                                 f"So you choose heads, that makes {member.mention}'s choice tails....")
                             if msg.content.lower() == h_t_r:
-                                await command_log_and_err(ctx=ctx, client=self.client,
+                                await command_log_and_err(ctx=ctx, self.client,
                                                           status=f"Idk who played against {author.mention} but Success",
                                                           used_on=member if member else None)
                                 await ctx.reply(
                                     f"{author.mention} your luck seems to better... You win! Congrats! Tough break {member.mention}... better luck next time")
                             else:
-                                await command_log_and_err(ctx=ctx, client=self.client,
+                                await command_log_and_err(ctx=ctx, self.client,
                                                           status=f"Idk who played against {author.mention} but Success",
                                                           used_on=member if member else None)
                                 await ctx.reply(
@@ -226,31 +226,31 @@ Password: {hack_pass}
                             await ctx.reply(
                                 f"So you choose tails, that makes {member.mention}'s choice heads....")
                             if msg.content.lower() == h_t_r:
-                                await command_log_and_err(ctx=ctx, client=self.client,
+                                await command_log_and_err(ctx=ctx, self.client,
                                                           status=f"Idk who played against {author.mention} but Success",
                                                           used_on=member if member else None)
                                 await ctx.reply(
                                     f"{author.mention} your luck seems to better... You win! Congrats! Tough break {member.mention}... better luck next time")
                             else:
-                                await command_log_and_err(ctx=ctx, client=self.client,
+                                await command_log_and_err(ctx=ctx, self.client,
                                                           status=f"Idk who played against {author.mention} but Success",
                                                           used_on=member if member else None)
                                 await ctx.reply(
                                     f"{member.mention} your luck seems to better... You win! Congrats! Tough break {author.mention}... better luck next time")
                         else:
-                            await command_log_and_err(ctx=ctx, client=self.client,
+                            await command_log_and_err(ctx=ctx, self.client,
                                                       status=f"Wrong argument",
                                                       used_on=member if member else None)
                             await ctx.reply("Heads or tails only dum dum...")
                     except TimeoutError:
                         await ctx.reply("Wuss, why'd you give up?")
             else:
-                await command_log_and_err(ctx=ctx, client=self.client,
+                await command_log_and_err(ctx=ctx, self.client,
                                           status=f"Success",
                                           used_on=member if member else None)
                 await ctx.reply(f"{author.mention} you got {h_t_r}")
         else:
-            await command_log_and_err(ctx=ctx, client=self.client,
+            await command_log_and_err(ctx=ctx, self.client,
                                       status=f"Success",
                                       used_on=member if member else None)
             await ctx.reply(f"{author.mention} you got {h_t_r}")
@@ -263,16 +263,16 @@ Password: {hack_pass}
     async def encrypt(self, ctx: Context, code: str = None, *, text: str = None):
         if code:
             if text:
-                await command_log_and_err(ctx=ctx, client=self.client, status="Success")
+                await command_log_and_err(ctx=ctx, status="Success")
                 await ctx.author.send(embed=Embed(title="Encrypting Text...",
                                                           description=f"`Encoding type`: {code}\n `Encryption requested by`: {ctx.author.mention}",
                                                           colour=Colour.random()).add_field(name="Encrypted:",
                                                                                                     value=f"`{encrypt(code, text)}`"))
             else:
-                await command_log_and_err(ctx=ctx, client=self.client, err_code="Err_40648",
+                await command_log_and_err(ctx=ctx, err_code="Err_40648",
                                           text="Specify the text you want to encrypt")
         else:
-            await command_log_and_err(ctx=ctx, client=self.client, err_code="Err_40648",
+            await command_log_and_err(ctx=ctx, err_code="Err_40648",
                                       text="Specify the code you want to encrypt your text in")
 
     # 407
@@ -283,16 +283,16 @@ Password: {hack_pass}
     async def decrypt(self, ctx: Context, code: str = None, *, text: str = None):
         if code:
             if text:
-                await command_log_and_err(ctx=ctx, client=self.client, status="Success")
+                await command_log_and_err(ctx=ctx, status="Success")
                 await ctx.author.send(embed=Embed(title="Decrypting Code...",
                                                           description=f"`Encoding type`: {code}\n `Decryption requested by`: {ctx.author.mention}",
                                                           colour=Colour.random()).add_field(name="Decrypted:",
                                                                                                     value=f"`{decrypt(code, text)}`"))
             else:
-                await command_log_and_err(ctx=ctx, client=self.client, err_code="Err_40748",
+                await command_log_and_err(ctx=ctx, err_code="Err_40748",
                                           text="Specify the code you want to decrypt")
         else:
-            await command_log_and_err(ctx=ctx, client=self.client, err_code="Err_40748",
+            await command_log_and_err(ctx=ctx, err_code="Err_40748",
                                       text="Specify the coding type you want to decrypt your code in")
 
     #408
@@ -301,7 +301,7 @@ Password: {hack_pass}
              usage="impersonate|imp (member) (text)")
     async def _impersonate(self, ctx: Context, member: Member = None, *, text: str = None):
         member: Member = member or ctx.author
-        await command_log_and_err(ctx, self.client, "Success", used_on=member)
+        await command_log_and_err(ctx, "Success", used_on=member)
         if member.id == self.client.user.id:
             await ctx.reply("Go away don't twist my opinions you idiot.")
         else:
