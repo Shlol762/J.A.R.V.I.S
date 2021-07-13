@@ -114,7 +114,7 @@ class Misc(commands.Cog):
                                               text=f"No results found for '`{query}`'. Check spelling or try adding more keywords.")
                 except discord.HTTPException:
                     msg = msg.split()
-                    await command_log_and_err(ctx, self.client, 'Success: split info')
+                    await command_log_and_err(ctx, 'Success: split info')
                     message = await ctx.author.send(
                         embed=Embed(title=f'Result for "`{query[0].upper() + query[1:]}`"\n\n{results}',
                                             description=' '.join(msg[:300]), colour=discord.Colour.random()))
@@ -125,10 +125,10 @@ class Misc(commands.Cog):
                                             description=f'Since the results for this search exceeds the character limit of 2048, the info will be sent to you through DMs. Click [here]({message.jump_url}) to jump.',
                                             colour=discord.Colour.random())) if ctx.guild else None
                 except requests.exceptions.ProxyError:
-                    await command_log_and_err(ctx, self.client, err_code="Err90412",
+                    await command_log_and_err(ctx, err_code="Err90412",
                                               text=f'N/A: `Internet Connection Failure\\: Unable to retrieve information for "{query}" `{author.mention}')
             else:
-                await command_log_and_err(ctx, self.client, err_code="Err_90412",
+                await command_log_and_err(ctx, err_code="Err_90412",
                                           text='Missing query. Please state query and try again.'.format(query,
                                                                                                          ctx.author.mention))
 
@@ -143,7 +143,7 @@ class Misc(commands.Cog):
                 embed = Embed(title=word, description='', colour=discord.Colour.random())
                 if (await dcnry.meaning(word)) is None:
                     embed.description += f"Sorry either `{word}` isn't a word in the dictionary or there's a problem with the internet."
-                    await command_log_and_err(ctx, self.client, 'Internet Problems/Non-Existent Word')
+                    await command_log_and_err(ctx, 'Internet Problems/Non-Existent Word')
                 else:
                     if not synantdef or synantdef.lower() == 'def':
                         for key, vals in (await dcnry.meaning(word)).items():
@@ -159,10 +159,10 @@ class Misc(commands.Cog):
                         embed.description += f"""\n**`Synonyms`**:\n {', '.join((await dcnry.synonym(word))[:10]).title() if await dcnry.synonym(word) is not None else f'`{word}` does not have synonyms'}\n"""
                     if not synantdef or synantdef.lower() == 'ant':
                         embed.description += f"""\n**`Antonyms`**:\n {', '.join((await dcnry.antonym(word))[:10]).title() if await dcnry.antonym(word) is not None else f'`{word}` does not have antonyms'}"""
-                    await command_log_and_err(ctx, self.client, 'Success')
+                    await command_log_and_err(ctx, 'Success')
                 await ctx.reply(embed=embed)
             except requests.exceptions.ProxyError:
-                await command_log_and_err(ctx, self.client, err_code="Err_90512",
+                await command_log_and_err(ctx, err_code="Err_90512",
                                           text=f'N/A: `Internet Connection Failure\\: Unable to retrieve information for "{word}"` {ctx.author.mention}')
 
     @commands.command(name="Time to", aliases=['tto', 'timeto'], brief='⏱906',
@@ -173,12 +173,12 @@ class Misc(commands.Cog):
             if time_str:
                 try:
                     await ctx.reply(tt(time_str))
-                    await command_log_and_err(ctx, self.client, status="Success")
+                    await command_log_and_err(ctx, status="Success")
                 except ValueError:
-                    await command_log_and_err(ctx, self.client, err_code='Err_90612',
+                    await command_log_and_err(ctx, err_code='Err_90612',
                                               text=f"`{time_str}` is not a valid format... 24hr:00 day/month/year")
             else:
-                await command_log_and_err(ctx, self.client, err_code="Err_90648",
+                await command_log_and_err(ctx, err_code="Err_90648",
                                           text="You haven't given the timestamp to compare time.")
 
     @commands.command(aliases=['cd', 'covidata'], name='Covid Data',
@@ -208,7 +208,7 @@ f"""
 `Active    - {cdata.get("Active"):^12}`
 """
 , colour=Colour.random()).set_thumbnail(url=wm_logo)))
-            await command_log_and_err(ctx, self.client, status=country or 'Worldwide' + ' Successful')
+            await command_log_and_err(ctx, status=country or 'Worldwide' + ' Successful')
 
 
 def setup(client):

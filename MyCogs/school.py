@@ -70,7 +70,7 @@ class School(Cog):
                 status: str = 'Successful'
             else: err_code, msg = '31348', 'Uh what do you want to define.'
         else: err_code, msg = '31348', 'Which channel do you wanna define in??'
-        await command_log_and_err(ctx, self.client, status=status, err_code=err_code, text=msg)
+        await command_log_and_err(ctx, status=status, err_code=err_code, text=msg)
 
 
 def setup(bot: Bot):

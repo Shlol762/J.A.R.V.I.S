@@ -207,7 +207,7 @@ class Mslo(Cog):
                     user = ban_entry.user
                     if user.name == member.name or user.mention == member.mention:
                         await ctx.guild.unban(user)
-                        await command_log_and_err(ctx=ctx, self.client,
+                        await command_log_and_err(ctx=ctx,
                                 status='Success', used_on=user)
                         await ctx.reply(f"{user.mention} hath been"
                                        f" unbanned.")

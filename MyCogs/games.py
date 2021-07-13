@@ -187,7 +187,7 @@ Password: {hack_pass}
                         elif msg.content.lower() == 'tails':
                             await ctx.reply("I get heads then...")
                             if h_t_r == 'tails':
-                                await command_log_and_err(ctx=ctx, self.client,
+                                await command_log_and_err(ctx=ctx,
                                                           status=f"I lost",
                                                           used_on=member if member else None)
                                 await ctx.reply(
@@ -197,7 +197,7 @@ Password: {hack_pass}
                                                           used_on=member if member else None)
                                 await ctx.reply("Told ya I'd win ;), the coin flipped heads!")
                     except TimeoutError:
-                        await command_log_and_err(ctx=ctx, self.client,
+                        await command_log_and_err(ctx=ctx,
                                                   status=f"{author.mention} is a big sissy",
                                                   used_on=member if member else None)
                         await ctx.reply("WUSS! Come back and finish the game ya bum!")
@@ -211,13 +211,13 @@ Password: {hack_pass}
                             await ctx.reply(
                                 f"So you choose heads, that makes {member.mention}'s choice tails....")
                             if msg.content.lower() == h_t_r:
-                                await command_log_and_err(ctx=ctx, self.client,
+                                await command_log_and_err(ctx=ctx,
                                                           status=f"Idk who played against {author.mention} but Success",
                                                           used_on=member if member else None)
                                 await ctx.reply(
                                     f"{author.mention} your luck seems to better... You win! Congrats! Tough break {member.mention}... better luck next time")
                             else:
-                                await command_log_and_err(ctx=ctx, self.client,
+                                await command_log_and_err(ctx=ctx,
                                                           status=f"Idk who played against {author.mention} but Success",
                                                           used_on=member if member else None)
                                 await ctx.reply(
@@ -226,31 +226,31 @@ Password: {hack_pass}
                             await ctx.reply(
                                 f"So you choose tails, that makes {member.mention}'s choice heads....")
                             if msg.content.lower() == h_t_r:
-                                await command_log_and_err(ctx=ctx, self.client,
+                                await command_log_and_err(ctx=ctx,
                                                           status=f"Idk who played against {author.mention} but Success",
                                                           used_on=member if member else None)
                                 await ctx.reply(
                                     f"{author.mention} your luck seems to better... You win! Congrats! Tough break {member.mention}... better luck next time")
                             else:
-                                await command_log_and_err(ctx=ctx, self.client,
+                                await command_log_and_err(ctx=ctx,
                                                           status=f"Idk who played against {author.mention} but Success",
                                                           used_on=member if member else None)
                                 await ctx.reply(
                                     f"{member.mention} your luck seems to better... You win! Congrats! Tough break {author.mention}... better luck next time")
                         else:
-                            await command_log_and_err(ctx=ctx, self.client,
+                            await command_log_and_err(ctx=ctx,
                                                       status=f"Wrong argument",
                                                       used_on=member if member else None)
                             await ctx.reply("Heads or tails only dum dum...")
                     except TimeoutError:
                         await ctx.reply("Wuss, why'd you give up?")
             else:
-                await command_log_and_err(ctx=ctx, self.client,
+                await command_log_and_err(ctx=ctx,
                                           status=f"Success",
                                           used_on=member if member else None)
                 await ctx.reply(f"{author.mention} you got {h_t_r}")
         else:
-            await command_log_and_err(ctx=ctx, self.client,
+            await command_log_and_err(ctx=ctx,
                                       status=f"Success",
                                       used_on=member if member else None)
             await ctx.reply(f"{author.mention} you got {h_t_r}")

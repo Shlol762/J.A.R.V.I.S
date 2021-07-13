@@ -74,7 +74,7 @@ class Roles(Cog):
                 if role.permissions.administrator:
                     await ctx.reply(
     f"Well {author.mention}... Your trying to add a role that has admin permissions. Sorry!")
-                    await command_log_and_err(ctx, self.client,
+                    await command_log_and_err(ctx,
                                            f'{role.mention} has `Administrator` permissions')
                 else:
                     try:
