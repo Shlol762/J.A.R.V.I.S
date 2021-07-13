@@ -180,5 +180,18 @@
       "greetings": true,
       "farewells": true,
       "iamgod": true
+   },
+   "804023618714730507": {
+      "ban": true,
+      "kick": true,
+      "clear": true,
+      "message": true,
+      "msghai": true,
+      "noswear": true,
+      "convo": true,
+      "nou": true,
+      "greetings": true,
+      "farewells": true,
+      "iamgod": true
    }
 }
