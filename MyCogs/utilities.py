@@ -168,11 +168,11 @@ class Utilities(commands.Cog):
             activities = ', '.join(activities) if None not in activities else 'None'
             public_flags = ', '.join(
                 [str(house).replace("UserFlags.", "").replace("_", " ").title() for house in member.public_flags.all()])
-            flag_logos = ''.join([str(await hypesquad_emoji(emoji)) for emoji in public_flags.split(", ")])
+            flag_logos = ''.join([str(await hypesquad_emoji(self.client, emoji)) for emoji in public_flags.split(", ")])
             if member.bot and member.public_flags.verified_bot:
-                flag_logos += str(await hypesquad_emoji("VerifiedBot"))
+                flag_logos += str(await hypesquad_emoji(self.client, "VerifiedBot"))
             elif member.bot and not member.public_flags.verified_bot:
-                flag_logos += str(await hypesquad_emoji("Bot"))
+                flag_logos += str(await hypesquad_emoji(self.client, "Bot"))
             joined_at = time_set(member.joined_at, "%d %b %Y at %I:%M %p")
             created_at = time_set(member.created_at, "%d %b %Y at %I:%M %p")
             emb1 = discord.Embed(title=f'Member Statistics - {name}  {flag_logos}', description='',
