@@ -120,7 +120,7 @@ class Cac(Cog):
                     "%d %b %Y at %I:%M %p")
                 await ctx.reply(embed=await set_timestamp(Embed(title="Unpinned a message.",
                                                                        description=f"ID: `{message.id}`\n Content: {message.content}\n Author: {message.author.mention}\n Time of sending: `{time}`",
-                                                                       colour=discord.Colour.random()), "Unpinned"))
+                                                                       colour=Colour.random()), "Unpinned"))
             except Forbidden:
                 await command_log_and_err(ctx=ctx, err_code="Err_50424",
                                           text=f"Missing permissions {author.mention}")
