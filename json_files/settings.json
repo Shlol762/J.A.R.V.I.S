@@ -193,5 +193,57 @@
       "greetings": true,
       "farewells": true,
       "iamgod": true
+   },
+   "817299815900643348": {
+      "ban": false,
+      "kick": false,
+      "clear": false,
+      "message": false,
+      "msghai": true,
+      "noswear": true,
+      "convo": true,
+      "nou": true,
+      "greetings": true,
+      "farewells": true,
+      "iamgod": true
+   },
+   "833995745690517524": {
+      "ban": false,
+      "kick": true,
+      "clear": false,
+      "message": false,
+      "msghai": true,
+      "noswear": true,
+      "convo": true,
+      "nou": true,
+      "greetings": true,
+      "farewells": true,
+      "iamgod": true
+   },
+   "859801379996696576": {
+      "ban": false,
+      "kick": true,
+      "clear": false,
+      "message": false,
+      "msghai": true,
+      "noswear": true,
+      "convo": true,
+      "nou": true,
+      "greetings": true,
+      "farewells": true,
+      "iamgod": true
+   },
+   "817300015176744971": {
+      "ban": true,
+      "kick": true,
+      "clear": false,
+      "message": false,
+      "msghai": true,
+      "noswear": true,
+      "convo": true,
+      "nou": true,
+      "greetings": true,
+      "farewells": true,
+      "iamgod": true
    }
 }
