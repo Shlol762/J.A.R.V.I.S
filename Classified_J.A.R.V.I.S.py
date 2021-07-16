@@ -24,11 +24,7 @@ async def del_message(ctx: commands.Context, message: discord.Message):
     await ctx.reply(f"Deleted message with content: `{message.content}`")
     await message.delete()
 
-
-@client.command(hidden=True)
-async def test(ctx: commands.Context):
-    await ctx.send(
-"""
+sec_lvl = """
 `1|The bots integrated interface Role on this Server    ` - <@&819518757617664021>
 `2|Access to Admin. Use wisely. More than 9 months req. ` - <@&839069357581139998>
 `3|Access to bot code snips. More than 6 months req.    ` - <@&839427298075476019>
@@ -36,8 +32,12 @@ async def test(ctx: commands.Context):
 `5|Access to Core Logs. More than 14 days required.     ` - <@&839069487113699358>
 `6|Access to Cross connect. More than 10 mins required. ` - <@&839068777521479691>
 `7|Anyone who volunteers for Tests.                     ` - <@&839079368910438421>
-""")
+"""
 
+@client.command(hidden=True)
+async def test(ctx: commands.Context, user: discord.User):
+    # await ctx.send(sec_lvl)
+    await ctx.send(user.name + " ; " + user.avatar_url)
 
 
 @client.command(hidden=True)
