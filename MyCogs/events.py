@@ -317,6 +317,10 @@ class Events(Cog):
                 f.write("".join(lines))
                 f.close()
 
+    @Cog.listener()
+    async def on_guild_join(self, guild: Guild):
+        pass
+
 
 def setup(client):
     client.add_cog(Events(client))
