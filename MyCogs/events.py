@@ -188,16 +188,16 @@ class Events(Cog):
                     else: options = server_config
                     if options["message"]:
                         if options["msghai"]:
-                            await forbidden_word(ctx, self.client)
+                            await forbidden_word(ctx)
                         if options["noswear"]:
-                            await noswear(ctx, self.client)
+                            await noswear(ctx)
                         if options["convo"]:
                             if options["greetings"]:
-                                await greetings(ctx, self.client)
+                                await greetings(ctx)
                             elif options['farewells']:
-                                await farewells(ctx, self.client)
+                                await farewells(ctx)
                             if options['nou']:
-                                await nou(ctx, self.client)
+                                await nou(ctx)
                             if options['iamgod']:
                                 await urnotgod(ctx)
                     message_text: str = re.sub(r"when(s|'s| is)?", "when", message.content.lower()).replace("my", author.mention).replace('your', self.client.user.name).replace(

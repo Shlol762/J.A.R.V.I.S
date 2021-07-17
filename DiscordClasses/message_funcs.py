@@ -8,8 +8,9 @@ src_was_bot = "Message was by bot"
 x_was_not_in_msg = "No {0} in message"
 
 
-async def forbidden_word(ctx: Context, bot: Bot) -> Union[Message, str]:
+async def forbidden_word(ctx: Context) -> Union[Message, str]:
     """Checks for the forbidden word Shlol#2501 has set"""
+    bot: Bot = ctx.bot
     author: Member = ctx.author
     if re.search(r'\b([bh]( )*a)(( )*i)+\b', str(ctx.message.content).strip().lower()):
         if author.name != bot.user.name:
@@ -25,8 +26,9 @@ async def forbidden_word(ctx: Context, bot: Bot) -> Union[Message, str]:
     else: return x_was_not_in_msg.format("forbidden word")
 
 
-async def noswear(ctx: Context, bot: Bot) -> Union[Message, str]:
+async def noswear(ctx: Context) -> Union[Message, str]:
     """Checks and alerts users if they are using foul language."""
+    bot: Bot = ctx.bot
     author: Member = ctx.author
     if re.search(
             r'\b(asshole|whore|cunt)\b|\b(fuck|fk|fuk|bitch)',
@@ -43,9 +45,10 @@ async def noswear(ctx: Context, bot: Bot) -> Union[Message, str]:
     else: return x_was_not_in_msg.format("swear words")
 
 
-async def greetings(ctx: Context, bot: Bot) -> Union[Message, str]:
+async def greetings(ctx: Context) -> Union[Message, str]:
     """Checks for greetings and responds randomly"""
     author: Member = ctx.author
+    bot: Bot = ctx.bot
     response = random.choice([True, True, True, False, True, True])
     if re.search(r'\b(h(i)+|he(y)+|(wh(a)+(s)*)*s(u)+(p)+|(he[nl]l(o)+)(w)*)\b',
                  ctx.message.content.strip().lower()):
@@ -70,9 +73,10 @@ async def greetings(ctx: Context, bot: Bot) -> Union[Message, str]:
     else: return x_was_not_in_msg.format("greetings")
 
 
-async def farewells(ctx: Context, bot: Bot) -> Union[Message, str]:
+async def farewells(ctx: Context) -> Union[Message, str]:
     """Checks for farewells and responds randomly"""
     author: Member = ctx.author
+    bot: Bot = ctx.bot
     response = random.choice([True, True, True, False, True, True])
     if re.search(r"\b(by(e)+|i(')*m out)\b", ctx.message.content.strip().lower()):
         if author.name != bot.user.name:
@@ -92,9 +96,10 @@ async def farewells(ctx: Context, bot: Bot) -> Union[Message, str]:
     else: return x_was_not_in_msg.format("farewells")
 
 
-async def nou(ctx: Context, bot: Bot) -> Union[Message, str]:
+async def nou(ctx: Context) -> Union[Message, str]:
     """Responds with 'No u' for certain keywords."""
     author: Member = ctx.author
+    bot: Bot = ctx.bot
     message_text: str = ctx.message.content.strip().lower()
     if re.search(r'\b(kill urself)\b', message_text) or message_text == 'ok':
         if author.name != bot.user.name:
