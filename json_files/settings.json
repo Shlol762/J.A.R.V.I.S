@@ -80,7 +80,7 @@
    "841630950252478515": {
       "ban": false,
       "kick": false,
-      "clear": true,
+      "clear": false,
       "message": true,
       "msghai": false,
       "noswear": true,
