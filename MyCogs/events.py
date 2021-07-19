@@ -158,22 +158,23 @@ class Events(Cog):
         ctx: Context = await self.bot.get_context(message)
         channel: TextChannel = ctx.channel
         author: Member = ctx.author
+        bot: Bot = ctx.bot
         with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json", 'r') as f:
             vals: dict = json.load(f)
         if ctx.guild:
-            if self.bot.user.mentioned_in(message)\
+            if bot.user.mentioned_in(message)\
                     and not ctx.command and not\
                     re.search(r"(@everyone|@here)", message.content.lower()) \
-                    and ctx.author != self.bot.user\
+                    and ctx.author != bot.user\
                     and ctx.message.webhook_id not in webhooks\
                     and not ctx.message.reference: await ctx.reply("What can I do for ya?")
             if channel.id in chnls and ctx.message.webhook_id not in webhooks:
                 text: str = f"{message.content}"
                 if message.reference:
-                    ref: Message = await MessageConverter().convert(await self.bot.get_context(message),
+                    ref: Message = await MessageConverter().convert(await bot.get_context(message),
                                                                     message.reference.jump_url)
                     text: str = f"`╔═`***`{ref.author.name}`***: {ref.content[:50]}\n{message.content}"
-                ch1, ch2, ch3, ch4 = await self.bot.fetch_webhook(webhooks[0]), await self.bot.fetch_webhook(webhooks[1]), await self.bot.fetch_webhook(webhooks[2]), await self.bot.fetch_webhook(webhooks[3])
+                ch1, ch2, ch3, ch4 = await bot.fetch_webhook(webhooks[0]), await bot.fetch_webhook(webhooks[1]), await bot.fetch_webhook(webhooks[2]), await bot.fetch_webhook(webhooks[3])
                 await ch1.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar_url) if channel.id != chnls[0] else None
                 await ch2.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar_url) if channel.id != chnls[1] else None
                 await ch3.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar_url) if channel.id != chnls[2] else None
@@ -200,7 +201,7 @@ class Events(Cog):
                                 await nou(ctx)
                             if options['iamgod']:
                                 await urnotgod(ctx)
-                    message_text: str = re.sub(r"when(s|'s| is)?", "when", message.content.lower()).replace("my", author.mention).replace('your', self.bot.user.name).replace(
+                    message_text: str = re.sub(r"when(s|'s| is)?", "when", message.content.lower()).replace("my", author.mention).replace('your', bot.user.name).replace(
                         "birthday", "bday").replace("i", author.mention)
                     if re.search(r"\b(when (is )?(the next occurrance of |will)?((.)+ (next )?bday)| the day (.)+ was born)", message_text.lower()):
                         try:
