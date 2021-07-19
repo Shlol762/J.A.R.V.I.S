@@ -5,12 +5,12 @@ from MyCogs import calculate_position, permission_confirm, \
     RoleConverter, MemberConverter, BucketType, \
     VoiceChannel, TextChannel, Embed, Colour, VoiceRegion,\
     CategoryChannel, Member, Forbidden, HTTPException, Role,\
-    Client, timezone, GuildChannel, Message
+    timezone, GuildChannel, Message, Bot
 
 
 class Cac(Cog):
-    def __init__(self, client: Client):
-        self.client = client
+    def __init__(self, bot: Bot):
+        self.bot = bot
         self.name: str = 'Channels and Categories(cac)'
         self.description = "Controls functions over text, voice and category channels."
 
@@ -372,5 +372,5 @@ class Cac(Cog):
         else: await command_log_and_err(ctx, err_code='50548', text=f"You haven't mentioned the channel you want to edit.")
 
 
-def setup(client):
-    client.add_cog(Cac(client))
+def setup(bot: Bot):
+    bot.add_cog(Cac(bot))

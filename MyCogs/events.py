@@ -15,16 +15,16 @@ prev_messages = []
 members = {}
 
 class Events(Cog):
-    def __init__(self, client: Bot):
-        self.client = client
+    def __init__(self, bot: Bot):
+        self.bot = bot
         self.name = 'None'
 
     @loop(minutes=5)
     async def birthday(self):
         global members
-        guild: Guild = await self.client.fetch_guild(766356666273890314)
+        guild: Guild = await self.bot.fetch_guild(766356666273890314)
         birthday_role: Role = guild.get_role(774876349163765780)
-        general: TextChannel = self.client.get_channel(821278528108494878)
+        general: TextChannel = self.bot.get_channel(821278528108494878)
         now = datetime.datetime.now().strftime("%d/%m")
         f = open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/birthdays.json")
         birthdays: dict = json.load(f)
@@ -52,25 +52,25 @@ class Events(Cog):
     @Cog.listener()
     async def on_ready(self):
         global connect_time
-        await self.client.change_presence(status=Status.do_not_disturb,
-                                          activity=Activity(type=ActivityType.watching,
+        await self.bot.change_presence(status=Status.do_not_disturb,
+                                       activity=Activity(type=ActivityType.watching,
                                                                     name=f'people talk...    V{version}'))
-        ch: TextChannel = self.client.get_channel(823216455733477387)
+        ch: TextChannel = self.bot.get_channel(823216455733477387)
         embed = Embed(title="Connection to discord",
                               description=f"*`Successful`*: `Confirmed`\n *`Connection at`*: `{connect_time}`",
                               colour=Colour.gold())
         await ch.send(embed=await set_timestamp(embed, ""))
         embed = Embed(title="Bot is ready",
-                              description=f'`{self.client.user.name}` is ready, Version: `{version}`\n',
-                              colour=Colour.teal())
+                      description=f'`{self.bot.user.name}` is ready, Version: `{version}`\n',
+                      colour=Colour.teal())
         await ch.send(embed=await set_timestamp(embed, ""))
         url: str = 'https://discord.com/api/oauth2/authorize?client_id=749830638982529065&permissions=8&scope=bot%20applications.commands'
         string: str = f"""
-        [`{self.client.user.name}`]({url}) - Version - `{version}`
+        [`{self.bot.user.name}`]({url}) - Version - `{version}`
         """
-        embed = Embed(title=f"Build info - {self.client.user}", description=string, colour=Colour.random())
-        embed.set_footer(text="At your service!", icon_url=(await hypesquad_emoji(self.client, "Staff")).url)
-        ch: TextChannel = self.client.get_channel(
+        embed = Embed(title=f"Build info - {self.bot.user}", description=string, colour=Colour.random())
+        embed.set_footer(text="At your service!", icon_url=(await hypesquad_emoji(self.bot, "Staff")).url)
+        ch: TextChannel = self.bot.get_channel(
             840478960478847006)
         msg: Message = await ch.fetch_message(840639817293496330)
         await msg.edit(embed=embed)
@@ -145,8 +145,8 @@ class Events(Cog):
         # """
         # embed = discord.Embed(description=local_str, colour=discord.Colour.random())
         # emb2.set_footer(icon_url=(await hypesquad_emoji("Staff")).url)
-        # await self.client.get_channel(840478960478847006).send(embed=emb1)
-        # await self.client.get_channel(840478960478847006).send(embed=embed)
+        # await self.bot.get_channel(840478960478847006).send(embed=emb1)
+        # await self.bot.get_channel(840478960478847006).send(embed=embed)
         try: self.birthday.start()
         except RuntimeError: self.birthday.restart()
         print("Confirmed")
@@ -155,25 +155,25 @@ class Events(Cog):
     async def on_message(self, message: Message):
         global chnls
         global prev_messages
-        ctx: Context = await self.client.get_context(message)
+        ctx: Context = await self.bot.get_context(message)
         channel: TextChannel = ctx.channel
         author: Member = ctx.author
         with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json", 'r') as f:
             vals: dict = json.load(f)
         if ctx.guild:
-            if self.client.user.mentioned_in(message)\
+            if self.bot.user.mentioned_in(message)\
                     and not ctx.command and not\
                     re.search(r"(@everyone|@here)", message.content.lower()) \
-                    and ctx.author != self.client.user\
+                    and ctx.author != self.bot.user\
                     and ctx.message.webhook_id not in webhooks\
                     and not ctx.message.reference: await ctx.reply("What can I do for ya?")
             if channel.id in chnls and ctx.message.webhook_id not in webhooks:
                 text: str = f"{message.content}"
                 if message.reference:
-                    ref: Message = await MessageConverter().convert(await self.client.get_context(message),
+                    ref: Message = await MessageConverter().convert(await self.bot.get_context(message),
                                                                     message.reference.jump_url)
                     text: str = f"`╔═`***`{ref.author.name}`***: {ref.content[:50]}\n{message.content}"
-                ch1, ch2, ch3, ch4 = await self.client.fetch_webhook(webhooks[0]), await self.client.fetch_webhook(webhooks[1]), await self.client.fetch_webhook(webhooks[2]), await self.client.fetch_webhook(webhooks[3])
+                ch1, ch2, ch3, ch4 = await self.bot.fetch_webhook(webhooks[0]), await self.bot.fetch_webhook(webhooks[1]), await self.bot.fetch_webhook(webhooks[2]), await self.bot.fetch_webhook(webhooks[3])
                 await ch1.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar_url) if channel.id != chnls[0] else None
                 await ch2.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar_url) if channel.id != chnls[1] else None
                 await ch3.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar_url) if channel.id != chnls[2] else None
@@ -200,7 +200,7 @@ class Events(Cog):
                                 await nou(ctx)
                             if options['iamgod']:
                                 await urnotgod(ctx)
-                    message_text: str = re.sub(r"when(s|'s| is)?", "when", message.content.lower()).replace("my", author.mention).replace('your', self.client.user.name).replace(
+                    message_text: str = re.sub(r"when(s|'s| is)?", "when", message.content.lower()).replace("my", author.mention).replace('your', self.bot.user.name).replace(
                         "birthday", "bday").replace("i", author.mention)
                     if re.search(r"\b(when (is )?(the next occurrance of |will)?((.)+ (next )?bday)| the day (.)+ was born)", message_text.lower()):
                         try:
@@ -236,7 +236,7 @@ class Events(Cog):
     async def on_resumed(self):
         global severed_time
         time: datetime.datetime = datetime.datetime.now().strftime("%d %b %Y at %I:%M %p")
-        ch: TextChannel = self.client.get_channel(823216455733477387)
+        ch: TextChannel = self.bot.get_channel(823216455733477387)
         embed = Embed(title="Re-connection to discord",
                               description=f"*`Successful`*: `Confirmed`\n *`Last disconnect`*: `{severed_time}`\n*`Re-connection at`*: `{time}`",
                               colour=Colour.gold())
@@ -322,5 +322,5 @@ class Events(Cog):
         pass
 
 
-def setup(client):
-    client.add_cog(Events(client))
+def setup(bot: Bot):
+    bot.add_cog(Events(bot))
