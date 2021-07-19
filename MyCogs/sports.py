@@ -5,11 +5,12 @@ from discord.ext import commands
 from DiscordClasses.embeds import ipl_logo_maker, set_timestamp
 from DiscordClasses.web_scrapers import Cricket
 from . import command_log_and_err
+from MyCogs import Bot, Cog, Context
 
 
-class Sports(commands.Cog):
-    def __init__(self, client: discord.Client):
-        self.client = client
+class Sports(Cog):
+    def __init__(self, bot: Bot):
+        self.bot = bot
         self.name = 'Sports'
         self.description = 'Collects sports data from the internet and displays as Embeds.(UNDER DEVELOPMENT)'
         self.c = Cricket()
@@ -17,7 +18,7 @@ class Sports(commands.Cog):
     @commands.command(name='Ipl score', aliases=['ipls', 'iplscore'],
                       usage='iplscore|ipls', brief='🏏801',
                       help='Gets the score of the next or live IPL match')
-    async def iplscore(self, ctx: commands.Context):
+    async def iplscore(self, ctx: Context):
         async with ctx.typing():
             match: Cricket = Cricket()
             embed = discord.Embed(title=f'{match.match_ser}\n`{match.team1}` vs `{match.team2}`', description='',
@@ -40,7 +41,7 @@ class Sports(commands.Cog):
     @commands.command(name='Ipl table', aliases=['iplt', 'ipltable'],
                       usage='ipltable|iplt (team)',
                       help='Gets the IPL table, or table statistics of a team based on your input', brief='🏆802')
-    async def ipltable(self, ctx: commands.Context, *, team: Optional[str] = None):
+    async def ipltable(self, ctx: Context, *, team: Optional[str] = None):
         async with ctx.typing():
             cricket: Cricket = self.c
             if not team:
@@ -84,5 +85,5 @@ class Sports(commands.Cog):
                         break
 
 
-def setup(client):
-    client.add_cog(Sports(client))
+def setup(bot: Bot):
+    bot.add_cog(Sports(bot))

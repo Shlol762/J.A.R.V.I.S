@@ -5,14 +5,15 @@ import discord
 from discord.ext import commands
 from typing import Optional
 from MyCogs import version, command_log_and_err,\
-    set_timestamp, time_set, hypesquad_emoji
+    set_timestamp, time_set, hypesquad_emoji, Cog,\
+    Bot
 
 bot_ver = version
 
 
-class Utilities(commands.Cog):
-    def __init__(self, client: discord.Client):
-        self.client = client
+class Utilities(Cog):
+    def __init__(self, bot: Bot):
+        self.bot = bot
         self.description = 'Commands that can be used as tools.'
         self.name = 'Utilities'
 
@@ -145,6 +146,7 @@ class Utilities(commands.Cog):
     @commands.guild_only()
     async def memberinfo(self, ctx: commands.Context, member: Optional[discord.Member]):
         async with ctx.typing():
+            bot: Bot = ctx.bot
             if not member:
                 member = ctx.message.author
             pfp = member.avatar_url
@@ -168,11 +170,11 @@ class Utilities(commands.Cog):
             activities = ', '.join(activities) if None not in activities else 'None'
             public_flags = ', '.join(
                 [str(house).replace("UserFlags.", "").replace("_", " ").title() for house in member.public_flags.all()])
-            flag_logos = ''.join([str(await hypesquad_emoji(self.client, emoji)) for emoji in public_flags.split(", ")])
+            flag_logos = ''.join([str(await hypesquad_emoji(bot, emoji)) for emoji in public_flags.split(", ")])
             if member.bot and member.public_flags.verified_bot:
-                flag_logos += str(await hypesquad_emoji(self.client, "VerifiedBot"))
+                flag_logos += str(await hypesquad_emoji(bot, "VerifiedBot"))
             elif member.bot and not member.public_flags.verified_bot:
-                flag_logos += str(await hypesquad_emoji(self.client, "Bot"))
+                flag_logos += str(await hypesquad_emoji(bot, "Bot"))
             joined_at = time_set(member.joined_at, "%d %b %Y at %I:%M %p")
             created_at = time_set(member.created_at, "%d %b %Y at %I:%M %p")
             emb1 = discord.Embed(title=f'Member Statistics - {name}  {flag_logos}', description='',
@@ -221,11 +223,12 @@ class Utilities(commands.Cog):
                       help="Gives a list of error codes that the bot gives out in an error, and the codes' meanings.",
                       usage='errorcodelist|ecl <err code>', brief='📄306')
     async def errorcodelist(self, ctx: commands.Context, error: str = None):
+        bot: Bot = ctx.bot
         async with ctx.typing():
             if not error:
                 await command_log_and_err(ctx, 'Success')
                 await ctx.reply(
-                    embed=await set_timestamp(discord.Embed(title=f'{self.client.user.name} - Error Code List', description=
+                    embed=await set_timestamp(discord.Embed(title=f'{botuser.name} - Error Code List', description=
                     """
 `Error Code Classification`
 ```nim
@@ -264,7 +267,7 @@ For Example:- 1)Err_10124 means command '1' under category
                 if len(error) == 5:
                     err_comm = None
                     err_ctgry = None
-                    for command in self.client.commands:
+                    for command in bot.commands:
                         if str(command.brief)[1:] == error[:-2]:
                             err_comm = command.name
                             err_ctgry = command.cog_name
@@ -310,9 +313,10 @@ For Example:- 1)Err_10124 means command '1' under category
                       usage='clientinfo|cinfo', brief='📃307')
     async def clientinfo(self, ctx: commands.Context):
         async with ctx.typing():
-            c = self.client.user
+            bot: Bot = ctx.bot
+            c = bot.user
             cinfo = await set_timestamp(
-                discord.Embed(title=self.client.user.name, description='', colour=discord.Colour.random()),
+                discord.Embed(title=bot.user.name, description='', colour=discord.Colour.random()),
                 f"At your service {ctx.author.name}")
             cinfo.description += f"""
     `{"Name":^15}-{c.name:^25}`
@@ -381,11 +385,12 @@ For Example:- 1)Err_10124 means command '1' under category
                       usage='addbottoserver|abts', help='Generates and sends a link to add the bot to your server')
     async def addbottoserver(self, ctx: commands.Context):
         await command_log_and_err(ctx, 'Success')
-        await ctx.reply(embed=discord.Embed(title=f'Hello my name is `{self.client.user.name}`',
-                                           description='It stands for `Just A Rather Very Intelligent System`\n\nClick [`J.A.R.V.I.S`]({}) to add me to your server.'.format(
+        bot: Bot = ctx.bot
+        await ctx.reply(embed=discord.Embed(title=f'Hello my name is `{bot.user.name}`',
+                                            description='It stands for `Just A Rather Very Intelligent System`\n\nClick [`J.A.R.V.I.S`]({}) to add me to your server.'.format(
                                                'https://discord.com/api/oauth2/authorize?client_id=749830638982529065&permissions=8&scope=bot%20applications.commands'
                                            ), colour=discord.Colour.random()).set_thumbnail(
-            url=self.client.user.avatar_url))
+            url=bot.user.avatar_url))
 
     # 316
     @commands.command(name='Announce', aliases=['an'], brief='📢311',
@@ -393,16 +398,17 @@ For Example:- 1)Err_10124 means command '1' under category
     @commands.cooldown(60, 1, commands.BucketType.guild)
     async def announce(self, ctx: commands.Context, *, text: str = None):
         async with ctx.typing():
+            bot: Bot = ctx.bot
             if text:
                 if int(ctx.author.id) == int(ctx.guild.owner_id):
                     await command_log_and_err(ctx, 'Success')
                     for member in ctx.guild.members:
-                        if member != self.client.user and member != ctx.author:
+                        if member != bot.user and member != ctx.author:
                             try:
                                 await member.send(embed=discord.Embed(title=f'Announcement from {ctx.author.name}',
                                                                       description=text,
                                                                       colour=discord.Colour.random()).set_thumbnail(
-                                    url=self.client.user.avatar_url))
+                                    url=bot.user.avatar_url))
                             except discord.HTTPException:
                                 await ctx.reply(f"Cant send message to {member}")
                 else:
@@ -440,5 +446,5 @@ For Example:- 1)Err_10124 means command '1' under category
         await ctx.send(embed=await set_timestamp(discord.Embed(description="_ _", colour=discord.Colour.random()).set_image(url=user.avatar_url)))
 
 
-def setup(client):
-    client.add_cog(Utilities(client))
+def setup(bot: Bot):
+    bot.add_cog(Utilities(bot))

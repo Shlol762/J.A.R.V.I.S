@@ -5,33 +5,33 @@ from PyDictionary import PyDictionary
 from typing import Any, Tuple, Optional
 from MyCogs import timeto as tt, command_log_and_err, set_timestamp,\
     WorldoMeter, Embed, Colour, Context, find_nth_occurrence,\
-    send_to_paste_service
+    send_to_paste_service, Bot, Cog, command, cooldown
 import datetime, re, requests
 from datetime import datetime
 from io import StringIO
 import inspect, contextlib, textwrap, traceback
 
 
-class Misc(commands.Cog):
-    def __init__(self, client: discord.Client):
-        self.client = client
+class Misc(Cog):
+    def __init__(self, bot: Bot):
+        self.bot = bot
         self.name = 'Miscellaneous'
         self.description = "Random stuff do whatever the heck you want."
         self.cocase = WorldoMeter()
 
-    @commands.command(aliases=['latency'],
+    @command(aliases=['latency'],
                       help='Gets latency of the reply time of the bot in milliseconds', name='Ping',
                       usage="ping|latency", brief='📶901')
-    async def ping(self, ctx: commands.Context):
+    async def ping(self, ctx: Context):
         await command_log_and_err(ctx, 'Success')
         await ctx.reply(embed=await set_timestamp(
-            Embed(title='Ping', description=f'`{round(self.client.latency * 1000)}` ms',
-                          colour=discord.Colour.random())))
+            Embed(title='Ping', description=f'`{round(ctx.bot.latency * 1000)}` ms',
+                  colour=discord.Colour.random())))
 
-    @commands.command(name='Leap', aliases=['le'], usage='leap <year>',
+    @command(name='Leap', aliases=['le'], usage='leap <year>',
                       help='Checks whether or not a given year is a leap one.',
                       brief='🗓902')
-    async def leap(self, ctx: commands.Context, year: int = None):
+    async def leap(self, ctx: Context, year: int = None):
         year = str(year)
         if year:
             if len(year) <= 5:
@@ -61,10 +61,10 @@ class Misc(commands.Cog):
         else:
             await command_log_and_err(ctx, err_code="Err_90248", text="Specify year pls.")
 
-    @commands.command(aliases=['pdm'], name='Palindrome',
+    @command(aliases=['pdm'], name='Palindrome',
                       help='Checks whether or not a snippet of text is a palindrome.',
                       usage='palindrome|pdm <text>', brief='🔁903')
-    async def palindrome(self, ctx: commands.Context, word: str = None):
+    async def palindrome(self, ctx: Context, word: str = None):
         if word:
             if len(word) <= 14:
                 word_len = len(word)
@@ -87,10 +87,10 @@ class Misc(commands.Cog):
         else:
             await command_log_and_err(ctx, err_code="Err_90348", text="Word = Give pls?")
 
-    @commands.command(aliases=['wk', 'wiki'], name='Wikipedia',
+    @command(aliases=['wk', 'wiki'], name='Wikipedia',
                       help='Searches wikipedia and returns info based on a given query.',
                       usage='wiki|wk <query>', brief='🌐904')
-    async def wiki(self, ctx: commands.Context, *, query: str = 'wikipedia'):
+    async def wiki(self, ctx: Context, *, query: str = 'wikipedia'):
         async with ctx.typing():
             if query:
                 query = query.title()
@@ -132,10 +132,10 @@ class Misc(commands.Cog):
                                           text='Missing query. Please state query and try again.'.format(query,
                                                                                                          ctx.author.mention))
 
-    @commands.command(aliases=['dct', 'dict'], name='Dictionary',
+    @command(aliases=['dct', 'dict'], name='Dictionary',
                       help='Searches the internet and returns definitions, synonyms and antonyms.',
                       usage='dct|dict|dictionary <word> (def/syn/ant)', brief='📔905')
-    async def dict(self, ctx: commands.Context, word: str, *, synantdef: Optional[str]):
+    async def dict(self, ctx: Context, word: str, *, synantdef: Optional[str]):
         async with ctx.typing():
             try:
                 dcnry = PyDictionary()
@@ -165,10 +165,10 @@ class Misc(commands.Cog):
                 await command_log_and_err(ctx, err_code="Err_90512",
                                           text=f'N/A: `Internet Connection Failure\\: Unable to retrieve information for "{word}"` {ctx.author.mention}')
 
-    @commands.command(name="Time to", aliases=['tto', 'timeto'], brief='⏱906',
+    @command(name="Time to", aliases=['tto', 'timeto'], brief='⏱906',
                       help='Returns the countdown to the given timestamp.',
                       usage='$timeto|tto <timestamp in format of - "24hr:mins day/month/year">')
-    async def timeto(self, ctx: commands.Context, *, time_str: str):
+    async def timeto(self, ctx: Context, *, time_str: str):
         async with ctx.typing():
             if time_str:
                 try:
@@ -181,10 +181,10 @@ class Misc(commands.Cog):
                 await command_log_and_err(ctx, err_code="Err_90648",
                                           text="You haven't given the timestamp to compare time.")
 
-    @commands.command(aliases=['cd', 'covidata'], name='Covid Data',
+    @command(aliases=['cd', 'covidata'], name='Covid Data',
                       help='Returns covid statistics for the whole world or a country',
                       usage='$covidata|cd (country)', brief='☣907')
-    async def covidata(self, ctx: commands.Context, *, country: str = 'None'):
+    async def covidata(self, ctx: Context, *, country: str = 'None'):
         async with ctx.typing():
             wm_logo = 'https://www.worldometers.info/img/worldometers-logo.gif'
             cdata = await self.cocase.compile_by_country(country.strip().lower())
@@ -211,5 +211,5 @@ f"""
             await command_log_and_err(ctx, status=country or 'Worldwide' + ' Successful')
 
 
-def setup(client):
-    client.add_cog(Misc(client))
+def setup(bot: Bot):
+    bot.add_cog(Misc(bot))

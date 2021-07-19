@@ -12,8 +12,7 @@ from MyCogs import command_log_and_err, Context, Bot,\
     Cog, NoPrivateMessage, CommandError, command,\
     guild_only, PCMVolumeTransformer, FFmpegPCMAudio,\
     Embed, Colour, Client, VoiceChannel
-#commands.
-# Silence useless bug reports messages
+
 youtube_dl.utils.bug_reports_message = lambda: ''
 
 
@@ -178,8 +177,8 @@ class SongQueue(asyncio.Queue):
 
 
 class VoiceState:
-    def __init__(self, client: Bot, ctx: Context):
-        self.client = client
+    def __init__(self, ctx: Context):
+        self.bot: Bot = ctx.bot
         self._ctx = ctx
 
         self.current = None
@@ -191,7 +190,7 @@ class VoiceState:
         self._volume = 0.5
         self.skip_votes = set()
 
-        self.audio_player = client.loop.create_task(self.audio_player_task())
+        self.audio_player = self.bot.loop.create_task(self.audio_player_task())
 
     def __del__(self):
         self.audio_player.cancel()
@@ -259,8 +258,8 @@ class VoiceState:
 
 
 class Music(Cog):
-    def __init__(self, client: Client):
-        self.client = client
+    def __init__(self, bot: Bot):
+        self.bot = bot
         self.voice_states = {}
         self.description = "A list of commands that control the bot's music functions."
         self.name = 'Music'
@@ -268,13 +267,13 @@ class Music(Cog):
     def get_voice_state(self, ctx: Context):
         state = self.voice_states.get(ctx.guild.id)
         if not state:
-            state = VoiceState(ctx)
+            state = VoiceState(ctx, )
             self.voice_states[ctx.guild.id] = state
         return state
 
     def cog_unload(self):
         for state in self.voice_states.values():
-            self.client.loop.create_task(state.stop())
+            self.bot.loop.create_task(state.stop())
 
     def cog_check(self, ctx: Context):
         if not ctx.guild:
@@ -307,7 +306,7 @@ class Music(Cog):
     async def _summon(self, ctx: Context, *, channel: Optional[VoiceChannel] = None):
         if not channel and not ctx.author.voice:
             raise VoiceError('You are neither connected to a voice channel nor specified a channel to join.')
-        destination = channel or ctx.author.voice.channel
+        destination: VoiceChannel = channel or ctx.author.voice.channel
         if ctx.voice_state.voice:
             await ctx.voice_state.voice.move_to(destination)
             return
@@ -466,7 +465,7 @@ class Music(Cog):
             await ctx.invoke(self._join)
         async with ctx.typing():
             try:
-                source = await YTDLSource.create_source(ctx, search, loop=self.client.loop)
+                source = await YTDLSource.create_source(ctx, search, loop=ctx.bot.loop)
             except YTDLError as e:
                 await ctx.reply(f'An error occurred while processing this request: {e}')
             else:
@@ -487,5 +486,5 @@ class Music(Cog):
                 raise CommandError('Bot is already in a voice channel.')
 
 
-def setup(client):
-    client.add_cog(Music(client))
+def setup(bot: Bot):
+    bot.add_cog(Music(bot))

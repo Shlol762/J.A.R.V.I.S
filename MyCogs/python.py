@@ -37,8 +37,8 @@ NEGATIVE_REPLIES = [
 
 
 class Python(Cog):
-    def __init__(self, client: Bot):
-        self.client = client
+    def __init__(self, bot: Bot):
+        self.bot = bot
         self.name = 'Python'
         self.description = "Python related commands."
         self.env = {}
@@ -154,7 +154,7 @@ class Python(Cog):
             "guild": ctx.guild,
             "ctx": ctx,
             "self": self,
-            "bot": self.client,
+            "bot": self.bot,
             "inspect": inspect,
             "discord": discord,
             "contextlib": contextlib
@@ -282,5 +282,5 @@ async def func():  # (None,) -> Any
             else: await command_log_and_err(ctx, err_code='P0248', text="You haven't given a package to search for...")
 
 
-def setup(client: Bot):
-    client.add_cog(Python(client))
+def setup(bot: Bot):
+    bot.add_cog(Python(bot))

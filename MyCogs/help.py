@@ -2,18 +2,19 @@ from typing import Optional
 import discord
 from MyCogs import command_log_and_err, set_timestamp, Cog,\
     Context, command, Client, Colour, Embed, HTTPException,\
-    commands
+    commands, Bot
 #discord.
 
 
 class Help(Cog):
-    def __init__(self, client: Client):
-        self.client = client
+    def __init__(self, bot: Bot):
+        self.bot = bot
         self.name = 'Help'
 
     @command(brief='✉', name='Help', aliases=['hp'])
     async def help(self, ctx: Context, *, cog: Optional[str]):
-        icon = self.client.user.avatar_url
+        bot: Bot = ctx.bot
+        icon = bot.user.avatar_url
         help_col = Colour.random()
         try:
             if not cog:
@@ -22,7 +23,7 @@ class Help(Cog):
                                      description='Use `$help <category>` to find out more about them!',
                                      colour=help_col)
                 cogs_desc = ''
-                for x, y in self.client.cogs.items():
+                for x, y in bot.cogs.items():
                     x: str = x
                     y: Cog = y
                     if str(x).lower() != 'help' and str(x).lower() != 'events':
@@ -31,13 +32,13 @@ class Help(Cog):
                 await ctx.reply(embed=await set_timestamp(help, ""))
             else:
                 found = False
-                for key, val in self.client.cogs.items():
-                    for _command in self.client.commands:
-                        if str(key).lower() == str(cog).lower() or self.client.get_cog(key).name.lower() == str(cog).lower():
+                for key, val in bot.cogs.items():
+                    for _command in bot.commands:
+                        if str(key).lower() == str(cog).lower() or bot.get_cog(key).name.lower() == str(cog).lower():
                             help = Embed(title=f'__{val.name}__ - `Command Listing`',
-                                                 description=f"Use `$help <command>` for more details on a specific command\n{self.client.cogs[key].__doc__}\n",
-                                                 colour=help_col)
-                            for c in self.client.get_cog(key).get_commands():
+                                         description=f"Use `$help <command>` for more details on a specific command\n{bot.cogs[key].__doc__}\n",
+                                         colour=help_col)
+                            for c in bot.get_cog(key).get_commands():
                                 if not c.hidden:
                                     help.add_field(name="{} - `{}`".format(c.name, ', '.join(c.aliases)), value=c.help,
                                                    inline=False)
@@ -68,5 +69,5 @@ class Help(Cog):
             pass
 
 
-def setup(client):
-    client.add_cog(Help(client))
+def setup(bot: Bot):
+    bot.add_cog(Help(bot))

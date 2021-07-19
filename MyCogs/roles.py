@@ -4,14 +4,14 @@ from discord.ext import commands
 from MyCogs import command_log_and_err, set_timestamp, command,\
     Cog, cooldown, guild_only, BucketType, Context, has_permissions,\
     Client, Forbidden, Role, Member, Colour, Embed, HTTPException,\
-    InvalidArgument
+    InvalidArgument, Bot
 
 #commands.
 
 
 class Roles(Cog):
-    def __init__(self, client: Client):
-        self.client = client
+    def __init__(self, bot: Bot):
+        self.bot = bot
         self.description = 'Commands that deal with roles of server.'
         self.name = 'Roles'
 
@@ -513,5 +513,5 @@ class Roles(Cog):
             await ctx.reply("I've done all I can")
 
 
-def setup(client):
-    client.add_cog(Roles(client))
+def setup(bot: Bot):
+    bot.add_cog(Roles(bot))

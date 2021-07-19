@@ -4,13 +4,13 @@ import discord
 from MyCogs import encrypt, decrypt, command_log_and_err,\
     commands, Cog, command, cooldown, BucketType, Context,\
     Member, guild_only, Client, Embed, Colour, Message,\
-    choice, randint
+    choice, randint, Bot
 import json
 #
 
 class Games(Cog):
-    def __init__(self, client: Client):
-        self.client = client
+    def __init__(self, bot: Bot):
+        self.bot = bot
         self.description = 'Have fun while you at it.'
         self.name: str = 'Games'
 
@@ -78,7 +78,7 @@ class Games(Cog):
             if member == author:
                 await ctx.reply("Ya can't hack yourself dummy!")
                 await ctx.message.add_reaction('⁉')
-            elif member == self.client.user:
+            elif member == ctx.bot.user:
                 await ctx.message.add_reaction('⁉')
                 await ctx.reply("You would ask me to infect myself with a virus?")
             else:
@@ -165,13 +165,14 @@ Password: {hack_pass}
     @cooldown(1, 1, BucketType.member)
     async def flipcoin(self, ctx: Context, member: Optional[Member] = None):
         author: Member = ctx.message.author
+        bot: Bot = ctx.bot
         h_t_r: str = choice(['heads', 'tails'])
         if member:
             if member != author:
-                if member.id == self.client.user.id:
+                if member.id == bot.user.id:
                     await ctx.reply("Oooh you wish to challenge me eh? It's on like donkey kong! What do you choose?")
                     try:
-                        msg: Message = await self.client.wait_for(event="message", timeout=7, check=lambda
+                        msg: Message = await bot.wait_for(event="message", timeout=7, check=lambda
                             message: message.author == author and message.channel == ctx.message.channel)
                         if msg.content.lower() == 'heads':
                             await ctx.reply("I get tails then...")
@@ -205,7 +206,7 @@ Password: {hack_pass}
                     await ctx.reply(
                         f"Alright {author.mention} and {member.mention} playing the flippin game. {author.mention} heads or tails?")
                     try:
-                        msg: Message = await self.client.wait_for(event='message', timeout=7, check=lambda
+                        msg: Message = await bot.wait_for(event='message', timeout=7, check=lambda
                             message: message.author == author and message.channel == ctx.message.channel)
                         if msg.content.lower() == 'heads':
                             await ctx.reply(
@@ -302,7 +303,7 @@ Password: {hack_pass}
     async def _impersonate(self, ctx: Context, member: Member = None, *, text: str = None):
         member: Member = member or ctx.author
         await command_log_and_err(ctx, "Success", used_on=member)
-        if member.id == self.client.user.id:
+        if member.id == ctx.bot.user.id:
             await ctx.reply("Go away don't twist my opinions you idiot.")
         else:
             await ctx.message.delete()
@@ -325,5 +326,5 @@ Password: {hack_pass}
                                    avatar_url=member.avatar_url)
 
 
-def setup(client):
-    client.add_cog(Games(client))
+def setup(bot: Bot):
+    bot.add_cog(Games(bot))

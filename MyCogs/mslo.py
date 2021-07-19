@@ -7,12 +7,12 @@ from MyCogs import command_log_and_err, set_timestamp, Context,\
     Cog, Client, command, cooldown, guild_only, User, Member,\
     BucketType, UserNotFound, Embed, Colour, HTTPException,\
     Forbidden, commands, has_guild_permissions, Message, TextChannel,\
-    Role, TextChannelConverter, RoleConverter
+    Role, TextChannelConverter, RoleConverter, Bot
 #commands.
 
 class Mslo(Cog):
-    def __init__(self, client: Client):
-        self.client = client
+    def __init__(self, bot: Bot):
+        self.bot = bot
         self.description = 'Commands that control a members stay/leave options.'
         self.name = 'Mslo'
 
@@ -88,7 +88,7 @@ class Mslo(Cog):
                     else:
                         await ctx.reply(f"Are you sure {author.mention}?")
                         try:
-                            msg = await self.client.wait_for("message", timeout=10, check=lambda
+                            msg = await ctx.bot.wait_for("message", timeout=10, check=lambda
                                 message: message.author == author and message.channel == ctx.channel)
                             if msg.content.lower() == "yes":
                                 try:
@@ -164,7 +164,7 @@ class Mslo(Cog):
                     else:
                         await ctx.reply(f"Are you sure {author.mention}? Respond with yes or no.")
                         try:
-                            msg = await self.client.wait_for("message", timeout=10, check=lambda
+                            msg = await ctx.bot.wait_for("message", timeout=10, check=lambda
                                 message: message.author == author and message.channel == ctx.channel)
                             if msg.content.lower() == 'yes':
                                 try:
@@ -245,8 +245,8 @@ class Mslo(Cog):
                         await ctx.reply(f"{ctx.author.mention}, **I need to create a role** called 'timeout' for this to work"
                                         f" and there seem to be no roles like this in the server. **May I create one?** Respond "
                                         f"with Y(es) or N(o) in the next 15 seconds.")
-                        message: Message = await self.client.wait_for("message", check=lambda m: m.author == ctx.author and\
-                                                             m.channel == ctx.channel and (re.search(r"(y(es)*|n(o)*)", m.content.lower())), timeout=15.0)
+                        message: Message = await ctx.bot.wait_for("message", check=lambda m: m.author == ctx.author and \
+                                                                                              m.channel == ctx.channel and (re.search(r"(y(es)*|n(o)*)", m.content.lower())), timeout=15.0)
                         if re.search(r"y(es)*", message.content.lower()):
                             await ctx.reply("Creating a role named `timeout`")
                             try: t_role: Role = await ctx.guild.create_role(name="timeout")
@@ -263,8 +263,8 @@ class Mslo(Cog):
                         await ctx.reply(f"{ctx.author.mention}, **I need to create a channel** called 'timeout' for this to work"
                                         f" and there seem to be no channels like this in the server. **May I create one?** Respond "
                                         f"with Y(es) or N(o) in the next 15 seconds.")
-                        message: Message = await self.client.wait_for("message", check=lambda m: m.author == ctx.author and\
-                                                             m.channel == ctx.channel and (re.search(r"(y(es)*|n(o)*)", m.content.lower())), timeout=15.0)
+                        message: Message = await ctx.bot.wait_for("message", check=lambda m: m.author == ctx.author and \
+                                                                                              m.channel == ctx.channel and (re.search(r"(y(es)*|n(o)*)", m.content.lower())), timeout=15.0)
                         if re.search(r"y(es)*", message.content.lower()):
                             await ctx.reply("Creating a channel named `timeout`")
                             try: t_channel: TextChannel = await ctx.guild.create_text_channel(name="timeout")
@@ -286,5 +286,5 @@ class Mslo(Cog):
             else: await command_log_and_err(ctx, err_code="20548", text="You've not given me who to isolte by the way.")
 
 
-def setup(client):
-    client.add_cog(Mslo(client))
+def setup(bot: Bot):
+    bot.add_cog(Mslo(bot))

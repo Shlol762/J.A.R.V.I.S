@@ -3,12 +3,12 @@ import discord, json
 from discord.ext import commands
 from discord import Embed, Colour
 from MyCogs import command_log_and_err, Cog, command,\
-    guild_only, Context, Client, set_timestamp
+    guild_only, Context, Client, set_timestamp, Bot
 
 #commands.
 class Settings(Cog):
-    def __init__(self, client: Client):
-        self.client = client
+    def __init__(self, bot: Bot):
+        self.bot = bot
         self.description = "The commands that control the bot's settings in the server."
         self.name = 'Settings'
 
@@ -269,5 +269,5 @@ class Settings(Cog):
         await ctx.reply(embed=embed)
 
 
-def setup(client):
-    client.add_cog(Settings(client))
+def setup(bot: Bot):
+    bot.add_cog(Settings(bot))
