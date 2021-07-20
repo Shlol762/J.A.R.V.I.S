@@ -235,8 +235,8 @@ async def comm_log_local(ctx: Context, status: str):
     """Logs all command movement into a local text file."""
     with open("C:/Users/Shlok/bot_stuff/command_logs.txt", "r") as f:
         lines: list[str] = f.read().split("\n")
-    sl_no: str = "{0:0>3}".format(int(re.search(r'[0-9]{3}', lines[1]).group()) + 1)
-    header: str = re.sub("[0-9]{3}", sl_no, lines[1])
+    sl_no: str = "{0:0>4}".format(int(re.search(r'[0-9]{4}', lines[1]).group()) + 1)
+    header: str = re.sub("[0-9]{4}", sl_no, lines[1])
     lines.pop(1)
     lines.insert(1, header)
     time: str = time_set(ctx.message.created_at, "%H:%M")
