@@ -94,7 +94,8 @@ async def command_log_and_err(ctx: commands.Context = None, status: Optional[str
             e.description += f'*`Left`*: {left.mention}\n'
         else:
             raise TypeDefError(f'{created} of type: {str(type(created))[1:-1]} cannot be used in command_log_and_err')
-    e.description += f"*`Status`*: `{'Err_' + status if status[:2].lower() != 'err' and status[:-2].isnumeric() else status}`"
+    status = 'Err_' + status if status[:2].lower() != 'err' and status[:-2].isnumeric() else status
+    e.description += f"*`Status`*: `{status}`"
     e = await set_timestamp(e, "Logged")
     await reaction(ctx, True) if not err_code else None
     await comm_log_local(ctx, status)

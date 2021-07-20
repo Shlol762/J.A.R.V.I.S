@@ -270,10 +270,12 @@ class Events(Cog):
                                       text=f"Command not found {ctx.author.mention}",
                                       invalid_comname=error.args[0][9:-14])
         elif isinstance(error, CommandOnCooldown):
-            if ctx.author.id == 613044385910620190:
+            with open("C:/Users/Shlok/bot_stuff/command_logs.txt", "r") as f:
+                lines: list[str] = f.readlines()
+            if ctx.author.id == 613044385910620190: await ctx.reinvoke()
+            elif ctx.command.brief[1:] in lines[-1] and str(ctx.author.id) in lines[-1] and "Err" in lines[-1]:
                 await ctx.reinvoke()
-            else:
-                await command_log_and_err(ctx=ctx, status='Cooldown', error=error)
+            else: await command_log_and_err(ctx=ctx, status='Cooldown', error=error)
         elif isinstance(error, MemberNotFound):
             await command_log_and_err(ctx=ctx, err_code="Err_α11404",
                                       text=f"**`The Member:`**` `*`'{error.argument}'`*` doesn't exist` I don't know what you're looking for.")
