@@ -300,6 +300,7 @@ Password: {hack_pass}
     @command(aliases=['imp'], name="Impersonate", brief="🎭408",
              help="Of course it impersonates people.",
              usage="impersonate|imp (member) (text)")
+    @cooldown(1, 10, BucketType.channel)
     async def _impersonate(self, ctx: Context, member: Member = None, *, text: str = None):
         member: Member = member or ctx.author
         await command_log_and_err(ctx, "Success", used_on=member)

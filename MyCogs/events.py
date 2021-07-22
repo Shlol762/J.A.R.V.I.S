@@ -322,7 +322,27 @@ class Events(Cog):
 
     @Cog.listener()
     async def on_guild_join(self, guild: Guild):
-        pass
+        settings_path = "C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json"
+        prefix_path = "C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/prefixes.json"
+        with open(settings_path, "r") as f: settings = json.load(f)
+        settings[str(guild.id)] = {
+            "ban": True,
+            "kick": True,
+            "clear": True,
+            "message": True,
+            "msghai": True,
+            "noswear": True,
+            "convo": True,
+            "nou": True,
+            "greetings": True,
+            "farewells": True,
+            "iamgod": True
+        }
+        with open(settings_path, "w") as f: json.dump(settings, f, indent=3)
+        with open(prefix_path, "r") as f: prefixes = json.load(f)
+        prefixes[str(guild.id)] = "$"
+        with open(prefix_path, "w") as f: json.dump(prefixes, f, indent=3)
+        await guild.text_channels[0].send("Hello. I am J.A.R.V.I.S!")
 
 
 def setup(bot: Bot):

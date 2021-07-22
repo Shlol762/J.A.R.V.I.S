@@ -268,7 +268,7 @@ class Mslo(Cog):
                         if re.search(r"y(es)*", message.content.lower()):
                             await ctx.reply("Creating a channel named `timeout`")
                             try: t_channel: TextChannel = await ctx.guild.create_text_channel(name="timeout")
-                            except Forbidden: return command_log_and_err(ctx, err_code="20524",
+                            except Forbidden: return await command_log_and_err(ctx, err_code="20524",
                                                                         text="Missing permissions to create channel.")
                         elif re.search(r"n(o)*", message.content.lower()):
                             return await ctx.reply("Well then you would have to create a channel called 'timeout' and "
