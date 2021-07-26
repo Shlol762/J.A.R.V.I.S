@@ -294,7 +294,14 @@ class Events(Cog):
         elif isinstance(error, NoPrivateMessage):
             await command_log_and_err(ctx=ctx, status='Server Only', error=error)
         else:
-            raise error
+            err_embed = await set_timestamp(Embed(title="Error!", description="", colour=Colour.red()), "Unhandled Excpetion")
+            err_embed.description = f"""
+```py
+{error.with_traceback(error.__traceback__)}
+```
+"""
+            error_channel: TextChannel = ctx.bot.get_channel(868640456328744960)
+            await error_channel.send(embed=err_embed)
 
     @Cog.listener()
     async def on_command_completion(self, ctx: Context):
