@@ -36,9 +36,34 @@ sec_lvl = """
 
 @client.command(hidden=True)
 async def test(ctx: commands.Context):
-    members = {member.id: time_set(member.joined_at, "%d %b %Y at %I:%M %p") for member in ctx.guild.members}
-    with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/mainframe_members.json", "w") as f:
-        json.dump(members, f, indent=3)
+    pass
+
+
+@client.command(hidden=True)
+async def refseclvl(ctx: commands.Context):
+    with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/mainframe_members.json", "r") as f:
+        mem_list: dict = json.load(f)
+    now = datetime.datetime.now().date()
+    lvl0: discord.Role = ctx.guild.get_role(839068777521479691)
+    lvl1: discord.Role = ctx.guild.get_role(839069487113699358)
+    lvl2: discord.Role = ctx.guild.get_role(839427084219842561)
+    lvl3: discord.Role = ctx.guild.get_role(839427298075476019)
+    admin: discord.Role = ctx.guild.get_role(839069357581139998)
+    for member, join_time in mem_list.items():
+        diff = (now - datetime.datetime.strptime(join_time, "%d %b %Y at %I:%M %p").date())
+        member: discord.Member = await ctx.guild.fetch_member(int(member))
+        if diff.seconds > 600:
+            await member.add_roles(lvl0)
+        elif diff.days > 14:
+            await member.add_roles(lvl1, lvl0)
+        elif diff.days > 90:
+            await member.add_roles(lvl2, lvl1, lvl0)
+        elif diff.days > 180:
+            await member.add_roles(lvl3, lvl2, lvl1, lvl0)
+        elif diff.days > 270:
+            await member.add_roles(admin, lvl3, lvl2, lvl1, lvl0)
+        await ctx.send(f"Clerance updates for {member.mention}")
+    await ctx.send("Refresh complete.")
 
 
 @client.command(hidden=True)
