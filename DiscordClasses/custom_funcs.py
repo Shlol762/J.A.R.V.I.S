@@ -245,7 +245,7 @@ async def comm_log_local(ctx: Context, status: str):
     cog_name = ctx.command.cog_name[:4] if ctx.command else "Invalid"
     com_brief = ctx.command.brief[1:] if ctx.command else "Invalid"
     status = "404" if "404" in status else status
-    lines.append(f"|{sl_no:^11}|{com_name:^9}|{cog_name:^10}|{com_brief:^8}|{status:^44}|{time:^6}|{date:^8}| {ctx.author.id} | {ctx.channel.id if ctx.channel else ctx.author.id} | {ctx.guild if ctx.guild else ctx.author.id} |")
+    lines.append(f"|{sl_no:^11}|{com_name:^9}|{cog_name:^10}|{com_brief:^8}|{status:^44}|{time:^6}|{date:^8}| {ctx.author.id} | {ctx.channel.id if ctx.channel else ctx.author.id} | {ctx.guild.id if ctx.guild else ctx.author.id} |")
     f = open("C:/Users/Shlok/bot_stuff/command_logs.txt", "w")
     f.write("\n".join(lines))
     f.close()

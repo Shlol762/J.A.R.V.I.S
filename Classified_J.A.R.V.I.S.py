@@ -3,7 +3,7 @@ import json
 import os
 import discord
 from discord.ext import commands
-from DiscordClasses import bot_token, WorldoMeter, get_prefix
+from DiscordClasses import bot_token, WorldoMeter, get_prefix, time_set
 import datetime
 from typing import Union, Mapping
 
@@ -35,9 +35,10 @@ sec_lvl = """
 """
 
 @client.command(hidden=True)
-async def test(ctx: commands.Context, user: discord.User):
-    # await ctx.send(sec_lvl)
-    await ctx.send(user.name + " ; " + user.avatar_url)
+async def test(ctx: commands.Context):
+    members = {member.id: time_set(member.joined_at, "%d %b %Y at %I:%M %p") for member in ctx.guild.members}
+    with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/mainframe_members.json", "w") as f:
+        json.dump(members, f, indent=3)
 
 
 @client.command(hidden=True)
