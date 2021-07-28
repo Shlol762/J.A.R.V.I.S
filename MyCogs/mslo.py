@@ -267,7 +267,10 @@ class Mslo(Cog):
                                                                                               m.channel == ctx.channel and (re.search(r"(y(es)*|n(o)*)", m.content.lower())), timeout=15.0)
                         if re.search(r"y(es)*", message.content.lower()):
                             await ctx.reply("Creating a channel named `timeout`")
-                            try: t_channel: TextChannel = await ctx.guild.create_text_channel(name="timeout")
+                            try:
+                                t_channel: TextChannel = await ctx.guild.create_text_channel(name="timeout")
+                                await t_channel.set_permissions(ctx.guild.default_role, view_channel=False)
+                                await t_channel.set_permissions(t_role, view_channel=True)
                             except Forbidden: return await command_log_and_err(ctx, err_code="20524",
                                                                         text="Missing permissions to create channel.")
                         elif re.search(r"n(o)*", message.content.lower()):
@@ -275,11 +278,10 @@ class Mslo(Cog):
                                             "try this command again.")
                     except TimeoutError:
                         return await ctx.reply(f"Stopping `timeout` procedure for {member.name}")
-                else: t_channel: TextChannel = discord.utils.get(ctx.guild.channels, name="timeout")
-                await t_channel.set_permissions(ctx.guild.default_role, view_channel=False)
-                [await member.remove_roles(rl) if rl.name != "@everyone" else None for rl in member.roles]
+                else:
+                    t_channel: TextChannel = discord.utils.get(ctx.guild.channels, name="timeout")
+                [await member.remove_roles(rl) if rl.name != "@everyone" and rl.permissions.administrator else None for rl in member.roles]
                 [await channel.set_permissions(t_role, view_channel=False) for channel in ctx.guild.channels]
-                await t_channel.set_permissions(t_role, view_channel=True)
                 await member.add_roles(t_role)
                 await command_log_and_err(ctx, status="Succesful", used_on=member)
                 await ctx.reply(f"{member.mention} is in {t_channel.mention}")
