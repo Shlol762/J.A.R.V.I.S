@@ -307,27 +307,7 @@ class Events(Cog):
 
     @Cog.listener()
     async def on_command_completion(self, ctx: Context):
-        path: str = "C:/Users/Shlok/J.A.R.V.I.SV2021/text_files/command_logs.txt"
-        f = open(path, "r")
-        lines: list[str] = f.readlines()
-        new_lines: list = []
-        f.close()
-        f = open(path, "w")
-        if ctx.command.brief and len(ctx.command.brief) >= 3:
-            if ctx.command.brief[1:] in "".join(lines):
-                for line in lines:
-                    if ctx.command.brief[1:] in line:
-                        times_used: int = int(line.split(":")[1].strip()) + 1
-                        next: str = f"{line.split(':')[0]}: {times_used}\n"
-                        new_lines.append(next)
-                    else:
-                        new_lines.append(line)
-                f.write("".join(new_lines))
-                f.close()
-            else:
-                lines.append(f"{ctx.command.brief[1:]}: 1\n")
-                f.write("".join(lines))
-                f.close()
+        pass
 
     @Cog.listener()
     async def on_guild_join(self, guild: Guild):
