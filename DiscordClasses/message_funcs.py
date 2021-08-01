@@ -49,7 +49,7 @@ async def greetings(ctx: Context) -> Union[Message, str]:
     """Checks for greetings and responds randomly"""
     author: Member = ctx.author
     bot: Bot = ctx.bot
-    response = random.choice([True, True, True, False, True, True])
+    response = random.choice([True, False, True, False, False, True])
     if re.search(r'\b(h(i)+|he(y)+|(wh(a)+(s)*)*s(u)+(p)+|(he[nl]l(o)+)(w)*)\b',
                  ctx.message.content.strip().lower()):
         if author.name != bot.user.name:
