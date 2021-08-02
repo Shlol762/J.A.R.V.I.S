@@ -4,7 +4,7 @@ from . import hypesquad_emoji, command_log_and_err, set_timestamp,\
     Member, NotFound, Status, Activity, ActivityType, Embed, Colour, Invite,\
     Forbidden, GuildChannel, MemberConverter, CommandError, CommandNotFound,\
     CommandOnCooldown, MemberNotFound, UserNotFound, RoleNotFound, MessageNotFound,\
-    ChannelNotFound, NoPrivateMessage, Message, MessageConverter,\
+    ChannelNotFound, NoPrivateMessage, Message, MessageConverter, BadUnionArgument,\
     trim, forbidden_word, noswear, greetings, farewells, nou, urnotgod, timeto, Bot
 
 severed_time = 0
@@ -277,28 +277,35 @@ class Events(Cog):
                 await ctx.reinvoke()
             else: await command_log_and_err(ctx=ctx, status='Cooldown', error=error)
         elif isinstance(error, MemberNotFound):
-            await command_log_and_err(ctx=ctx, err_code="Err_α11404",
+            await command_log_and_err(ctx=ctx, err_code="Err_a11404",
                                       text=f"**`The Member:`**` `*`'{error.argument}'`*` doesn't exist` I don't know what you're looking for.")
         elif isinstance(error, RoleNotFound):
-            await command_log_and_err(ctx=ctx, err_code="Err_β20404",
+            await command_log_and_err(ctx=ctx, err_code="Err_b20404",
                                       text=f"**`The Role:`**` `*`'{error.argument}'`*` doesn't exist` I don't know what you're looking for.")
         elif isinstance(error, MessageNotFound):
-            await command_log_and_err(ctx=ctx, err_code="Err_θ30404",
+            await command_log_and_err(ctx=ctx, err_code="Err_O30404",
                                       text=f"**`The Message:`**` `*`'{error.argument}'`*` doesn't exist` I don't know what you're looking for.")
         elif isinstance(error, UserNotFound):
-            await command_log_and_err(ctx=ctx, err_code="Err_40βθ404",
+            await command_log_and_err(ctx=ctx, err_code="Err_40bO404",
                                       text=f"**`The User:`**` `*`'{error.argument}'`*` doesn't exist` I don't know what you're looking for.")
         elif isinstance(error, ChannelNotFound):
-            await command_log_and_err(ctx=ctx, err_code="Err_50θβ404",
+            await command_log_and_err(ctx=ctx, err_code="Err_50Ob404",
                                       text=f"**`The Channel:`**` `*`'{error.argument}'`*` doesn't exist` I don't know what you're looking for.")
         elif isinstance(error, NoPrivateMessage):
             await command_log_and_err(ctx=ctx, status='Server Only', error=error)
+        elif isinstance(error, BadUnionArgument):
+            await command_log_and_err(ctx, err_code="Err_000b12",
+                                      text=f"There is no channel called {error.param}")
         else:
             err_embed = await set_timestamp(Embed(title=f"Error! - `{ctx.command.name}`", description="", colour=Colour.red()), "Unhandled Excpetion")
             err_embed.description = f"""
-```py
+
+`Author`: {ctx.author.mention}
+`Channel`: {ctx.channel.mention}
+
+[```nim
 {error.with_traceback(error.__traceback__)}
-```
+```]({ctx.message.jump_url})
 **Check Command Prompt**
 """
             error_channel: TextChannel = ctx.bot.get_channel(868640456328744960)
