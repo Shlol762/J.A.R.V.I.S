@@ -26,7 +26,7 @@
       "iamgod": true
    },
    "819515740490825771": {
-      "ban": false,
+      "ban": true,
       "kick": true,
       "clear": true,
       "message": true,
