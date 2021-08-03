@@ -14,7 +14,7 @@ class Help(Cog):
     @command(brief='✉', name='Help', aliases=['hp'])
     async def help(self, ctx: Context, *, cog: Optional[str]):
         bot: Bot = ctx.bot
-        icon = bot.user.avatar_url
+        icon = bot.user.avatar.url
         help_col = Colour.random()
         try:
             if not cog:

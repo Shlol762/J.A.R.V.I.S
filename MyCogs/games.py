@@ -312,7 +312,7 @@ Password: {hack_pass}
                 webhook: discord.Webhook = await ctx.channel.create_webhook(name=ctx.bot.user.name, avatar=None)
                 await webhook.send(text or f"I have no idea who to impersonate so I'll just impersonate you.",
                                    username=member.display_name,
-                                   avatar_url=member.avatar_url)
+                                   avatar_url=member.avatar.url)
                 with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/webhooks.json", "r") as f:
                     webhooks: dict = json.load(f)
                     webhooks[str(ctx.channel.id)] = str(webhook.id)
@@ -324,7 +324,7 @@ Password: {hack_pass}
                 webhook: discord.Webhook = await ctx.bot.fetch_webhook(int(webhooks.get(str(ctx.channel.id))))
                 await webhook.send(text or f"I have no idea who to impersonate so I'll just impersonate you.",
                                    username=member.display_name,
-                                   avatar_url=member.avatar_url)
+                                   avatar_url=member.avatar.url)
 
 
 def setup(bot: Bot):

@@ -175,10 +175,10 @@ class Events(Cog):
                                                                     message.reference.jump_url)
                     text: str = f"`╔═`***`{ref.author.name}`***: {ref.content[:50]}\n{message.content}"
                 ch1, ch2, ch3, ch4 = await bot.fetch_webhook(webhooks[0]), await bot.fetch_webhook(webhooks[1]), await bot.fetch_webhook(webhooks[2]), await bot.fetch_webhook(webhooks[3])
-                await ch1.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar_url) if channel.id != chnls[0] else None
-                await ch2.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar_url) if channel.id != chnls[1] else None
-                await ch3.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar_url) if channel.id != chnls[2] else None
-                await ch4.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar_url) if channel.id != chnls[3] else None
+                await ch1.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar.url) if channel.id != chnls[0] else None
+                await ch2.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar.url) if channel.id != chnls[1] else None
+                await ch3.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar.url) if channel.id != chnls[2] else None
+                await ch4.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar.url) if channel.id != chnls[3] else None
             else:
                 try:
                     channel_id: str = str(channel.id)

@@ -149,7 +149,7 @@ class Utilities(Cog):
             bot: Bot = ctx.bot
             if not member:
                 member = ctx.message.author
-            pfp = member.avatar_url
+            pfp = member.avatar.url
             name = member.name
             disc = member.discriminator
             nick = f'"{member.display_name}"' if member.nick else 'No nickname...'
@@ -325,7 +325,7 @@ For Example:- 1)Err_10124 means command '1' under category
     `{"Version":^15}-{bot_ver:^25}`
     `{"Created on":^15}-{time_set(c.created_at, "%d %b %Y at %I:%M %p"):^25}`"""
             await command_log_and_err(ctx, 'Success')
-            cinfo.set_thumbnail(url=c.avatar_url)
+            cinfo.set_thumbnail(url=c.avatar.url)
             await ctx.reply(embed=cinfo)
 
     # 309
@@ -390,7 +390,7 @@ For Example:- 1)Err_10124 means command '1' under category
                                             description='It stands for `Just A Rather Very Intelligent System`\n\nClick [`J.A.R.V.I.S`]({}) to add me to your server.'.format(
                                                'https://discord.com/api/oauth2/authorize?client_id=749830638982529065&permissions=8&scope=bot%20applications.commands'
                                            ), colour=discord.Colour.random()).set_thumbnail(
-            url=bot.user.avatar_url))
+            url=bot.user.avatar.url))
 
     # 316
     @commands.command(name='Announce', aliases=['an'], brief='📢311',
@@ -408,7 +408,7 @@ For Example:- 1)Err_10124 means command '1' under category
                                 await member.send(embed=discord.Embed(title=f'Announcement from {ctx.author.name}',
                                                                       description=text,
                                                                       colour=discord.Colour.random()).set_thumbnail(
-                                    url=bot.user.avatar_url))
+                                    url=bot.user.avatar.url))
                             except discord.HTTPException:
                                 await ctx.reply(f"Cant send message to {member}")
                 else:
@@ -443,7 +443,7 @@ For Example:- 1)Err_10124 means command '1' under category
     async def _pfp(self, ctx: commands.Context, user: discord.User = None):
         user = user or ctx.author
         await command_log_and_err(ctx, status="Success")
-        await ctx.send(embed=await set_timestamp(discord.Embed(description="_ _", colour=discord.Colour.random()).set_image(url=user.avatar_url)))
+        await ctx.send(embed=await set_timestamp(discord.Embed(description="_ _", colour=discord.Colour.random()).set_image(url=user.avatar.url)))
 
 
 def setup(bot: Bot):

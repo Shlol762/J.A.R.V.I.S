@@ -46,7 +46,7 @@ async def command_log_and_err(ctx: commands.Context = None, status: Optional[str
         else: pass
         try: await reaction(ctx, False)
         except discord.Forbidden: pass
-        embed.set_footer(icon_url=bot.user.avatar_url)
+        embed.set_footer(icon_url=bot.user.avatar.url)
         embed.add_field(name="Code:", value=f"`{'Err_' + err_code if err_code[:2].lower() != 'err' and err_code[:-2].isnumeric() else err_code}`")
         await ctx.reply(embed=await set_timestamp(embed,
                                                  str(ctx.command.qualified_name if ctx.command else "Invalid"))) if send is True else None
