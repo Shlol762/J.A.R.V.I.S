@@ -213,7 +213,7 @@ class Utilities(Cog):
             server_info.description += f'`{"File Size Limit":^17}: {f"{round(server.filesize_limit / 1000000)} mb":^30}`\n`{"Boosters":^17}: {boosters or "No boosters":^30}`\n'
             server_info.description += f'`{"Created on":^17}: {created_at:^30}`\n'
             server_info.description += f'`{"Member Count":^17}: {f"Total - {len(ctx.guild.members)}, Bots - {bot_count}":^30}`'
-            server_info.set_thumbnail(url=server.icon_url)
+            server_info.set_thumbnail(url=server.icon.url)
             server_info = await set_timestamp(server_info)
             await command_log_and_err(ctx, 'Success')
             await ctx.reply(embed=server_info)
@@ -425,7 +425,7 @@ For Example:- 1)Err_10124 means command '1' under category
             embed = discord.Embed(title=f'Member list - {ctx.guild.name}', description='', colour=discord.Colour.random())
             for member in ctx.guild.members:
                 embed.description += f'`{member.name:^30} - `{member.mention}\n'
-            embed.set_thumbnail(url=ctx.guild.icon_url)
+            embed.set_thumbnail(url=ctx.guild.icon.url)
             if len(embed.description) >= 2048:
                 third_1 = '\n'.join(embed.description.split('\n')[:20])
                 third_2 = '\n'.join(embed.description.split('\n')[20:40])
