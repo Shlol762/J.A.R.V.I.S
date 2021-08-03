@@ -1,6 +1,8 @@
 import asyncio
 import json
 import os
+import random
+
 import discord
 from discord.ext import commands
 from DiscordClasses import bot_token, WorldoMeter, get_prefix, time_set
@@ -12,6 +14,31 @@ client = commands.Bot(command_prefix=get_prefix, case_insensitive=True, intents=
                       allowed_mentions=discord.AllowedMentions(everyone=False),
                       strip_after_prefix=True)
 client.remove_command('help')
+
+
+class Counter(discord.ui.View):
+    @discord.ui.button(label='0', style=discord.ButtonStyle.red)
+    async def counter(self, button: discord.ui.Button, interaction: discord.Interaction):
+        number = int(button.label)
+        button.label = str(number + 1)
+        if number + 1 >= 5:
+            button.style = discord.ButtonStyle.green
+
+        await interaction.message.edit(view=self)
+
+    @discord.ui.button(label="Henlo there!", style=discord.ButtonStyle.danger)
+    async def hey(self, button: discord.ui.Button, interaction: discord.Interaction):
+        button.label = random.choice([
+            'Greetings my fran!',
+            'Sup?', "AYOOO", "How you doin'?",
+            'Hi'])
+        button.style = random.choice([discord.ButtonStyle.green, discord.ButtonStyle.danger])
+        await interaction.message.edit(view=self)
+
+    async def on_timeout(self):
+        for item in self.children:
+            if isinstance(item, discord.ui.Button):
+                item.disabled = True
 
 
 for cog in os.listdir("C:/Users/Shlok/J.A.R.V.I.SV2021/MyCogs"):
@@ -36,7 +63,9 @@ sec_lvl = """
 
 @client.command(hidden=True)
 async def test(ctx: commands.Context):
-    pass
+    for comm in client.commands:
+        if comm.extras:
+            await ctx.send(comm.extras['emoji'])
 
 
 @client.command(hidden=True)
@@ -93,15 +122,17 @@ If you want to join my home server, click [`J.A.R.V.I.S`]({link})
             await ctx.reply(f'`Message link`: https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
 
 
+class Fran(discord.ui.View):
+    pass
+
+
 @client.command(hidden=True)
 async def test1(ctx: commands.Context):
-    prefixes: dict = {}
-    for guild in ctx.bot.guilds:
-        guild: discord.Guild = guild
-        prefixes[str(guild.id)] = '$'
-        await ctx.reply(f"Def `prefix` set for `{guild.name}`")
-    with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/prefixes.json", "w") as f:
-        json.dump(prefixes, f, indent=3)
+
+    await ctx.send("Context", view=Fran().add_item(
+        discord.ui.Button(style=discord.ButtonStyle.blurple, label="Test")))  # Blue button with button label of "Test"
+    res = await client.wait_for("button_click")  # Wait for button to be clicked
+    await res.respond(type=discord.InteractionType.ChannelMessageWithSource, content=f'Button Clicked')
 
 
 @client.command(hidden=True)
