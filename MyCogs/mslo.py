@@ -7,7 +7,7 @@ from MyCogs import command_log_and_err, set_timestamp, Context,\
     Cog, Client, command, cooldown, guild_only, User, Member,\
     BucketType, UserNotFound, Embed, Colour, HTTPException,\
     Forbidden, commands, has_guild_permissions, Message, TextChannel,\
-    Role, TextChannelConverter, RoleConverter, Bot
+    Role, TextChannelConverter, RoleConverter, Bot, UserConverter
 #commands.
 
 class Mslo(Cog):
@@ -198,8 +198,9 @@ class Mslo(Cog):
                       ' and invites them by looking through the servers'
                       ' bans list.')
     @guild_only()
-    async def unban(self, ctx: Context, *, member: User = None):
+    async def unban(self, ctx: Context, *, member = None):
         author = ctx.message.author
+        member = await UserConverter().convert(ctx, member)
         if member:
             banned_users = await ctx.guild.bans()
             try:
