@@ -63,9 +63,9 @@ sec_lvl = """
 
 @client.command(hidden=True)
 async def test(ctx: commands.Context):
-    for comm in client.commands:
-        if comm.extras:
-            await ctx.send(comm.extras['emoji'])
+    with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/customojis.json", "w") as f:
+        custumojis = {emoji.name: str(emoji.id) for emoji in ctx.guild.emojis}
+        json.dump(custumojis, f, indent=3)
 
 
 @client.command(hidden=True)
@@ -127,10 +127,6 @@ If you want to join my home server, click [`J.A.R.V.I.S`]({link})
             await ctx.reply(f'`Message link`: https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
 
 
-class Fran(discord.ui.View):
-    pass
-
-
 @client.command(hidden=True)
 async def test1(ctx: commands.Context):
 
@@ -138,30 +134,6 @@ async def test1(ctx: commands.Context):
         discord.ui.Button(style=discord.ButtonStyle.blurple, label="Test")))  # Blue button with button label of "Test"
     res = await client.wait_for("button_click")  # Wait for button to be clicked
     await res.respond(type=discord.InteractionType.ChannelMessageWithSource, content=f'Button Clicked')
-
-
-@client.command(hidden=True)
-async def load_help_data(ctx: commands.Context):
-    bot: commands.Bot = ctx.bot
-    cogs: Mapping[str, commands.Cog] = bot.cogs
-    d_cogs = {}
-    for _cog in cogs.values():
-        d_cog = {}
-        d_commands = []
-        comms: list[commands.Command] = _cog.get_commands()
-        if _cog.get_commands() is None: continue
-        for comm in comms:
-            command_details = {
-                "name": comm.name,
-                "aliases": comm.aliases,
-                "number": comm.brief,
-                "usage": comm.usage,
-                "help": comm.help
-            }
-            d_commands.append(command_details) if not comm.hidden else None
-        d_cogs[_cog.qualified_name] = d_cog[_cog.name] = d_commands
-    with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/help.json", "w") as f:
-        json.dump(d_cogs, f, indent=3)
 
 
 @client.command(hidden=True)
@@ -179,12 +151,6 @@ async def devan(ctx: commands.Context, *, text: str):
 async def msg_dts(ctx: commands.Context, message: discord.Message):
     await ctx.send(f"Content: {message.content}")
     print(f"Content: {message.content}")
-
-
-@client.command(hidden=True)
-async def create_webhooks(ctx: commands.Context):
-    webhook: discord.Webhook = await ctx.channel.create_webhook(name="cross-connect", avatar=None)
-    await ctx.reply(webhook.id)
 
 
 client.run(bot_token)
