@@ -80,18 +80,23 @@ async def refseclvl(ctx: commands.Context):
     admin: discord.Role = ctx.guild.get_role(839069357581139998)
     for member, join_time in mem_list.items():
         diff = (now - datetime.datetime.strptime(join_time, "%d %b %Y at %I:%M %p").date())
-        member: discord.Member = await ctx.guild.fetch_member(int(member))
-        if diff.seconds > 600:
-            await member.add_roles(lvl0)
-        elif diff.days > 14:
-            await member.add_roles(lvl1, lvl0)
-        elif diff.days > 90:
-            await member.add_roles(lvl2, lvl1, lvl0)
-        elif diff.days > 180:
-            await member.add_roles(lvl3, lvl2, lvl1, lvl0)
-        elif diff.days > 270:
-            await member.add_roles(admin, lvl3, lvl2, lvl1, lvl0)
-        await ctx.send(f"Clerance updates for {member.mention}")
+        try:
+            member: discord.Member = await ctx.guild.fetch_member(int(member))
+            if diff.seconds > 600:
+                await member.add_roles(lvl0)
+            elif diff.days > 14:
+                await member.add_roles(lvl1, lvl0)
+            elif diff.days > 90:
+                await member.add_roles(lvl2, lvl1, lvl0)
+            elif diff.days > 180:
+                await member.add_roles(lvl3, lvl2, lvl1, lvl0)
+            elif diff.days > 270:
+                await member.add_roles(admin, lvl3, lvl2, lvl1, lvl0)
+            await ctx.send(f"Clerance updates for {member.mention}")
+        except (commands.MemberNotFound, discord.NotFound):
+            try: user: discord.User = await client.fetch_user(int(member))
+            except (commands.UserNotFound, discord.NotFound): await ctx.reply(f"{member} not found.")
+            else: await ctx.reply(user.mention)
     await ctx.send("Refresh complete.")
 
 
