@@ -17,7 +17,7 @@ class Games(Cog):
     # 401
     @command(aliases=['rd', 'rolldice'], name='Roll Dice',
                       help='Rolls an imaginary dice.',
-                      usage='rolldice|rd', brief='🎲401')
+                      usage='rolldice|rd', extras={'emoji': '🎲', 'number': '401'})
     @cooldown(1, 0.5, BucketType.member)
     async def rolldice(self, ctx: Context):
         author: Member = ctx.message.author
@@ -26,7 +26,7 @@ class Games(Cog):
         await ctx.reply(f'You rolled {dice_num}, {author.mention}')
 
     # 402
-    @command(aliases=['8b', 'eightball', 'oracle'], name='8ball', brief='🎱402',
+    @command(aliases=['8b', 'eightball', 'oracle'], name='8ball', extras={'emoji': '🎱', 'number': '402'},
                       help='Answers questions with 8ball ish results.',
                       usage='8ball|8b|eightball|oracle <question>')
     @cooldown(1, 1.5, BucketType.member)
@@ -53,7 +53,7 @@ class Games(Cog):
     # 403
     @command(aliases=['ynm'], name='YesNoMaybe',
                       help='Answers questions with Yes, No and Maybe.',
-                      usage='yesnomaybe|ynm <question>', brief='🎱403')
+                      usage='yesnomaybe|ynm <question>', extras={'emoji': '🎱', 'number': '403'})
     @cooldown(1, 1.5, BucketType.member)
     async def yesnomaybe(self, ctx: Context, *, question: str = None):
         if question:
@@ -66,7 +66,7 @@ class Games(Cog):
                                       text='Ask me a question dummy!')
 
     # 404
-    @command(aliases=['hk'], name='Hack', brief='💻404',
+    @command(aliases=['hk'], name='Hack', extras={'emoji': '💻', 'number': '404'},
                       help='Hacks into a members account and steals all their information.(Not really)',
                       usage='hack|hk <member>')
     @cooldown(1, 1.5, BucketType.member)
@@ -161,7 +161,7 @@ Password: {hack_pass}
     # 405
     @command(aliases=['fc'], name='Flipcoin',
                       help='Using this command you can either flip a coin by yourself or, challenge another player to flip a coin with you.',
-                      usage='flipcoin|fc (member)', brief='💰405')
+                      usage='flipcoin|fc (member)', extras={'emoji': '💰', 'number': '405'})
     @cooldown(1, 1, BucketType.member)
     async def flipcoin(self, ctx: Context, member: Optional[Member] = None):
         author: Member = ctx.message.author
@@ -257,7 +257,7 @@ Password: {hack_pass}
             await ctx.reply(f"{author.mention} you got {h_t_r}")
 
     # 406
-    @command(aliases=['ncrpt'], name='Encrypt', brief='💬406',
+    @command(aliases=['ncrpt'], name='Encrypt', extras={'emoji': '💬', 'number': '406'},
                       help='This command currently uses two types of encoding languages to encrypt a sample of text',
                       usage='encrypt|ncrpt <code/morse> <text>')
     @cooldown(1, 1.5, BucketType.member)
@@ -277,7 +277,7 @@ Password: {hack_pass}
                                       text="Specify the code you want to encrypt your text in")
 
     # 407
-    @command(aliases=['dcrpt'], name='Decrypt', brief='🗨407',
+    @command(aliases=['dcrpt'], name='Decrypt', extras={'emoji': '🗨', 'number': '407'},
                       help='This command decrypts messages in code and morse.',
                       usage='decrypt|dcrypt <code/morse> <encrypt text>')
     @cooldown(1, 1.5, BucketType.member)
@@ -297,7 +297,7 @@ Password: {hack_pass}
                                       text="Specify the coding type you want to decrypt your code in")
 
     #408
-    @command(aliases=['imp'], name="Impersonate", brief="🎭408",
+    @command(aliases=['imp'], name="Impersonate", extras={'emoji': '🎭', 'number': '408'},
              help="Of course it impersonates people.",
              usage="impersonate|imp (member) (text)")
     @cooldown(1, 10, BucketType.channel)

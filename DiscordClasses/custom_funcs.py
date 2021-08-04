@@ -44,7 +44,8 @@ async def reaction(ctx: Context = None, success=None):
         await ctx.message.clear_reactions()
         await ctx.message.add_reaction('❌')
     if success is True:
-        emoji: str = ctx.command.brief[0]
+        emoji: str = ctx.command.extras.get('emoji')
+        emoji: Emoji = ctx.bot.get_emoji(int(emoji)) if emoji.isnumeric() else emoji
         try:
             await ctx.message.add_reaction(emoji)
         except discord.HTTPException:
@@ -209,7 +210,8 @@ async def send_to_paste_service(content: str) -> str:
     async with aiohttp.ClientSession() as session:
         async with session.post(url.format(key="documents"), data=content) as req:
             json_req = await req.json()
-    url = url.format(key=json_req['key']) + '.py'
+    try: url = url.format(key=json_req['key']) + '.py'
+    except KeyError: url = url.format(key='documents')
     return url
 
 
@@ -243,9 +245,9 @@ async def comm_log_local(ctx: Context, status: str):
     date: str = time_set(ctx.message.created_at, "%d-%m-%y")
     com_name = ctx.command.name[:6] if ctx.command else "Invalid"
     cog_name = ctx.command.cog_name[:4] if ctx.command else "Invalid"
-    com_brief = ctx.command.brief[1:] if ctx.command else "Invalid"
+    com_num = ctx.command.extras['number'] if ctx.command else "Invalid"
     status = "404" if "404" in status else status
-    lines.append(f"|{sl_no:^11}|{com_name:^9}|{cog_name:^10}|{com_brief:^8}|{status:^44}|{time:^6}|{date:^8}| {ctx.author.id} | {ctx.channel.id if ctx.channel else ctx.author.id} | {ctx.guild.id if ctx.guild else ctx.author.id} |")
+    lines.append(f"|{sl_no:^11}|{com_name:^9}|{cog_name:^10}|{com_num:^8}|{status:^44}|{time:^6}|{date:^8}| {ctx.author.id} | {ctx.channel.id if ctx.channel else ctx.author.id} | {ctx.guild.id if ctx.guild else ctx.author.id} |")
     f = open("C:/Users/Shlok/bot_stuff/command_logs.txt", "w")
     f.write("\n".join(lines))
     f.close()

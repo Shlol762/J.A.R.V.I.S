@@ -288,7 +288,7 @@ class Music(Cog):
         await ctx.reply(f'An error occurred: {str(error)}')
 
     @command(name='Join', aliases=['jn'], invoke_without_subcommand=True,
-                      help="Joins a voice channel.", brief='⤵601',
+                      help="Joins a voice channel.", extras={'emoji': '⤵', 'number': '601'},
                       usage='join|jn')
     @guild_only()
     async def _join(self, ctx: Context):
@@ -299,7 +299,7 @@ class Music(Cog):
             return
         ctx.voice_state.voice = await destination.connect()
 
-    @command(name='Summon', aliases=['smn'], brief='↙602',
+    @command(name='Summon', aliases=['smn'], extras={'emoji': '↙', 'number': '602'},
                       help="Summons the bot to a voice channel. If no channel was specified, it joins your channel.",
                       usage='summon|smn (channel)')
     @guild_only()
@@ -315,7 +315,7 @@ class Music(Cog):
 
     @command(name='Leave', aliases=['disconnect', 'dc'],
                       help="Clears the queue and leaves the voice channel.",
-                      usage='leave|disconnect|dc', brief='🚪603')
+                      usage='leave|disconnect|dc', extras={'emoji': '🚪', 'number': '603'})
     @guild_only()
     async def _leave(self, ctx: Context):
         if not ctx.voice_state.voice:
@@ -324,7 +324,7 @@ class Music(Cog):
         await ctx.voice_state.stop()
         del self.voice_states[ctx.guild.id]
 
-    @command(name='Volume', aliases=['v'], brief='🔊604',
+    @command(name='Volume', aliases=['v'], extras={'emoji': '🔊', 'number': '604'},
                       help="Sets the volume of the player.",
                       usage='volume|v <volume: out of hundred>')
     @guild_only()
@@ -340,14 +340,14 @@ class Music(Cog):
         await ctx.reply(f'Volume of the player set to {volume}%')
 
     @command(name='Now', aliases=['n', 'current', 'playing'],
-                      help='Displays the currently playing song.', brief='🎶605',
+                      help='Displays the currently playing song.', extras={'emoji': '🎶', 'number': '605'},
                       usage='now|n|current|playing')
     @guild_only()
     async def _now(self, ctx: Context):
         await command_log_and_err(ctx, status='Success')
         await ctx.reply(embed=ctx.voice_state.current.create_embed())
 
-    @command(name='Pause', aliases=['ps'], brief='⏸606',
+    @command(name='Pause', aliases=['ps'], extras={'emoji': '⏸', 'number': '606'},
                       help="Pauses the currently playing song.",
                       usage='pause|ps')
     @guild_only()
@@ -356,7 +356,7 @@ class Music(Cog):
         if ctx.voice_state.voice.is_playing():
             ctx.voice_state.voice.pause()
 
-    @command(name='Resume', aliases=['res'], brief='▶607',
+    @command(name='Resume', aliases=['res'], extras={'emoji': '▶', 'number': '607'},
                       help="Resumes a currently paused song.",
                       usage='resume|res')
     @guild_only()
@@ -365,7 +365,7 @@ class Music(Cog):
         if ctx.voice_state.voice.is_paused():
             ctx.voice_state.voice.resume()
 
-    @command(name='Stop', aliases=['sp'], brief='⏹608',
+    @command(name='Stop', aliases=['sp'], extras={'emoji': '⏹', 'number': '608'},
                       help="Stops playing song and clears the queue.",
                       usage='stop|sp')
     @guild_only()
@@ -375,7 +375,7 @@ class Music(Cog):
         if ctx.voice_state.voice.is_playing:
             ctx.voice_state.voice.stop()
 
-    @command(name='Skip', aliases=['sk'], brief='⏭609',
+    @command(name='Skip', aliases=['sk'], extras={'emoji': '⏭', 'number': '609'},
                       help="Vote to skip a song. The requester can automatically skip. 3 skip votes are needed for the song to be skipped.",
                       usage='skip|sk')
     @guild_only()
@@ -399,7 +399,7 @@ class Music(Cog):
         else:
             await ctx.reply('You have already voted to skip this song.')
 
-    @command(name='Queue', aliases=['q'], brief='➡610',
+    @command(name='Queue', aliases=['q'], extras={'emoji': '➡', 'number': '610'},
                       help="Shows the player's queue. You can optionally specify the page to show. Each page contains 10 elements.",
                       usage='queue|q (page number)')
     @guild_only()
@@ -423,7 +423,7 @@ class Music(Cog):
         await ctx.reply(embed=embed)
 
     @command(name='Shuffle', aliases=['shfl'],
-                      help="Shuffles the queue.", brief='🔀611',
+                      help="Shuffles the queue.", extras={'emoji': '🔀', 'number': '611'},
                       usage='shuffle|shfl')
     @guild_only()
     async def _shuffle(self, ctx: Context):
@@ -433,7 +433,7 @@ class Music(Cog):
         await command_log_and_err(ctx, status='Success')
         ctx.voice_state.songs.shuffle()
 
-    @command(name='Remove', aliases=['rem'], brief='➖612',
+    @command(name='Remove', aliases=['rem'], extras={'emoji': '➖', 'number': '612'},
                       help="Removes a song from the queue at a given index.",
                       usage='remove <index of song in queue>')
     @guild_only()
@@ -444,7 +444,7 @@ class Music(Cog):
         await command_log_and_err(ctx, status='Success')
         ctx.voice_state.songs.remove(index - 1)
 
-    @command(name='Loop', aliases=['lp'], brief='🔁613',
+    @command(name='Loop', aliases=['lp'], extras={'emoji': '🔁', 'number': '613'},
                       help="Loops the currently playing song. Invoke this command again to unloop the song.",
                       usage='loop|lp')
     @guild_only()
@@ -456,7 +456,7 @@ class Music(Cog):
         await command_log_and_err(ctx, status='Success')
         ctx.voice_state.loop = not ctx.voice_state.loop
 
-    @command(name='Play', aliases=['p'], brief='▶614',
+    @command(name='Play', aliases=['p'], extras={'emoji': '▶', 'number': '614'},
                       help="""Plays a song. If there are songs in the queue, this will be queued until the other songs finished playing. This command automatically searches from various sites if no URL is provided.""",
                       usage='play|p <query or url>')
     @guild_only()

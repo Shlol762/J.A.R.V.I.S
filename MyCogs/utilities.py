@@ -21,7 +21,7 @@ class Utilities(Cog):
     @commands.command(name="Clear", aliases=['cl'],
                       help='Deletes any number of messages below 20.',
                       usage="clear|cl (amt of msgs to be deleted)",
-                      brief='♻301')
+                      extras={'emoji': '♻', 'number': '301'})
     @commands.cooldown(1, 30, commands.BucketType.member)
     @commands.guild_only()
     async def _clear(self, ctx: commands.Context, amount: Optional[int] = 1):
@@ -50,7 +50,7 @@ class Utilities(Cog):
     # 303
     @commands.command(aliases=['calc'],
                       help="Calculates and gives result based on input. If 'help arith' or 'help compare' is put in the expression argument, you'll get a list of Operators.",
-                      name="Calculator", brief='🧮302',
+                      name="Calculator", extras={'emoji': '🧮', 'number': '302'},
                       usage="calculator|calc <expression>")
     async def calculator(self, ctx: commands.Context, *, expression: Optional[str]):
         author = ctx.message.author
@@ -113,7 +113,7 @@ class Utilities(Cog):
     @commands.command(name="Change nickname", aliases=['cn', 'changenick'],
                       help="Changes the nickname of a given Member.",
                       usage='changenick|cn <member> <new nickname>',
-                      brief='🎭303')
+                      extras={'emoji': '🎭', 'number': '303'})
     @commands.cooldown(1, 30, commands.BucketType.member)
     @commands.guild_only()
     async def changenick(self, ctx, member: discord.Member = None, *, new_nick=None):
@@ -142,7 +142,7 @@ class Utilities(Cog):
     # 305
     @commands.command(aliases=['minfo', 'memberinfo'], name='Member Info',
                       help="Displays the info of a given Member.",
-                      usage='memberinfo|minfo (member)', brief='📃304')
+                      usage='memberinfo|minfo (member)', extras={'emoji': '📃', 'number': '304'})
     @commands.guild_only()
     async def memberinfo(self, ctx: commands.Context, member: Optional[discord.Member]):
         async with ctx.typing():
@@ -193,7 +193,7 @@ class Utilities(Cog):
     # 306
     @commands.command(aliases=['sinfo', 'serverinfo'], usage='serverinfo|sinfo',
                       help="Displays info of the server.",
-                      name="Server Info", brief='📜305')
+                      name="Server Info", extras={'emoji': '📜', 'number': '305'})
     @commands.guild_only()
     async def serverinfo(self, ctx: commands.Context):
         async with ctx.typing():
@@ -221,7 +221,7 @@ class Utilities(Cog):
     # 307
     @commands.command(aliases=['ecl', 'errorcodelist'], name="Error Code List",
                       help="Gives a list of error codes that the bot gives out in an error, and the codes' meanings.",
-                      usage='errorcodelist|ecl <err code>', brief='📄306')
+                      usage='errorcodelist|ecl <err code>', extras={'emoji': '📄', 'number': '306'})
     async def errorcodelist(self, ctx: commands.Context, error: str = None):
         bot: Bot = ctx.bot
         async with ctx.typing():
@@ -310,7 +310,7 @@ For Example:- 1)Err_10124 means command '1' under category
     # 308
     @commands.command(aliases=['cinfo', 'clientinfo'], name="Client Info",
                       help='Displays information about the bot',
-                      usage='clientinfo|cinfo', brief='📃307')
+                      usage='clientinfo|cinfo', extras={'emoji': '📃', 'number': '307'})
     async def clientinfo(self, ctx: commands.Context):
         async with ctx.typing():
             bot: Bot = ctx.bot
@@ -331,7 +331,7 @@ For Example:- 1)Err_10124 means command '1' under category
     # 309
     @commands.command(aliases=['di'], name='Delinvs',
                       help='Deletes all active invites of the server.',
-                      usage='delinvs|di', brief='🚷308')
+                      usage='delinvs|di', extras={'emoji': '🚷', 'number': '308'})
     @commands.guild_only()
     async def delinvs(self, ctx: commands.Context):
         async with ctx.typing():
@@ -345,7 +345,7 @@ For Example:- 1)Err_10124 means command '1' under category
     # 314
     @commands.command(aliases=['st'], name='Status',
                       help='Displays the Status of a given member',
-                      usage='status|st (member)', brief='📲309')
+                      usage='status|st (member)', extras={'emoji': '📲', 'number': '309'})
     @commands.guild_only()
     async def status(self, ctx: commands.Context, member: discord.Member = None):
         async with ctx.typing():
@@ -381,7 +381,7 @@ For Example:- 1)Err_10124 means command '1' under category
     Status = None```""")
             await command_log_and_err(ctx, 'Success')
 
-    @commands.command(aliases=['abts', 'addbottoserver'], name='Add bot to server', brief='🔗310',
+    @commands.command(aliases=['abts', 'addbottoserver'], name='Add bot to server', extras={'emoji': '🔗', 'number': '310'},
                       usage='addbottoserver|abts', help='Generates and sends a link to add the bot to your server')
     async def addbottoserver(self, ctx: commands.Context):
         await command_log_and_err(ctx, 'Success')
@@ -393,7 +393,7 @@ For Example:- 1)Err_10124 means command '1' under category
             url=bot.user.avatar.url))
 
     # 316
-    @commands.command(name='Announce', aliases=['an'], brief='📢311',
+    @commands.command(name='Announce', aliases=['an'], extras={'emoji': '📢', 'number': '311'},
                       help='Announces to every member in the server.', usage='$announce|an <text>')
     @commands.cooldown(60, 1, commands.BucketType.guild)
     async def announce(self, ctx: commands.Context, *, text: str = None):
@@ -416,7 +416,7 @@ For Example:- 1)Err_10124 means command '1' under category
                     await ctx.reply(f"{ctx.author.mention}, you are not the owner of `{ctx.guild.name}`")
             else: await command_log_and_err(ctx, err_code='31148', text="You haven't given anything to announce pal")
 
-    @commands.command(name='Member List', aliases=['ml', 'members', 'memberlist'], brief='📋312',
+    @commands.command(name='Member List', aliases=['ml', 'members', 'memberlist'], extras={'emoji': '📋', 'number': '312'},
                       help='Returns a member list of everyone in the server.', usage='$members|memberlist|ml')
     @commands.cooldown(1, 10, commands.BucketType.guild)
     async def memberlist(self, ctx: commands.Context):
@@ -437,7 +437,7 @@ For Example:- 1)Err_10124 means command '1' under category
             else:
                 await ctx.reply(embed=embed)
 
-    @commands.command(name="Profile Pic", aliases=['pfp', 'profilepic'], brief="🎭313",
+    @commands.command(name="Profile Pic", aliases=['pfp', 'profilepic'], extras={'emoji': '🎭', 'number': '313'},
                       help="Displays the profile picture of a given user.",
                       usage="$profilepic|pfp (user)")
     async def _pfp(self, ctx: commands.Context, user: discord.User = None):

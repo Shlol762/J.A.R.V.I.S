@@ -11,7 +11,7 @@ class Help(Cog):
         self.bot = bot
         self.name = 'Help'
 
-    @command(brief='✉', name='Help', aliases=['hp'])
+    @command(extras={'emoji': '✉'}, name='Help', aliases=['hp'])
     async def help(self, ctx: Context, *, cog: Optional[str]):
         bot: Bot = ctx.bot
         icon = bot.user.avatar.url

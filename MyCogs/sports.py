@@ -16,11 +16,11 @@ class Sports(Cog):
         self.c = Cricket()
 
     @commands.command(name='Ipl score', aliases=['ipls', 'iplscore'],
-                      usage='iplscore|ipls', brief='🏏801',
+                      usage='iplscore|ipls', extras={'emoji': '🏏', 'number': '801'},
                       help='Gets the score of the next or live IPL match')
     async def iplscore(self, ctx: Context):
         async with ctx.typing():
-            match: Cricket = Cricket()
+            match = Cricket()
             embed = discord.Embed(title=f'{match.match_ser}\n`{match.team1}` vs `{match.team2}`', description='',
                                   colour=discord.Colour.random()).set_footer(
                 text=match.status, icon_url=match.pt_ipl_logo)
@@ -40,7 +40,7 @@ class Sports(Cog):
 
     @commands.command(name='Ipl table', aliases=['iplt', 'ipltable'],
                       usage='ipltable|iplt (team)',
-                      help='Gets the IPL table, or table statistics of a team based on your input', brief='🏆802')
+                      help='Gets the IPL table, or table statistics of a team based on your input', extras={'emoji': '🏆', 'number': '802'})
     async def ipltable(self, ctx: Context, *, team: Optional[str] = None):
         async with ctx.typing():
             cricket: Cricket = self.c

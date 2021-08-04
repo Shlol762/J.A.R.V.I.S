@@ -18,7 +18,7 @@ class Mslo(Cog):
 
     # 201
     @command(name="Invite", aliases=['i'], usage='invite|i <user>',
-                      brief='🚪201',
+                      extras={'emoji': '🚪', 'number': '201'},
     help='Invites people from outside the server. This can vary from user to user based on their privacy settings.')
     @cooldown(1, 5, BucketType.member)
     @guild_only()
@@ -47,7 +47,7 @@ class Mslo(Cog):
         return [invite, error, msg, invitelink]
 
     # 202
-    @command(name="Kick", aliases=['k'], usage='kick|k <member> (reason)', brief='⛔202',
+    @command(name="Kick", aliases=['k'], usage='kick|k <member> (reason)', extras={'emoji': '⛔', 'number': '202'},
                       help='Kicks members from the server. Owners of servers have an option to skip the conformation message as well use the kick command when it is de-activated, to access this, type: "override 403" in the place of reason.')
     @guild_only()
     async def kick(self, ctx: Context, member: Member = None, *, reason: Optional[str] = ''):
@@ -127,7 +127,7 @@ class Mslo(Cog):
                 await ctx.reply(f"`Kick` has been `disabled` for {ctx.channel.mention}")
 
     # 203
-    @command(name="Ban", aliases=['b'], usage='ban|b <member> (reason)', brief='🚫203',
+    @command(name="Ban", aliases=['b'], usage='ban|b <member> (reason)', extras={'emoji': '🚫', 'number': '203'},
                       help='Bans members from the server. Owners of servers have an option to skip the conformation message as well use the ban command when it is de-activated, to access this, type: "override 403" in the place of reason.')
     @cooldown(1, 15, BucketType.guild)
     @guild_only()
@@ -194,7 +194,7 @@ class Mslo(Cog):
 
     # 204
     @command(name="Unban", aliases=['ub'], usage='unban|ub <user>',
-                      brief='🛂204', help='Unbans users from the server'
+                      extras={'emoji': '🛂', 'number': '204'}, help='Unbans users from the server'
                       ' and invites them by looking through the servers'
                       ' bans list.')
     @guild_only()
@@ -232,7 +232,8 @@ class Mslo(Cog):
 
     #205
     @command(name="Timeout", aliases=['to', 'isolate', 'isl'], usage="timeout|to|isolate|isl <member>",
-             brief="205", help="Keeps an annoying person in a timeout channel with no contact except those who have "
+             extras={'emoji': '🔒', 'number': '205'},
+             help="Keeps an annoying person in a timeout channel with no contact except those who have "
                                "access to that channel.")
     @guild_only()
     @has_guild_permissions(administrator=True)

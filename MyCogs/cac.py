@@ -15,7 +15,7 @@ class Cac(Cog):
         self.description = "Controls functions over text, voice and category channels."
 
     # 501
-    @command(name="Create Channel or Category", aliases=['ccc', 'createcc'], brief='🆕501',
+    @command(name="Create Channel or Category", aliases=['ccc', 'createcc'], extras={'emoji': '🆕', 'number': '501'},
                       help="Creates a new text channel, voice channel or category. Note that the cateogry arg will not be required if you are creating a category.",
                       usage='createcc|ccc <name> <text/voice/category> (cateogry new channel will be in)')
     @cooldown(1, 15, BucketType.guild)
@@ -57,7 +57,7 @@ class Cac(Cog):
     # 502
     @command(name="Delete Channel or Cateogry", aliases=['dcc', 'delcc'],
                       help='Deletes a text channel, voice channel or category.',
-                      usage='delchnlctgry|dcc <channel/category>', brief='🗑502')
+                      usage='delchnlctgry|dcc <channel/category>', extras={'emoji': '🗑', 'number': '502'})
     @cooldown(1, 15, BucketType.guild)
     @guild_only()
     async def delchnlctgry(self, ctx: Context, *, channel: Union[CategoryChannel, VoiceChannel, TextChannel] = None):
@@ -85,7 +85,7 @@ class Cac(Cog):
     # 503
     @command(name='Pin', aliases=['pn'],
                       help='Pins a message with message link or id',
-                      usage='pin|pn <message link/id>.', brief='📌503')
+                      usage='pin|pn <message link/id>.', extras={'emoji': '📌', 'number': '503'})
     @cooldown(1, 3, BucketType.channel)
     async def pin(self, ctx: Context, message: Message = None):
         author: Member = ctx.message.author
@@ -108,7 +108,7 @@ class Cac(Cog):
     # 504
     @command(name='Unpin', aliases=['unpn'],
                       help='Unpins a message with message link or id',
-                      usage='unpin|unpn <message link/id>.', brief='📌504')
+                      usage='unpin|unpn <message link/id>.', extras={'emoji': '📌', 'number': '504'})
     @cooldown(1, 3, BucketType.channel)
     async def unpin(self, ctx: Context, message: Message = None):
         author: Member = ctx.message.author
@@ -130,8 +130,8 @@ class Cac(Cog):
 
     # 505
     @command(name='Edit Channel', aliases=['ec', 'editchannel'],
-                      help='Edits a channel.',
-                      usage='editchannel|ec <attribute to edit/member or role> <attribute value/permissions:True, False or None>', brief='✏505')
+                      help='Edits a channel.', extras={'emoji': '✏', 'number': '505'},
+                      usage='editchannel|ec <attribute to edit/member or role> <attribute value/permissions:True, False or None>')
     @cooldown(1, 15, BucketType.channel)
     @guild_only()
     async def editchannel(self, ctx: Context, channel: Union[TextChannel, VoiceChannel,

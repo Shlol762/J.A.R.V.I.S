@@ -214,7 +214,7 @@ async def func():  # (None,) -> Any
                                    colour=Colour.random() if 'Traceback' not in out else Colour.dark_red()))
 
     @command(name='Evaluate', aliases=['e', 'eval'],
-                      brief='⌨P01', help='Runs python code',
+                      extras={'emoji': '⌨', 'number': 'P01'}, help='Runs python code',
                       usage='$evaluate|eval|e <code>')
     async def evaluate_(self, ctx: Context, *, code: str) -> None:
         """Run eval in a REPL-like format."""
@@ -241,7 +241,7 @@ async def func():  # (None,) -> Any
                 await self._eval(ctx, code)
 
     @command(name="PyPi", aliases=["package", "pack"],
-             brief='P02')
+             extras={'emoji': '872388523934748692', 'number': 'P02'})
     async def get_package_info(self, ctx: Context, package: str = None) -> None:
         """Provide information about a specific package from PyPI."""
         async with ctx.typing():

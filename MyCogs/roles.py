@@ -18,7 +18,7 @@ class Roles(Cog):
     # 101
     @command(name="Create Role", aliases=['cr', 'createrole'],
                       help='Creates a role with a default name "New role"',
-                      usage='createrole|cr (role name)', brief='🆕101')
+                      usage='createrole|cr (role name)', extras={'emoji': '🆕', 'number': '101'})
     @cooldown(1, 60, BucketType.guild)
     @guild_only()
     async def createrole(self, ctx: Context, *,
@@ -41,7 +41,7 @@ class Roles(Cog):
     # 102
     @command(name="Delete Role", aliases=['dr', 'delrole'],
                       help='Deleted a selected role.',
-                      usage='delrole|dr <role>', brief='🗑102')
+                      usage='delrole|dr <role>', extras={'emoji': '🗑', 'number': '102'})
     @cooldown(1, 60, BucketType.guild)
     @guild_only()
     async def delrole(self, ctx: Context, *, role: Role = None):
@@ -62,7 +62,7 @@ class Roles(Cog):
     # 103
     @command(name="Add Role", aliases=['ar', 'addrole'],
                       help='Adds a role onto a member.',
-                      usage='addrole|ar <member> <role>', brief='➕103')
+                      usage='addrole|ar <member> <role>', extras={'emoji': '➕', 'number': '103'})
     @cooldown(1, 10, BucketType.member)
     @guild_only()
     @has_permissions(manage_roles=True)
@@ -97,7 +97,7 @@ class Roles(Cog):
     # 104
     @command(name="Remove Role", aliases=['rr', 'removerole'],
                       help='Removes a role from a member.',
-                      usage='removerole|rr <member> <role>', brief='➖104')
+                      usage='removerole|rr <member> <role>', extras={'emoji': '➖', 'number': '104'})
     @cooldown(1, 10, BucketType.member)
     @guild_only()
     async def removerole(self, ctx, member: Member = None, role: Role = None):
@@ -123,7 +123,7 @@ class Roles(Cog):
                       usage='editrole|er <role> <the attribute to be edited> <val of attr>',
                       help='Edits a role. In the "val of attr" slot, you type Numbers for Heirarchy,'
                       ' True/False for Permissions and displaying members seperately and Alphabets for Name',
-                      brief="✏105")
+                      extras={'emoji': '✏', 'number': '105'})
     @cooldown(1, 60, BucketType.guild)
     @guild_only()
     async def editrole(self, ctx: Context, role: Role = None, attribute: str = None,
@@ -498,7 +498,7 @@ class Roles(Cog):
 
     @command(name="Add to all", aliases=['addtoall', 'ata'],
                       usage='addtoall|ata <role>',
-                      help='Adds one role to all members', brief='➕106')
+                      help='Adds one role to all members', extras={'emoji': '➕', 'number': '106'})
     @guild_only()
     @has_permissions(administrator=True)
     @cooldown(1, 20, BucketType.role)

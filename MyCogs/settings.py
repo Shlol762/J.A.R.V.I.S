@@ -15,7 +15,7 @@ class Settings(Cog):
     @command(name='Enable', aliases=['en'],
               help='Enables the selected setting the bot has for the server.',
               usage='enable|en <feature> <scope>',
-              brief='⚙701')
+              extras={'emoji': '⚙', 'number': '701'})
     @guild_only()
     async def enable(self, ctx: Context, _command: str = 'none', server_or_channel: str = 'server'):
         if ctx.author.id == ctx.guild.owner_id:
@@ -124,7 +124,7 @@ class Settings(Cog):
     @command(name='Disable', aliases=['da'],
       help='Disables the selected setting the bot has for the server.',
       usage='disable|da <feature> <scope>',
-      brief='⚙702')
+      extras={'emoji': '⚙', 'number': '702'})
     @guild_only()
     async def disable(self, ctx: Context, _command: str = 'none', server_or_channel: str = 'server'):
         if ctx.author.id == ctx.guild.owner_id:
@@ -230,7 +230,7 @@ class Settings(Cog):
     @command(name='Set Prefix', aliases=['setprefix', 'spf'],
              help='Sets the prefix for the server the command is called in.',
              usage='setprefix|sp <prefix>',
-             brief='⚙703')
+             extras={'emoji': '⚙', 'number': '703'})
     @guild_only()
     async def set_prefix(self, ctx: Context, *, prefix: str):
         if prefix:
@@ -249,7 +249,7 @@ class Settings(Cog):
     @command(name='Settings', aliases=['sts'],
              help='Shows the current settings of the server.',
              usage='settings|sts',
-             brief='⚙704')
+             extras={'emoji': '⚙', 'number': '704'})
     @guild_only()
     async def settings(self, ctx: Context):
         with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json", "r") as f:
