@@ -7,3 +7,5 @@ from .message_funcs import *
 
 with open("C:/Users/Shlok/bot_stuff/-... --- - ! - --- -.- . -..txt", "r") as f:
     bot_token: str = f.read()
+
+__discord__ = discord.__version__
