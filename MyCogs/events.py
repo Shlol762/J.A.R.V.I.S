@@ -190,7 +190,7 @@ class Events(Cog):
             with open("C:/Users/Shlok/bot_stuff/command_logs.txt", "r") as f:
                 lines: list[str] = f.readlines()
             if ctx.author.id == 613044385910620190: await ctx.reinvoke()
-            elif ctx.command.brief[1:] in lines[-1] and str(ctx.author.id) in lines[-1] and "Err" in lines[-1]:
+            elif str(ctx.command.extras.get('number')) in lines[-1] and str(ctx.author.id) in lines[-1] and "Err" in lines[-1]:
                 await ctx.reinvoke()
             else: await command_log_and_err(ctx=ctx, status='Cooldown', error=error)
         elif isinstance(error, MemberNotFound):
