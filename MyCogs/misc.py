@@ -6,7 +6,7 @@ from typing import Any, Tuple, Optional
 from MyCogs import timeto as tt, command_log_and_err, set_timestamp,\
     WorldoMeter, Embed, Colour, Context, find_nth_occurrence,\
     send_to_paste_service, Bot, Cog, command, cooldown
-import datetime, re, requests
+import re, requests
 from datetime import datetime
 from io import StringIO
 import inspect, contextlib, textwrap, traceback
@@ -35,7 +35,7 @@ class Misc(Cog):
         year = str(year)
         if year:
             if len(year) <= 5:
-                now = datetime.datetime.now()
+                now = datetime.now()
                 now = int(now.strftime("%Y"))
                 int_yr = int(year)
                 was_is = ''
