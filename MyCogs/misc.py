@@ -6,7 +6,7 @@ from typing import Any, Tuple, Optional
 from MyCogs import timeto as tt, command_log_and_err, set_timestamp,\
     WorldoMeter, Embed, Colour, Context, find_nth_occurrence,\
     send_to_paste_service, Bot, Cog, command, cooldown
-import re, requests
+import datetime, re, requests
 from datetime import datetime
 from io import StringIO
 import inspect, contextlib, textwrap, traceback
@@ -35,7 +35,7 @@ class Misc(Cog):
         year = str(year)
         if year:
             if len(year) <= 5:
-                now = datetime.now()
+                now = datetime.datetime.now()
                 now = int(now.strftime("%Y"))
                 int_yr = int(year)
                 was_is = ''
@@ -133,42 +133,45 @@ class Misc(Cog):
                                                                                                          ctx.author.mention))
 
     @command(aliases=['dct', 'dict'], name='Dictionary',
-                      help='Searches the internet and returns definitions, synonyms and antonyms.',
-                      usage='dct|dict|dictionary <word> (def/syn/ant)', extras={'emoji': '📔', 'number': '905'})
-    async def dict(self, ctx: Context, word: str, *, synantdef: Optional[str]):
+             help='Searches the internet and returns definitions, synonyms and antonyms.',
+             usage='dct|dict|dictionary <word> (def/syn/ant)', extras={'emoji': '📔', 'number': '905'})
+    async def dict(self, ctx: Context, word: str = None, *, synantdef: Optional[str]):
         async with ctx.typing():
-            try:
-                dcnry = PyDictionary()
-                word = word[0].upper() + word[1:]
-                embed = Embed(title=word, description='', colour=discord.Colour.random())
-                if (await dcnry.meaning(word)) is None:
-                    embed.description += f"Sorry either `{word}` isn't a word in the dictionary or there's a problem with the internet."
-                    await command_log_and_err(ctx, 'Internet Problems/Non-Existent Word')
-                else:
-                    if not synantdef or synantdef.lower() == 'def':
-                        for key, vals in (await dcnry.meaning(word)).items():
-                            if '(' in vals[0]:
-                                vals[0] += ')'
-                            embed.description += f"""*`{key}`*:\n- {vals[0][0].upper() + vals[0][1:].replace("`", "'")}\n"""
-                            if len(vals) > 1:
-                                for val in vals[1:3]:
-                                    if '(' in val:
-                                        val += ')'
-                                    embed.description += f"""- {val[0].upper() + val[1:].replace('`', "'")}\n"""
-                    if not synantdef or synantdef.lower() == 'syn':
-                        embed.description += f"""\n**`Synonyms`**:\n {', '.join((await dcnry.synonym(word))[:10]).title() if await dcnry.synonym(word) is not None else f'`{word}` does not have synonyms'}\n"""
-                    if not synantdef or synantdef.lower() == 'ant':
-                        embed.description += f"""\n**`Antonyms`**:\n {', '.join((await dcnry.antonym(word))[:10]).title() if await dcnry.antonym(word) is not None else f'`{word}` does not have antonyms'}"""
-                    await command_log_and_err(ctx, 'Success')
-                await ctx.reply(embed=embed)
-            except requests.exceptions.ProxyError:
-                await command_log_and_err(ctx, err_code="Err_90512",
-                                          text=f'N/A: `Internet Connection Failure\\: Unable to retrieve information for "{word}"` {ctx.author.mention}')
+            if word:
+                try:
+                    dcnry = PyDictionary()
+                    word = word[0].upper() + word[1:]
+                    embed = Embed(title=word, description='', colour=discord.Colour.random())
+                    if (await dcnry.meaning(word)) is None:
+                        embed.description += f"Sorry either `{word}` isn't a word in the dictionary or there's a problem with the internet."
+                        await command_log_and_err(ctx, 'Internet Problems/Non-Existent Word')
+                    else:
+                        if not synantdef or synantdef.lower() == 'def':
+                            for key, vals in (await dcnry.meaning(word)).items():
+                                if '(' in vals[0]:
+                                    vals[0] += ')'
+                                embed.description += f"""*`{key}`*:\n- {vals[0][0].upper() + vals[0][1:].replace("`", "'")}\n"""
+                                if len(vals) > 1:
+                                    for val in vals[1:3]:
+                                        if '(' in val:
+                                            val += ')'
+                                        embed.description += f"""- {val[0].upper() + val[1:].replace('`', "'")}\n"""
+                        if not synantdef or synantdef.lower() == 'syn':
+                            embed.description += f"""\n**`Synonyms`**:\n {', '.join((await dcnry.synonym(word))[:10]).title() if await dcnry.synonym(word) is not None else f'`{word}` does not have synonyms'}\n"""
+                        if not synantdef or synantdef.lower() == 'ant':
+                            embed.description += f"""\n**`Antonyms`**:\n {', '.join((await dcnry.antonym(word))[:10]).title() if await dcnry.antonym(word) is not None else f'`{word}` does not have antonyms'}"""
+                        await command_log_and_err(ctx, 'Success')
+                    await ctx.reply(embed=embed)
+                except requests.exceptions.ProxyError:
+                    await command_log_and_err(ctx, err_code="Err_90512",
+                                              text=f'N/A: `Internet Connection Failure\\: Unable to retrieve information for "{word}"` {ctx.author.mention}')
+            else:
+                await command_log_and_err(ctx, err_code="90548", text="Gimme a word! One word only!")
 
     @command(name="Time to", aliases=['tto', 'timeto'], extras={'emoji': '⏱', 'number': '906'},
-                      help='Returns the countdown to the given timestamp.',
-                      usage='$timeto|tto <timestamp in format of - "24hr:mins day/month/year">')
-    async def timeto(self, ctx: Context, *, time_str: str):
+             help='Returns the countdown to the given timestamp.',
+             usage='$timeto|tto <timestamp in format of - "24hr:mins day/month/year">')
+    async def timeto(self, ctx: Context, *, time_str: str = None):
         async with ctx.typing():
             if time_str:
                 try:
