@@ -63,9 +63,35 @@ sec_lvl = """
 
 @client.command(hidden=True)
 async def test(ctx: commands.Context):
-    with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/customojis.json", "w") as f:
-        custumojis = {emoji.name: str(emoji.id) for emoji in ctx.guild.emojis}
-        json.dump(custumojis, f, indent=3)
+    emblist = [discord.Embed(description="Hey!"),
+               discord.Embed(description="Hello!"),
+               discord.Embed(description="Greetings my friends!"),
+               discord.Embed(description="Hi")]
+    message: discord.Message = await ctx.send(embed=emblist[0])
+    emojis = ['⏮', '◀', '▶', '⏭']
+    [await message.add_reaction(emoji) for emoji in emojis]
+    count, timeout = 0, False
+    while not timeout:
+        try:
+            reaction, user = await client.wait_for('reaction_add', timeout=30, check=lambda r, u: str(r.emoji) in emojis and u != client.user)
+            if str(reaction.emoji) == '◀':
+                if count > 0:
+                    count -= 1
+                    await message.edit(embed=emblist[count])
+            elif str(reaction.emoji) == '▶':
+                if count < len(emblist) - 1:
+                    count += 1
+                    await message.edit(embed=emblist[count])
+            elif str(reaction.emoji) == '⏮':
+                count = 0
+                await message.edit(embed=emblist[count])
+            elif str(reaction.emoji) == '⏭':
+                count = len(emblist)-1
+                await message.edit(embed=emblist[count])
+            await message.remove_reaction(reaction, user)
+        except asyncio.TimeoutError:
+            timeout = True
+            await message.clear_reactions()
 
 
 @client.command(hidden=True)
