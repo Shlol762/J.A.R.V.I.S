@@ -1,13 +1,12 @@
-import asyncio
+import datetime
 import json
 import os
 import random
 
 import discord
 from discord.ext import commands
-from DiscordClasses import bot_token, WorldoMeter, get_prefix, time_set
-import datetime
-from typing import Union, Mapping
+
+from DiscordClasses import BOT_TOKEN, get_prefix
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, intents=intents,
@@ -56,6 +55,7 @@ async def del_message(ctx: commands.Context, message: discord.Message):
     await ctx.reply(f"Deleted message with content: `{message.content}`")
     await message.delete()
 
+
 sec_lvl = """
 `1|The bots integrated interface Role on this Server    ` - <@&819518757617664021>
 `2|Access to Admin. Use wisely. More than 9 months req. ` - <@&839069357581139998>
@@ -65,6 +65,7 @@ sec_lvl = """
 `6|Access to Cross connect. More than 10 mins required. ` - <@&839068777521479691>
 `7|Anyone who volunteers for Tests.                     ` - <@&839079368910438421>
 """
+
 
 @bot.command()
 async def test(ctx: commands.Context):
@@ -127,9 +128,12 @@ async def refseclvl(ctx: commands.Context):
                 await member.add_roles(admin, lvl3, lvl2, lvl1, lvl0)
             await ctx.send(f"Clerance updates for {member.mention}")
         except (commands.MemberNotFound, discord.NotFound):
-            try: user: discord.User = await bot.fetch_user(int(member))
-            except (commands.UserNotFound, discord.NotFound): await ctx.reply(f"{member} not found.")
-            else: await ctx.reply(user.mention)
+            try:
+                user: discord.User = await bot.fetch_user(int(member))
+            except (commands.UserNotFound, discord.NotFound):
+                await ctx.reply(f"{member} not found.")
+            else:
+                await ctx.reply(user.mention)
     await ctx.send("Refresh complete.")
 
 
@@ -138,8 +142,8 @@ async def update(ctx: commands.Context):
     channels: list[discord.abc.GuildChannel] = bot.get_all_channels()
     link = 'https://discord.gg/zt6j4h7ep3'
     embed = discord.Embed(title='`Update!` - New command: `Timeout`',
-    description=
-f"""
+                          description=
+                          f"""
 **Timeout**
 
 Keeps an annoying person in a timeout channel 
@@ -157,12 +161,12 @@ If you want to join my home server, click [`J.A.R.V.I.S`]({link})
     for channel in channels:
         if 'general' in channel.name and isinstance(channel, discord.TextChannel):
             message: discord.Message = await channel.send(embed=embed)
-            await ctx.reply(f'`Message link`: https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
+            await ctx.reply(
+                f'`Message link`: https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
 
 
 @bot.command(hidden=True)
 async def test1(ctx: commands.Context):
-
     await ctx.send("Context", view=Fran().add_item(
         discord.ui.Button(style=discord.ButtonStyle.blurple, label="Test")))  # Blue button with button label of "Test"
     res = await bot.wait_for("button_click")  # Wait for button to be clicked
@@ -172,7 +176,8 @@ async def test1(ctx: commands.Context):
 @bot.command(hidden=True)
 async def devan(ctx: commands.Context, *, text: str):
     if text:
-        embed = discord.Embed(title="Announcement from `central mainframe`", description=text, colour=discord.Colour.random())
+        embed = discord.Embed(title="Announcement from `central mainframe`", description=text,
+                              colour=discord.Colour.random())
         for channel in ctx.bot.get_all_channels():
             if 'general' in channel.name and isinstance(channel, discord.TextChannel):
                 message: discord.Message = await channel.send(embed=embed)
@@ -186,4 +191,4 @@ async def msg_dts(ctx: commands.Context, message: discord.Message):
     print(f"Content: {message.content}")
 
 
-bot.run(bot_token)
+bot.run(BOT_TOKEN)
