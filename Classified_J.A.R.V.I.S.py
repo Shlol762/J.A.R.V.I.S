@@ -10,19 +10,24 @@ import datetime
 from typing import Union, Mapping
 
 intents = discord.Intents.all()
-client = commands.Bot(command_prefix=get_prefix, case_insensitive=True, intents=intents,
-                      allowed_mentions=discord.AllowedMentions(everyone=False),
-                      strip_after_prefix=True)
-client.remove_command('help')
+bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, intents=intents,
+                   allowed_mentions=discord.AllowedMentions(everyone=False),
+                   strip_after_prefix=True)
+bot.remove_command('help')
 
 
 class Counter(discord.ui.View):
+    def __init__(self, timeout: float, ctx: commands.Context):
+        super().__init__(timeout=timeout)
+        self.ctx = ctx
+
     @discord.ui.button(label='0', style=discord.ButtonStyle.red)
     async def counter(self, button: discord.ui.Button, interaction: discord.Interaction):
-        number = int(button.label)
-        button.label = str(number + 1)
-        if number + 1 >= 5:
-            button.style = discord.ButtonStyle.green
+        # number = int(button.label)
+        # button.label = str(number + 1)
+        # if number + 1 >= 5:
+        #     button.style = discord.ButtonStyle.green
+        button.label = self.ctx.command
 
         await interaction.message.edit(view=self)
 
@@ -36,17 +41,17 @@ class Counter(discord.ui.View):
         await interaction.message.edit(view=self)
 
     async def on_timeout(self):
-        for item in self.children:
-            if isinstance(item, discord.ui.Button):
-                item.disabled = True
+        self.counter.disabled = True
+        self.hey.disabled = True
+        await self.message.edit(view=self)
 
 
 for cog in os.listdir("C:/Users/Shlok/J.A.R.V.I.SV2021/MyCogs"):
     if cog.endswith(".py") and cog != '__init__.py':
-        client.load_extension(f'MyCogs.{cog[:-3]}')
+        bot.load_extension(f'MyCogs.{cog[:-3]}')
 
 
-@client.command(hidden=True)
+@bot.command(hidden=True)
 async def del_message(ctx: commands.Context, message: discord.Message):
     await ctx.reply(f"Deleted message with content: `{message.content}`")
     await message.delete()
@@ -61,40 +66,42 @@ sec_lvl = """
 `7|Anyone who volunteers for Tests.                     ` - <@&839079368910438421>
 """
 
-@client.command(hidden=True)
+@bot.command()
 async def test(ctx: commands.Context):
-    emblist = [discord.Embed(description="Hey!"),
-               discord.Embed(description="Hello!"),
-               discord.Embed(description="Greetings my friends!"),
-               discord.Embed(description="Hi")]
-    message: discord.Message = await ctx.send(embed=emblist[0])
-    emojis = ['⏮', '◀', '▶', '⏭']
-    [await message.add_reaction(emoji) for emoji in emojis]
-    count, timeout = 0, False
-    while not timeout:
-        try:
-            reaction, user = await client.wait_for('reaction_add', timeout=30, check=lambda r, u: str(r.emoji) in emojis and u != client.user)
-            if str(reaction.emoji) == '◀':
-                if count > 0:
-                    count -= 1
-                    await message.edit(embed=emblist[count])
-            elif str(reaction.emoji) == '▶':
-                if count < len(emblist) - 1:
-                    count += 1
-                    await message.edit(embed=emblist[count])
-            elif str(reaction.emoji) == '⏮':
-                count = 0
-                await message.edit(embed=emblist[count])
-            elif str(reaction.emoji) == '⏭':
-                count = len(emblist)-1
-                await message.edit(embed=emblist[count])
-            await message.remove_reaction(reaction, user)
-        except asyncio.TimeoutError:
-            timeout = True
-            await message.clear_reactions()
+    # emblist = [discord.Embed(description="Hey!"),
+    #            discord.Embed(description="Hello!"),
+    #            discord.Embed(description="Greetings my friends!"),
+    #            discord.Embed(description="Hi")]
+    # message: discord.Message = await ctx.send(embed=emblist[0])
+    # emojis = ['⏮', '◀', '▶', '⏭']
+    # [await message.add_reaction(emoji) for emoji in emojis]
+    # count, timeout = 0, False
+    # while not timeout:
+    #     try:
+    #         reaction, user = await bot.wait_for('reaction_add', timeout=30, check=lambda r, u: str(r.emoji) in emojis and u != bot.user)
+    #         if str(reaction.emoji) == '◀':
+    #             if count > 0:
+    #                 count -= 1
+    #                 await message.edit(embed=emblist[count])
+    #         elif str(reaction.emoji) == '▶':
+    #             if count < len(emblist) - 1:
+    #                 count += 1
+    #                 await message.edit(embed=emblist[count])
+    #         elif str(reaction.emoji) == '⏮':
+    #             count = 0
+    #             await message.edit(embed=emblist[count])
+    #         elif str(reaction.emoji) == '⏭':
+    #             count = len(emblist)-1
+    #             await message.edit(embed=emblist[count])
+    #         await message.remove_reaction(reaction, user)
+    #     except asyncio.TimeoutError:
+    #         timeout = True
+    #         await message.clear_reactions()
+    view = Counter(10, ctx)
+    view.message = await ctx.reply("Hello", view=view)
 
 
-@client.command(hidden=True)
+@bot.command(hidden=True)
 async def refseclvl(ctx: commands.Context):
     with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/mainframe_members.json", "r") as f:
         mem_list: dict = json.load(f)
@@ -120,15 +127,15 @@ async def refseclvl(ctx: commands.Context):
                 await member.add_roles(admin, lvl3, lvl2, lvl1, lvl0)
             await ctx.send(f"Clerance updates for {member.mention}")
         except (commands.MemberNotFound, discord.NotFound):
-            try: user: discord.User = await client.fetch_user(int(member))
+            try: user: discord.User = await bot.fetch_user(int(member))
             except (commands.UserNotFound, discord.NotFound): await ctx.reply(f"{member} not found.")
             else: await ctx.reply(user.mention)
     await ctx.send("Refresh complete.")
 
 
-@client.command(hidden=True)
+@bot.command(hidden=True)
 async def update(ctx: commands.Context):
-    channels: list[discord.abc.GuildChannel] = client.get_all_channels()
+    channels: list[discord.abc.GuildChannel] = bot.get_all_channels()
     link = 'https://discord.gg/zt6j4h7ep3'
     embed = discord.Embed(title='`Update!` - New command: `Timeout`',
     description=
@@ -153,16 +160,16 @@ If you want to join my home server, click [`J.A.R.V.I.S`]({link})
             await ctx.reply(f'`Message link`: https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
 
 
-@client.command(hidden=True)
+@bot.command(hidden=True)
 async def test1(ctx: commands.Context):
 
     await ctx.send("Context", view=Fran().add_item(
         discord.ui.Button(style=discord.ButtonStyle.blurple, label="Test")))  # Blue button with button label of "Test"
-    res = await client.wait_for("button_click")  # Wait for button to be clicked
+    res = await bot.wait_for("button_click")  # Wait for button to be clicked
     await res.respond(type=discord.InteractionType.ChannelMessageWithSource, content=f'Button Clicked')
 
 
-@client.command(hidden=True)
+@bot.command(hidden=True)
 async def devan(ctx: commands.Context, *, text: str):
     if text:
         embed = discord.Embed(title="Announcement from `central mainframe`", description=text, colour=discord.Colour.random())
@@ -173,10 +180,10 @@ async def devan(ctx: commands.Context, *, text: str):
                     f'`Message link`: https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
 
 
-@client.command(hidden=True)
+@bot.command(hidden=True)
 async def msg_dts(ctx: commands.Context, message: discord.Message):
     await ctx.send(f"Content: {message.content}")
     print(f"Content: {message.content}")
 
 
-client.run(bot_token)
+bot.run(bot_token)
