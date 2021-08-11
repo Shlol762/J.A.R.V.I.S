@@ -23,7 +23,7 @@ class Events(Cog):
     async def birthday(self):
         global members
         guild: Guild = await self.bot.fetch_guild(766356666273890314)
-        birthday_role: Role = guild.get_role(774876349163765780)
+        birthday_role: Role = guild.get_role(874909501617238048)
         general: TextChannel = self.bot.get_channel(821278528108494878)
         now = datetime.datetime.now().strftime("%d/%m")
         f = open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/birthdays.json")
