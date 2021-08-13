@@ -152,6 +152,7 @@ class Utilities(Cog):
             bot: Bot = ctx.bot
             if not member:
                 member = ctx.message.author
+            mber = await bot.fetch_user(member.id)
             pfp = member.avatar.url
             name = member.name
             disc = member.discriminator
@@ -181,7 +182,7 @@ class Utilities(Cog):
             joined_at = time_set(member.joined_at, "%d %b %Y at %I:%M %p")
             created_at = time_set(member.created_at, "%d %b %Y at %I:%M %p")
             emb1 = Embed(title=f'Member Statistics - {name}  {flag_logos}', description='',
-                                 colour=Colour.random())
+                                 colour=mber.accent_colour or Colour.default())
             emb1.set_thumbnail(url=pfp)
             emb1.description += f'`{"Name":^27}:{name:^31}`\n`{"Discriminator":^27}:{disc:^31}`\n'
             emb1.description += f'`{"Nickname on this server":^27}:{nick:^31}`\n'
