@@ -443,16 +443,17 @@ For Example:- 1)Err_10124 means command '1' under category
     async def _pfp(self, ctx: Context, user: User = None):
         user = user or ctx.author
         await command_log_and_err(ctx, status="Success")
-        await ctx.send(embed=await set_timestamp(Embed(description="_ _", colour=Colour.random()).set_image(url=user.avatar.url)))
+        await ctx.reply(embed=await set_timestamp(Embed(description="_ _", colour=Colour.random()).set_image(url=user.avatar.url)))
 
     @command(name="Banner", aliases=['b'], extras={'emoji': '🖼', 'number': '314'},
                       help="Displays the banner of a nitro user.",
                       usage='$banner|b (member)')
     async def _banner(self, ctx: Context, user: User = None):
-        user = await self.bot.fetch_user(user.id if user else ctx.author.id)
         await command_log_and_err(ctx, status="Success")
-        await ctx.send(embed=await set_timestamp(Embed(description="_ _", colour=Colour.random()).set_image(url=user.banner.url
-                                                                                                            )))
+        user = await self.bot.fetch_user(user.id if user else ctx.author.id)
+        if (await user.profile()).nitro:
+            await ctx.reply(embed=await set_timestamp(Embed(description="_ _", colour=Colour.random()).set_image(url=user.banner.url)))
+        else: await ctx.reply(f"The banner feature is for nitro user exclusively.")
 
 
 def setup(bot: Bot):
