@@ -4,11 +4,14 @@ import json
 import discord
 from discord.ext import commands
 from typing import Optional
-from MyCogs import version, command_log_and_err,\
+from MyCogs import VERSION, command_log_and_err,\
     set_timestamp, time_set, hypesquad_emoji, Cog,\
-    Bot
+    Bot, command, guild_only, cooldown, Context, BucketType,\
+    Embed, Colour, Member, Forbidden, CustomActivity, Spotify,\
+    Game, Activity, ActivityType, Status, HTTPException, User
 
-bot_ver = version
+
+bot_ver = VERSION
 
 
 class Utilities(Cog):
@@ -18,13 +21,13 @@ class Utilities(Cog):
         self.name = 'Utilities'
 
     # 301
-    @commands.command(name="Clear", aliases=['cl'],
+    @command(name="Clear", aliases=['cl'],
                       help='Deletes any number of messages below 20.',
                       usage="clear|cl (amt of msgs to be deleted)",
                       extras={'emoji': '♻', 'number': '301'})
-    @commands.cooldown(1, 30, commands.BucketType.member)
-    @commands.guild_only()
-    async def _clear(self, ctx: commands.Context, amount: Optional[int] = 1):
+    @cooldown(1, 30, BucketType.member)
+    @guild_only()
+    async def _clear(self, ctx: Context, amount: Optional[int] = 1):
         default_clear_amt = amount + 1
         author = ctx.message.author
         guild_id = str(ctx.guild.id)
@@ -40,7 +43,7 @@ class Utilities(Cog):
                 try:
                     await command_log_and_err(ctx, f'Deleted {amount} messages')
                     await ctx.channel.purge(limit=default_clear_amt)
-                except discord.Forbidden:
+                except Forbidden:
                     await command_log_and_err(ctx, err_code='Err_30124',
                                               text='Unable to comply. Check $ecl for more info.')
         else:
@@ -48,16 +51,16 @@ class Utilities(Cog):
             await command_log_and_err(ctx, 'Command disabled')
 
     # 303
-    @commands.command(aliases=['calc'],
+    @command(aliases=['calc'],
                       help="Calculates and gives result based on input. If 'help arith' or 'help compare' is put in the expression argument, you'll get a list of Operators.",
                       name="Calculator", extras={'emoji': '🧮', 'number': '302'},
                       usage="calculator|calc <expression>")
-    async def calculator(self, ctx: commands.Context, *, expression: Optional[str]):
+    async def calculator(self, ctx: Context, *, expression: Optional[str]):
         author = ctx.message.author
         if expression:
             if expression.lower() == 'help arith':
                 await command_log_and_err(ctx, 'Success')
-                await ctx.reply(embed=await set_timestamp(discord.Embed(title='Calculator - `Matchematical Operators`',
+                await ctx.reply(embed=await set_timestamp(Embed(title='Calculator - `Matchematical Operators`',
                                                                        description=
                                                                        f"""
 `{'Addition':^30}-{"'+'":^15}`
@@ -66,10 +69,10 @@ class Utilities(Cog):
 `{'Exponentiation':^30}-{"'**' or '^'":^15}`
 `{'Division':^30}-{"'/'":^15}`
 `{'Rounded off Division':^30}-{"'//'":^15}`
-""", colour=discord.Colour.random())))
+""", colour=Colour.random())))
             elif expression.lower() == 'help compare':
                 await command_log_and_err(ctx, 'Success')
-                await ctx.reply(embed=await set_timestamp(discord.Embed(title='Calculator - `Comparison Operators`',
+                await ctx.reply(embed=await set_timestamp(Embed(title='Calculator - `Comparison Operators`',
                                                                        description=
                                                                        f"""
 `{'Equivalence Check':^30}-{"'=='":^15}`
@@ -78,24 +81,24 @@ class Utilities(Cog):
 `{'Smaller than Check':^30}-{"'<'":^15}`
 `{'Greater than/Equal to Check':^30}-{"'>='":^15}`
 `{'Smaller than/Equal to Check':^30}-{"'<='":^15}`
-""", colour=discord.Colour.random())))
+""", colour=Colour.random())))
             elif expression.lower() == 'help logical':
                 await command_log_and_err(ctx, 'Success')
-                await ctx.reply(embed=await set_timestamp(discord.Embed(title='Calculator - `Logical Operators`',
+                await ctx.reply(embed=await set_timestamp(Embed(title='Calculator - `Logical Operators`',
                                                                        description=
                                                                        f"""
 `{'And':^5}- {"'True' if both conidtions are True":^50}`
 `{'Or':^5}- {"'True' if either one or both conditions are True":^50}`
 `{'Not':^5}- {"'False' if True, 'True' if false":^50}`
-""", colour=discord.Colour.random())))
+""", colour=Colour.random())))
             else:
                 try:
                     expression = expression.replace("^", "**")
                     result = eval(expression)
                     await command_log_and_err(ctx, 'Success')
-                    await ctx.reply(embed=await set_timestamp(discord.Embed(title='Calculator',
+                    await ctx.reply(embed=await set_timestamp(Embed(title='Calculator',
                                                                            description=f"*`Expression`*: `{expression}`\n\n*`Result`*: `{result}`",
-                                                                           colour=discord.Colour.random())))
+                                                                           colour=Colour.random())))
                 except SyntaxError:
                     await command_log_and_err(ctx, err_code='Err_30212',
                                               text=f'Invalid expression. Try again {author.mention}')
@@ -110,13 +113,13 @@ class Utilities(Cog):
                                       text="You haven't given the expression for computing your answer")
 
     # 303
-    @commands.command(name="Change nickname", aliases=['cn', 'changenick'],
+    @command(name="Change nickname", aliases=['cn', 'changenick'],
                       help="Changes the nickname of a given Member.",
                       usage='changenick|cn <member> <new nickname>',
                       extras={'emoji': '🎭', 'number': '303'})
-    @commands.cooldown(1, 30, commands.BucketType.member)
-    @commands.guild_only()
-    async def changenick(self, ctx, member: discord.Member = None, *, new_nick=None):
+    @cooldown(1, 30, BucketType.member)
+    @guild_only()
+    async def changenick(self, ctx, member: Member = None, *, new_nick=None):
         author = ctx.message.author
         if member:
             if new_nick:
@@ -129,7 +132,7 @@ class Utilities(Cog):
                         await member.edit(nick=new_nick)
                         await command_log_and_err(ctx, 'Success', used_on=member)
                         await ctx.reply(f"{member.name}'s nickname has been changed to {member.mention}")
-                except discord.Forbidden:
+                except Forbidden:
                     await command_log_and_err(ctx, err_code="Err_30324",
                                               text=f"Unable to comply {author.mention}. Check $ecl for more info.")
             else:
@@ -140,11 +143,11 @@ class Utilities(Cog):
                                       text=f'Next time give me a name to edit their nickname, {author.mention}')
 
     # 305
-    @commands.command(aliases=['minfo', 'memberinfo'], name='Member Info',
+    @command(aliases=['minfo', 'memberinfo'], name='Member Info',
                       help="Displays the info of a given Member.",
                       usage='memberinfo|minfo (member)', extras={'emoji': '📃', 'number': '304'})
-    @commands.guild_only()
-    async def memberinfo(self, ctx: commands.Context, member: Optional[discord.Member]):
+    @guild_only()
+    async def memberinfo(self, ctx: Context, member: Optional[Member]):
         async with ctx.typing():
             bot: Bot = ctx.bot
             if not member:
@@ -156,16 +159,16 @@ class Utilities(Cog):
             status = member.status
             activities = []
             for activity in member.activities:
-                if isinstance(activity, discord.CustomActivity):
+                if isinstance(activity, CustomActivity):
                     activities.append(activity.name)
-                elif isinstance(activity, discord.Spotify):
+                elif isinstance(activity, Spotify):
                     activities.append(f'Listening to "{activity.title}" on Spotify')
-                elif isinstance(activity, discord.Activity):
-                    if activity.type == discord.ActivityType.watching:
+                elif isinstance(activity, Activity):
+                    if activity.type == ActivityType.watching:
                         activities.append(f'Watching "{activity.name}"')
-                    elif activity.type == discord.ActivityType.playing:
+                    elif activity.type == ActivityType.playing:
                         activities.append(f'Playing "{activity.name}"')
-                    elif activity.type == discord.ActivityType.streaming:
+                    elif activity.type == ActivityType.streaming:
                         activities.append(f'Streaming "{activity.name}"')
             activities = ', '.join(activities) if None not in activities else 'None'
             public_flags = ', '.join(
@@ -177,8 +180,8 @@ class Utilities(Cog):
                 flag_logos += str(await hypesquad_emoji(bot, "Bot"))
             joined_at = time_set(member.joined_at, "%d %b %Y at %I:%M %p")
             created_at = time_set(member.created_at, "%d %b %Y at %I:%M %p")
-            emb1 = discord.Embed(title=f'Member Statistics - {name}  {flag_logos}', description='',
-                                 colour=discord.Colour.random())
+            emb1 = Embed(title=f'Member Statistics - {name}  {flag_logos}', description='',
+                                 colour=Colour.random())
             emb1.set_thumbnail(url=pfp)
             emb1.description += f'`{"Name":^27}:{name:^31}`\n`{"Discriminator":^27}:{disc:^31}`\n'
             emb1.description += f'`{"Nickname on this server":^27}:{nick:^31}`\n'
@@ -191,11 +194,11 @@ class Utilities(Cog):
             await ctx.reply(embed=emb1)
 
     # 306
-    @commands.command(aliases=['sinfo', 'serverinfo'], usage='serverinfo|sinfo',
+    @command(aliases=['sinfo', 'serverinfo'], usage='serverinfo|sinfo',
                       help="Displays info of the server.",
                       name="Server Info", extras={'emoji': '📜', 'number': '305'})
-    @commands.guild_only()
-    async def serverinfo(self, ctx: commands.Context):
+    @guild_only()
+    async def serverinfo(self, ctx: Context):
         async with ctx.typing():
             server = ctx.guild
             name = server.name
@@ -206,7 +209,7 @@ class Utilities(Cog):
             boosters = ', '.join([member.name for member in server.premium_subscribers]) if len(server.premium_subscribers) > 0 else None
             server_region = server.region[0][0].upper() + server.region[0][1:]
             created_at = time_set(server.created_at, "%d %b %Y at %I:%M %p")
-            server_info = discord.Embed(title=name, description=f'Details of `{name}`\n\n', colour=discord.Colour.random())
+            server_info = Embed(title=name, description=f'Details of `{name}`\n\n', colour=Colour.random())
             server_info.description += f'`{"Name":^17}: {name:^30}`\n`{"Id":^17}: {server.id:^30}`\n'
             server_info.description += f'`{"Region":^17}: {server_region:^30}`\n`{"Owner":^17}: {str(server.owner):^30}`\n'
             server_info.description += f'`{"Emoji Limit":^17}: {server.emoji_limit:^30}`\n`{"Bitrate Limit":^17}: {f"{server.bitrate_limit / 1000} kbps":^30}`\n'
@@ -219,16 +222,16 @@ class Utilities(Cog):
             await ctx.reply(embed=server_info)
 
     # 307
-    @commands.command(aliases=['ecl', 'errorcodelist'], name="Error Code List",
+    @command(aliases=['ecl', 'errorcodelist'], name="Error Code List",
                       help="Gives a list of error codes that the bot gives out in an error, and the codes' meanings.",
                       usage='errorcodelist|ecl <err code>', extras={'emoji': '📄', 'number': '306'})
-    async def errorcodelist(self, ctx: commands.Context, error: str = None):
+    async def errorcodelist(self, ctx: Context, error: str = None):
         bot: Bot = ctx.bot
         async with ctx.typing():
             if not error:
                 await command_log_and_err(ctx, 'Success')
                 await ctx.reply(
-                    embed=await set_timestamp(discord.Embed(title=f'{botuser.name} - Error Code List', description=
+                    embed=await set_timestamp(Embed(title=f'{botuser.name} - Error Code List', description=
                     """
 `Error Code Classification`
 ```nim
@@ -262,15 +265,15 @@ For Example:- 1)Err_10124 means command '1' under category
               2)Err_20348 means command '3' under category
                 '20' which is mslo, can't operate due to 
                 err type '48' which is Missing Arguments.
-```""", colour=discord.Colour.random())))
+```""", colour=Colour.random())))
             else:
                 if len(error) == 5:
                     err_comm = None
                     err_ctgry = None
-                    for command in bot.commands:
-                        if str(command.brief)[1:] == error[:-2]:
-                            err_comm = command.name
-                            err_ctgry = command.cog_name
+                    for _command in bot.commands:
+                        if str(_command.brief)[1:] == error[:-2]:
+                            err_comm = _command.name
+                            err_ctgry = _command.cog_name
                     if error[-2:] == '12':
                         err_type = 'Operation Failiure'
                     elif error[-2:] == '24':
@@ -279,7 +282,7 @@ For Example:- 1)Err_10124 means command '1' under category
                         err_type = 'Missing Arguments'
                     await command_log_and_err(ctx, 'Success')
                     embed = await set_timestamp(
-                        discord.Embed(title=f'Error - `{error}`', description='', colour=discord.Colour.random()),
+                        Embed(title=f'Error - `{error}`', description='', colour=Colour.random()),
                         "Decrypted")
                     embed.description += f'`{"Error Type":^15}:{err_type:^25}`\n`{"Command":^15}:{err_comm:^25}`\n`{"Category":^15}:{err_ctgry:^25}`'
                     await ctx.reply(embed=embed)
@@ -299,7 +302,7 @@ For Example:- 1)Err_10124 means command '1' under category
                         err_comm = 'Channel not found'
                     await command_log_and_err(ctx, 'Success')
                     embed = await set_timestamp(
-                        discord.Embed(title=f'Error - `{error}`', description='', colour=discord.Colour.random()),
+                        Embed(title=f'Error - `{error}`', description='', colour=Colour.random()),
                         "Decrypted")
                     embed.description += f'`{"Error Type":^20}:{"Not found":^25}`\n`{"Item not found":^20}:{err_comm:^25}`'
                     await ctx.reply(embed=embed)
@@ -308,15 +311,15 @@ For Example:- 1)Err_10124 means command '1' under category
                                               text="Not a valid error code or info option...")
 
     # 308
-    @commands.command(aliases=['cinfo', 'clientinfo'], name="Client Info",
+    @command(aliases=['cinfo', 'clientinfo'], name="Client Info",
                       help='Displays information about the bot',
                       usage='clientinfo|cinfo', extras={'emoji': '📃', 'number': '307'})
-    async def clientinfo(self, ctx: commands.Context):
+    async def clientinfo(self, ctx: Context):
         async with ctx.typing():
             bot: Bot = ctx.bot
             c = bot.user
             cinfo = await set_timestamp(
-                discord.Embed(title=bot.user.name, description='', colour=discord.Colour.random()),
+                Embed(title=bot.user.name, description='', colour=Colour.random()),
                 f"At your service {ctx.author.name}")
             cinfo.description += f"""
     `{"Name":^15}-{c.name:^25}`
@@ -329,11 +332,11 @@ For Example:- 1)Err_10124 means command '1' under category
             await ctx.reply(embed=cinfo)
 
     # 309
-    @commands.command(aliases=['di'], name='Delinvs',
+    @command(aliases=['di'], name='Delinvs',
                       help='Deletes all active invites of the server.',
                       usage='delinvs|di', extras={'emoji': '🚷', 'number': '308'})
-    @commands.guild_only()
-    async def delinvs(self, ctx: commands.Context):
+    @guild_only()
+    async def delinvs(self, ctx: Context):
         async with ctx.typing():
             await ctx.reply(f"Deleting all access points to `{ctx.guild.name}`...")
             invites = await ctx.guild.invites()
@@ -343,19 +346,19 @@ For Example:- 1)Err_10124 means command '1' under category
             await ctx.reply(f"Breaches sealed. `{ctx.guild.name}` is in comfirmed isolation for the time being")
 
     # 314
-    @commands.command(aliases=['st'], name='Status',
+    @command(aliases=['st'], name='Status',
                       help='Displays the Status of a given member',
                       usage='status|st (member)', extras={'emoji': '📲', 'number': '309'})
-    @commands.guild_only()
-    async def status(self, ctx: commands.Context, member: discord.Member = None):
+    @guild_only()
+    async def status(self, ctx: Context, member: Member = None):
         async with ctx.typing():
             m = member if member else ctx.author
             if m.activities:
                 for s in m.activities:
-                    if isinstance(s, discord.CustomActivity):
+                    if isinstance(s, CustomActivity):
                         await ctx.reply(f"{m.mention}'s status is: `{s}`")
-                    elif isinstance(s, discord.Spotify):
-                        await ctx.reply(embed=discord.Embed(title=s.title,
+                    elif isinstance(s, Spotify):
+                        await ctx.reply(embed=Embed(title=s.title,
                                                            description="{0} is Listening to:\n*`{1:^6}`*`: {2:<}`\n*`{3:^6}`*`: {4:<}`\n*`{5:^6}`*`: {6:<}`".format(
                                                                m.mention, 'Song',
                                                                s.title,
@@ -365,15 +368,15 @@ For Example:- 1)Err_10124 means command '1' under category
                                                                'Album',
                                                                s.album.title()),
                                                            colour=s.colour).set_thumbnail(url=s.album_cover_url))
-                    elif isinstance(s, discord.Activity):
-                        if s.type == discord.ActivityType.watching:
+                    elif isinstance(s, Activity):
+                        if s.type == ActivityType.watching:
                             await ctx.reply(f"{m.mention} is watching `{s}`")
-                        elif s.type == discord.ActivityType.playing:
+                        elif s.type == ActivityType.playing:
                             await ctx.reply(f"{m.mention} is playing `{s}`")
-                        elif s.type == discord.ActivityType.streaming:
+                        elif s.type == ActivityType.streaming:
                             await ctx.reply(f"{m.mention} is streaming `{s}`")
             else:
-                if m.status == discord.Status.offline:
+                if m.status == Status.offline:
                     await ctx.reply(f"""{m.mention}'s: ```py
     Status = Offline```""")
                 else:
@@ -381,22 +384,22 @@ For Example:- 1)Err_10124 means command '1' under category
     Status = None```""")
             await command_log_and_err(ctx, 'Success')
 
-    @commands.command(aliases=['abts', 'addbottoserver'], name='Add bot to server', extras={'emoji': '🔗', 'number': '310'},
+    @command(aliases=['abts', 'addbottoserver'], name='Add bot to server', extras={'emoji': '🔗', 'number': '310'},
                       usage='addbottoserver|abts', help='Generates and sends a link to add the bot to your server')
-    async def addbottoserver(self, ctx: commands.Context):
+    async def addbottoserver(self, ctx: Context):
         await command_log_and_err(ctx, 'Success')
         bot: Bot = ctx.bot
-        await ctx.reply(embed=discord.Embed(title=f'Hello my name is `{bot.user.name}`',
+        await ctx.reply(embed=Embed(title=f'Hello my name is `{bot.user.name}`',
                                             description='It stands for `Just A Rather Very Intelligent System`\n\nClick [`J.A.R.V.I.S`]({}) to add me to your server.'.format(
                                                'https://discord.com/api/oauth2/authorize?client_id=749830638982529065&permissions=8&scope=bot%20applications.commands'
-                                           ), colour=discord.Colour.random()).set_thumbnail(
+                                           ), colour=Colour.random()).set_thumbnail(
             url=bot.user.avatar.url))
 
     # 316
-    @commands.command(name='Announce', aliases=['an'], extras={'emoji': '📢', 'number': '311'},
+    @command(name='Announce', aliases=['an'], extras={'emoji': '📢', 'number': '311'},
                       help='Announces to every member in the server.', usage='$announce|an <text>')
-    @commands.cooldown(60, 1, commands.BucketType.guild)
-    async def announce(self, ctx: commands.Context, *, text: str = None):
+    @cooldown(60, 1, BucketType.guild)
+    async def announce(self, ctx: Context, *, text: str = None):
         async with ctx.typing():
             bot: Bot = ctx.bot
             if text:
@@ -405,24 +408,24 @@ For Example:- 1)Err_10124 means command '1' under category
                     for member in ctx.guild.members:
                         if member != bot.user and member != ctx.author:
                             try:
-                                await member.send(embed=discord.Embed(title=f'Announcement from {ctx.author.name}',
+                                await member.send(embed=Embed(title=f'Announcement from {ctx.author.name}',
                                                                       description=text,
-                                                                      colour=discord.Colour.random()).set_thumbnail(
+                                                                      colour=Colour.random()).set_thumbnail(
                                     url=bot.user.avatar.url))
-                            except discord.HTTPException:
+                            except HTTPException:
                                 await ctx.reply(f"Cant send message to {member}")
                 else:
                     await command_log_and_err(ctx, f'{ctx.author.name} is not owner')
                     await ctx.reply(f"{ctx.author.mention}, you are not the owner of `{ctx.guild.name}`")
             else: await command_log_and_err(ctx, err_code='31148', text="You haven't given anything to announce pal")
 
-    @commands.command(name='Member List', aliases=['ml', 'members', 'memberlist'], extras={'emoji': '📋', 'number': '312'},
+    @command(name='Member List', aliases=['ml', 'members', 'memberlist'], extras={'emoji': '📋', 'number': '312'},
                       help='Returns a member list of everyone in the server.', usage='$members|memberlist|ml')
-    @commands.cooldown(1, 10, commands.BucketType.guild)
-    async def memberlist(self, ctx: commands.Context):
+    @cooldown(1, 10, BucketType.guild)
+    async def memberlist(self, ctx: Context):
         async with ctx.typing():
             await command_log_and_err(ctx, 'Success')
-            embed = discord.Embed(title=f'Member list - {ctx.guild.name}', description='', colour=discord.Colour.random())
+            embed = Embed(title=f'Member list - {ctx.guild.name}', description='', colour=Colour.random())
             for member in ctx.guild.members:
                 embed.description += f'`{member.name:^30} - `{member.mention}\n'
             embed.set_thumbnail(url=ctx.guild.icon.url)
@@ -430,17 +433,17 @@ For Example:- 1)Err_10124 means command '1' under category
                 third_1 = '\n'.join(embed.description.split('\n')[:40])
                 third_2 = '\n'.join(embed.description.split('\n')[40:])
                 embed.description = third_1
-                await ctx.reply(embeds=[embed, discord.Embed(description=third_2, colour=discord.Colour.random())])
+                await ctx.reply(embeds=[embed, Embed(description=third_2, colour=Colour.random())])
             else:
                 await ctx.reply(embed=embed)
 
-    @commands.command(name="Profile Pic", aliases=['pfp', 'profilepic'], extras={'emoji': '🎭', 'number': '313'},
+    @command(name="Profile Pic", aliases=['pfp', 'profilepic'], extras={'emoji': '🎭', 'number': '313'},
                       help="Displays the profile picture of a given user.",
                       usage="$profilepic|pfp (user)")
-    async def _pfp(self, ctx: commands.Context, user: discord.User = None):
+    async def _pfp(self, ctx: Context, user: User = None):
         user = user or ctx.author
         await command_log_and_err(ctx, status="Success")
-        await ctx.send(embed=await set_timestamp(discord.Embed(description="_ _", colour=discord.Colour.random()).set_image(url=user.avatar.url)))
+        await ctx.send(embed=await set_timestamp(Embed(description="_ _", colour=Colour.random()).set_image(url=user.avatar.url)))
 
 
 def setup(bot: Bot):

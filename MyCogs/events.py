@@ -1,6 +1,6 @@
 import random, datetime, discord, json, re
 from . import hypesquad_emoji, command_log_and_err, set_timestamp,\
-    version, loop, Cog, Context, command, Client, Guild, Role, TextChannel,\
+    VERSION, loop, Cog, Context, command, Client, Guild, Role, TextChannel,\
     Member, NotFound, Status, Activity, ActivityType, Embed, Colour, Invite,\
     Forbidden, GuildChannel, MemberConverter, CommandError, CommandNotFound,\
     CommandOnCooldown, MemberNotFound, UserNotFound, RoleNotFound, MessageNotFound,\
@@ -55,14 +55,14 @@ class Events(Cog):
         global connect_time
         await self.bot.change_presence(status=Status.do_not_disturb,
                                        activity=Activity(type=ActivityType.watching,
-                                                                    name=f'people talk...    V{version}'))
+                                                         name=f'people talk...    V{VERSION}'))
         ch: TextChannel = self.bot.get_channel(823216455733477387)
         embed = Embed(title="Connection to discord",
                               description=f"*`Successful`*: `Confirmed`\n *`Connection at`*: `{connect_time}`",
                               colour=Colour.gold())
         await ch.send(embed=await set_timestamp(embed, ""))
         embed = Embed(title="Bot is ready",
-                      description=f'`{self.bot.user.name}` is ready, Version: `{version}`\n',
+                      description=f'`{self.bot.user.name}` is ready, Version: `{VERSION}`\n',
                       colour=Colour.teal())
         await ch.send(embed=await set_timestamp(embed, ""))
         try: self.birthday.start()

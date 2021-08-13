@@ -1,6 +1,6 @@
 class Version:
     def __init__(self, vers):
-        self.__doc__ = "A class created for keeping track of the bot's version."
+        self.__doc__ = "A class created for keeping track of the bot's VERSION."
         self.version: str = vers
         self.iter_stg_1: str = vers[:1]
         self.iter_stg_2: str = vers[2:4]
@@ -30,5 +30,5 @@ class Version:
 
 
 """Used in C:/Users/Shlok/J.A.R.V.I.SV2021/Classified_J.A.R.V.I.S.py"""
-ver = Version("2.70.0")
-version = ver.version
+ver = Version("3.0.0")
+VERSION = ver.version
