@@ -4,6 +4,7 @@ from .embeds import *
 from .message_funcs import *
 from .version import *
 from .web_scrapers import *
+from .views import *
 
 with open("C:/Users/Shlok/bot_stuff/-... --- - ! - --- -.- . -..txt", "r") as f:
     BOT_TOKEN: str = f.read()
