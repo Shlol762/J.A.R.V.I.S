@@ -2,10 +2,10 @@ from typing import Union, Optional
 from MyCogs import calculate_position, permission_confirm, \
     role_member_conv, set_timestamp, command_log_and_err, \
     Context, Cog, command, cooldown, guild_only, ChannelNotFound,\
-    RoleConverter, MemberConverter, BucketType, \
+    RoleConverter, MemberConverter, BucketType, ThreadNotFound,\
     VoiceChannel, TextChannel, Embed, Colour, VoiceRegion,\
     CategoryChannel, Member, Forbidden, HTTPException, Role,\
-    timezone, GuildChannel, Message, Bot
+    timezone, GuildChannel, Message, Bot, ThreadJoinConfirmation, Thread
 
 
 class Cac(Cog):
@@ -370,6 +370,17 @@ class Cac(Cog):
                                                 used_on=channel)
             else: await command_log_and_err(ctx, err_code='50548', text=f"You haven't mentioned what you want to change in {channel.mention}", used_on=channel)
         else: await command_log_and_err(ctx, err_code='50548', text=f"You haven't mentioned the channel you want to edit.")
+
+    @command(name='Join Thread', aliases=['jointhread', 'jt'],
+             help="Joins a specified channel in the server.", extras={'emoji': '🆕', 'number': '506'},
+             usage='jointhread|jt <exact thread name>')
+    @cooldown(1, 15, BucketType.channel)
+    @guild_only()
+    async def _jointhread(self, ctx: Context, thread: Thread = None):
+        if thread:
+            view = ThreadJoinConfirmation(ctx, 20, thread=thread)
+            view.message = await ctx.reply('Thread found. Do you want me to join?', view=view)
+            await command_log_and_err(ctx, 'Success')
 
 
 def setup(bot: Bot):

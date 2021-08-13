@@ -5,7 +5,8 @@ from . import hypesquad_emoji, command_log_and_err, set_timestamp,\
     Forbidden, GuildChannel, MemberConverter, CommandError, CommandNotFound,\
     CommandOnCooldown, MemberNotFound, UserNotFound, RoleNotFound, MessageNotFound,\
     ChannelNotFound, NoPrivateMessage, Message, MessageConverter, BadUnionArgument,\
-    trim, forbidden_word, noswear, greetings, farewells, nou, urnotgod, timeto, Bot
+    trim, forbidden_word, noswear, greetings, farewells, nou, urnotgod, timeto, Bot,\
+    ThreadNotFound
 
 severed_time = 0
 connect_time = 0
@@ -210,6 +211,8 @@ class Events(Cog):
                                       text=f"**`The Channel:`**` `*`'{error.argument}'`*` doesn't exist` I don't know what you're looking for.")
         elif isinstance(error, NoPrivateMessage):
             await command_log_and_err(ctx=ctx, status='Server Only', error=error)
+        elif isinstance(error, ThreadNotFound):
+            await command_log_and_err(ctx, err_code='TNFi404', text=f"**`The Thread:`**` `*`'{error.argument}'`*` doesn't exist` I don't know what you're looking for.")
         elif isinstance(error, BadUnionArgument):
             await command_log_and_err(ctx, err_code="Err_000b12",
                                       text=f"There is no channel called {error.param}")
