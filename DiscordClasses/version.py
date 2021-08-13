@@ -30,5 +30,5 @@ class Version:
 
 
 """Used in C:/Users/Shlok/J.A.R.V.I.SV2021/Classified_J.A.R.V.I.S.py"""
-ver = Version("3.0.0")
+ver = Version("3.00.0")
 VERSION = ver.version
