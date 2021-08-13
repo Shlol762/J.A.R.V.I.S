@@ -1,4 +1,5 @@
-from discord.ui import View, Button, Item, button
+from discord.ui import View, Button, Item, button, Select, select
+from discord import SelectOption
 from discord.ext.commands import Context
 from discord import Interaction, ButtonStyle
 from .errors import ThreadNotSpecified
@@ -58,3 +59,13 @@ class ThreadJoinConfirmation(BaseView):
     async def no(self, _button: Button, interaction: Interaction):
         await interaction.message.edit(content=f"Okay, not joining {self.extras['thread'].mention}")
         await self.disable_all()
+
+
+class TestingSelect(BaseView):
+    @select(placeholder="Select", custom_id='TestSelect', options=[
+        SelectOption(label='Yes', value='Yes'), SelectOption(label='No', value='No'),
+        SelectOption(label='Maybe', value='Maybe')
+    ])
+    async def selection(self, _select: Select, interaction: Interaction):
+        from .custom_funcs import print_vars
+        print_vars(_select)
