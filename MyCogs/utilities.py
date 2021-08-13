@@ -445,7 +445,7 @@ For Example:- 1)Err_10124 means command '1' under category
         await command_log_and_err(ctx, status="Success")
         await ctx.reply(embed=await set_timestamp(Embed(description="_ _", colour=Colour.random()).set_image(url=user.avatar.url)))
 
-    @command(name="Banner", aliases=['b'], extras={'emoji': '🖼', 'number': '314'},
+    @command(name="Banner", aliases=['br'], extras={'emoji': '🖼', 'number': '314'},
                       help="Displays the banner of a nitro user.",
                       usage='$banner|b (member)')
     async def _banner(self, ctx: Context, user: User = None):
