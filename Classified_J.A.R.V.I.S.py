@@ -6,43 +6,13 @@ import random
 import discord
 from discord.ext import commands
 
-from DiscordClasses import BOT_TOKEN, get_prefix
+from DiscordClasses import BOT_TOKEN, get_prefix, Confirmation
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, intents=intents,
                    allowed_mentions=discord.AllowedMentions(everyone=False),
                    strip_after_prefix=True)
 bot.remove_command('help')
-
-
-class Counter(discord.ui.View):
-    def __init__(self, timeout: float, ctx: commands.Context):
-        super().__init__(timeout=timeout)
-        self.ctx = ctx
-
-    @discord.ui.button(label='0', style=discord.ButtonStyle.red)
-    async def counter(self, button: discord.ui.Button, interaction: discord.Interaction):
-        # number = int(button.label)
-        # button.label = str(number + 1)
-        # if number + 1 >= 5:
-        #     button.style = discord.ButtonStyle.green
-        button.label = self.ctx.command
-
-        await interaction.message.edit(view=self)
-
-    @discord.ui.button(label="Henlo there!", style=discord.ButtonStyle.danger)
-    async def hey(self, button: discord.ui.Button, interaction: discord.Interaction):
-        button.label = random.choice([
-            'Greetings my fran!',
-            'Sup?', "AYOOO", "How you doin'?",
-            'Hi'])
-        button.style = random.choice([discord.ButtonStyle.green, discord.ButtonStyle.danger])
-        await interaction.message.edit(view=self)
-
-    async def on_timeout(self):
-        self.counter.disabled = True
-        self.hey.disabled = True
-        await self.message.edit(view=self)
 
 
 for cog in os.listdir("C:/Users/Shlok/J.A.R.V.I.SV2021/MyCogs"):
@@ -98,7 +68,7 @@ async def test(ctx: commands.Context):
     #     except asyncio.TimeoutError:
     #         timeout = True
     #         await message.clear_reactions()
-    view = Counter(10, ctx)
+    view = Confirmation(ctx, 10)
     view.message = await ctx.reply("Hello", view=view)
 
 
