@@ -445,6 +445,15 @@ For Example:- 1)Err_10124 means command '1' under category
         await command_log_and_err(ctx, status="Success")
         await ctx.send(embed=await set_timestamp(Embed(description="_ _", colour=Colour.random()).set_image(url=user.avatar.url)))
 
+    @command(name="Banner", aliases=['b'], extras={'emoji': '🖼', 'number': '314'},
+                      help="Displays the banner of a nitro user.",
+                      usage='$banner|b (member)')
+    async def _banner(self, ctx: Context, user: User = None):
+        user = await self.bot.fetch_user(user.id if user else ctx.author.id)
+        await command_log_and_err(ctx, status="Success")
+        await ctx.send(embed=await set_timestamp(Embed(description="_ _", colour=Colour.random()).set_image(url=user.banner.url
+                                                                                                            )))
+
 
 def setup(bot: Bot):
     bot.add_cog(Utilities(bot))
