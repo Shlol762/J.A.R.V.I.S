@@ -372,7 +372,7 @@ class Cac(Cog):
         else: await command_log_and_err(ctx, err_code='50548', text=f"You haven't mentioned the channel you want to edit.")
 
     @command(name='Join Thread', aliases=['jointhread', 'jt'],
-             help="Joins a specified channel in the server.", extras={'emoji': '🆕', 'number': '506'},
+             help="Joins a specified channel in the server.", extras={'emoji': '↙', 'number': '506'},
              usage='jointhread|jt <exact thread name>')
     @cooldown(1, 15, BucketType.channel)
     @guild_only()
