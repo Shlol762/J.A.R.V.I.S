@@ -111,20 +111,18 @@ async def refseclvl(ctx: commands.Context):
 async def update(ctx: commands.Context):
     channels: list[discord.abc.GuildChannel] = bot.get_all_channels()
     link = 'https://discord.gg/zt6j4h7ep3'
-    embed = discord.Embed(title='`Update!` - New command: `Timeout`',
+    embed = discord.Embed(title='`Update!` - New command: `Banner`',
                           description=
                           f"""
-**Timeout**
+**Banner**
 
-Keeps an annoying person in a timeout channel 
-with no contact except those who have access
-to that channel.
+Sends the banner of a person(For nitro users only).
 
-`  Name :     timeout    `
-`Aliases: to|isl|isolate `
+`  Name :    Banner    `
+`Aliases: Banner | br  `
 
 You can banish the annoying person by doing:
-`$timeout <member>`
+`$banner|br (member)`
 
 If you want to join my home server, click [`J.A.R.V.I.S`]({link})
 """, colour=discord.Colour.random())
