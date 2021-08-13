@@ -115,11 +115,12 @@ class Misc(Cog):
                 except discord.HTTPException:
                     msg = msg.split()
                     await command_log_and_err(ctx, 'Success: split info')
+                    embeds = [Embed(title=f'Result for "`{query[0].upper() + query[1:]}`"\n\n{results}', description=' '.join(msg[:]), colour=discord.Colour.random())]
+                    if len(''.join(msg)) >= 4096:
+                        embeds[0].description = ''.join(msg[:300])
+                        embeds.append(Embed(description=' '.join(msg[300:]), colour=discord.Colour.random()))
                     message = await ctx.author.send(
-                        embed=Embed(title=f'Result for "`{query[0].upper() + query[1:]}`"\n\n{results}',
-                                            description=' '.join(msg[:300]), colour=discord.Colour.random()))
-                    await ctx.author.send(
-                        embed=Embed(description=' '.join(msg[300:]), colour=discord.Colour.random()))
+                        embeds=embeds)
                     await ctx.reply(
                         embed=Embed(title=f'Result for "`{query[0].upper() + query[1:]}`"\n\n{results}',
                                             description=f'Since the results for this search exceeds the character limit of 2048, the info will be sent to you through DMs. Click [here]({message.jump_url}) to jump.',

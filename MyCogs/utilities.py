@@ -426,14 +426,11 @@ For Example:- 1)Err_10124 means command '1' under category
             for member in ctx.guild.members:
                 embed.description += f'`{member.name:^30} - `{member.mention}\n'
             embed.set_thumbnail(url=ctx.guild.icon.url)
-            if len(embed.description) >= 2048:
-                third_1 = '\n'.join(embed.description.split('\n')[:20])
-                third_2 = '\n'.join(embed.description.split('\n')[20:40])
-                third_3 = '\n'.join(embed.description.split('\n')[40:])
+            if len(embed.description) >= 4096:
+                third_1 = '\n'.join(embed.description.split('\n')[:40])
+                third_2 = '\n'.join(embed.description.split('\n')[40:])
                 embed.description = third_1
-                await ctx.reply(embed=embed)
-                await ctx.reply(embed=discord.Embed(description=third_2, colour=discord.Colour.random()))
-                await ctx.reply(embed=discord.Embed(description=third_3, colour=discord.Colour.random()))
+                await ctx.reply(embeds=[embed, discord.Embed(description=third_2, colour=discord.Colour.random())])
             else:
                 await ctx.reply(embed=embed)
 
