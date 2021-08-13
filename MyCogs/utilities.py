@@ -448,11 +448,11 @@ For Example:- 1)Err_10124 means command '1' under category
     @command(name="Banner", aliases=['br'], extras={'emoji': '🖼', 'number': '314'},
                       help="Displays the banner of a nitro user.",
                       usage='$banner|b (member)')
-    async def _banner(self, ctx: Context, user: User = None):
+    async def _banner(self, ctx: Context, member: Member = None):
         await command_log_and_err(ctx, status="Success")
-        user = await self.bot.fetch_user(user.id if user else ctx.author.id)
-        if (await user.profile()).nitro:
-            await ctx.reply(embed=await set_timestamp(Embed(description="_ _", colour=Colour.random()).set_image(url=user.banner.url)))
+        member = await self.bot.fetch_user(member.id if member else ctx.author.id)
+        if member.banner:
+            await ctx.reply(embed=await set_timestamp(Embed(description="_ _", colour=Colour.random()).set_image(url=member.banner.url)))
         else: await ctx.reply(f"The banner feature is for nitro user exclusively.")
 
 
