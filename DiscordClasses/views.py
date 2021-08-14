@@ -5,6 +5,10 @@ from discord import Interaction, ButtonStyle
 from .errors import ThreadNotSpecified
 from discord import Thread
 
+
+HOME_SERVER_INVITE = 'https://discord.gg/zt6j4h7ep3'
+
+
 class BaseView(View):
     def __init__(self, ctx: Context, timeout: float = 180.0, **kwarks):
         super().__init__(timeout=timeout)
@@ -61,11 +65,7 @@ class ThreadJoinConfirmation(BaseView):
         await self.disable_all()
 
 
-class TestingSelect(BaseView):
-    @select(placeholder="Select", custom_id='TestSelect', options=[
-        SelectOption(label='Yes', value='Yes'), SelectOption(label='No', value='No'),
-        SelectOption(label='Maybe', value='Maybe')
-    ])
-    async def selection(self, _select: Select, interaction: Interaction):
-        from .custom_funcs import print_vars
-        print_vars(_select)
+class JoinHomeServer(BaseView):
+    def __init__(self, ctx: Context, timeout: float = 180.0, **kwargs):
+        super().__init__(ctx, timeout, **kwargs)
+        self.add_item(Button(style=ButtonStyle.link, url=HOME_SERVER_INVITE, label='Join Home Server'))

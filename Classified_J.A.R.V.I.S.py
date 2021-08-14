@@ -6,7 +6,7 @@ import random
 import discord
 from discord.ext import commands
 
-from DiscordClasses import BOT_TOKEN, get_prefix, Confirmation
+from DiscordClasses import BOT_TOKEN, get_prefix, Confirmation, JoinHomeServer
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, intents=intents,
@@ -68,7 +68,7 @@ async def test(ctx: commands.Context):
     #     except asyncio.TimeoutError:
     #         timeout = True
     #         await message.clear_reactions()
-    view = Confirmation(ctx, 10)
+    view = JoinHomeServer(ctx, 10)
     view.message = await ctx.reply("Hello", view=view)
 
 
@@ -110,7 +110,6 @@ async def refseclvl(ctx: commands.Context):
 @bot.command(hidden=True)
 async def update(ctx: commands.Context):
     channels: list[discord.abc.GuildChannel] = bot.get_all_channels()
-    link = 'https://discord.gg/zt6j4h7ep3'
     embed = discord.Embed(title='`Update!` - New command: `Banner`',
                           description=
                           f"""
@@ -128,7 +127,7 @@ If you want to join my home server, click [`J.A.R.V.I.S`]({link})
 """, colour=discord.Colour.random())
     for channel in channels:
         if 'general' in channel.name and isinstance(channel, discord.TextChannel):
-            message: discord.Message = await channel.send(embed=embed)
+            message: discord.Message = await channel.send(embed=embed, view=JoinHomeServer)
             await ctx.reply(
                 f'`Message link`: https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
 
