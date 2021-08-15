@@ -5,7 +5,7 @@ from MyCogs import calculate_position, permission_confirm, \
     RoleConverter, MemberConverter, BucketType, ThreadNotFound,\
     VoiceChannel, TextChannel, Embed, Colour, VoiceRegion,\
     CategoryChannel, Member, Forbidden, HTTPException, Role,\
-    timezone, GuildChannel, Message, Bot, ThreadJoinConfirmation, Thread
+    timezone, GuildChannel, Message, Bot, ThreadConfirmation, Thread
 
 
 class Cac(Cog):
@@ -372,15 +372,29 @@ class Cac(Cog):
         else: await command_log_and_err(ctx, err_code='50548', text=f"You haven't mentioned the channel you want to edit.")
 
     @command(name='Join Thread', aliases=['jointhread', 'jt'],
-             help="Joins a specified channel in the server.", extras={'emoji': '↙', 'number': '506'},
+             help="Joins a specified thread in the server.", extras={'emoji': '↙', 'number': '506'},
              usage='jointhread|jt <exact thread name>')
-    @cooldown(1, 15, BucketType.channel)
+    @cooldown(1, 10, BucketType.channel)
     @guild_only()
     async def _jointhread(self, ctx: Context, thread: Thread = None):
         if thread:
-            view = ThreadJoinConfirmation(ctx, 20, thread=thread)
+            view = ThreadConfirmation(ctx, 20, thread=thread, method='join')
             view.message = await ctx.reply('Thread found. Do you want me to join?', view=view)
             await command_log_and_err(ctx, 'Success')
+        else: await command_log_and_err(ctx, err_code='50748', text="What thread should I join??")
+
+    @command(name='Leave Thread', aliases=['leavethread', 'lt'],
+             help='Leaves a specified thread in the server.', extras={'emoji': '↗', 'number': '507'},
+             usage='levethread|lt <exact thread name>')
+    @cooldown(1, 10, BucketType.channel)
+    @guild_only()
+    async def _leavethread(self, ctx: Context, thread: Thread = None):
+        if thread:
+            view = ThreadConfirmation(ctx, 20, thread=thread, method='leave')
+            view.message = await ctx.reply('Thread found. Do you want me to leave?', view=view)
+            await command_log_and_err(ctx, 'Success')
+        else: await command_log_and_err(ctx, err_code='50748', text='Um which thread?')
+
 
 def setup(bot: Bot):
     bot.add_cog(Cac(bot))

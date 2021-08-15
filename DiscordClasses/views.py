@@ -46,22 +46,33 @@ class Confirmation(BaseView):
         await self.disable_all()
 
 
-class ThreadJoinConfirmation(BaseView):
+class ThreadConfirmation(BaseView):
     def args_check(self):
-        if 'thread' not in self.extras.keys():
-            raise ThreadNotSpecified('Argument "thread" was not given.')
+        kwrgs = self.extras.keys()
+        if 'thread' not in kwrgs or 'method' not in kwrgs:
+            missing_arg = '"thread"' if 'thread' not in kwrgs else '"method"'
+            missing_arg = '"thread" and "method"' if 'thread' not in kwrgs and 'method' not in kwrgs else missing_arg
+            raise ThreadNotSpecified(f'Argument {missing_arg} was not given.')
         if not isinstance(self.extras['thread'], Thread):
-            raise ValueError('Argument "thread" is not of type Thread.')
+            raise TypeError('Argument "thread" is not of type Thread.')
+        if self.extras['method'].lower() not in ('leave', 'join'):
+            raise ValueError('Incorrect values passed to argument "method"')
 
     @button(label="Yes", custom_id="JoinThreadYes", style=ButtonStyle.green)
     async def yes(self, _button: Button, interaction: Interaction):
-        await self.extras['thread'].join()
-        await interaction.response.send_message(content=f'Joined thread: {self.extras["thread"].mention}', ephemeral=True)
+        if self.extras['method'].lower() == 'join':
+            await self.extras['thread'].join()
+            verb = 'Joined'
+        else:
+            await self.extras['thread'].leave()
+            verb = 'Left'
+        await interaction.response.send_message(content=f'{verb} {self.extras["thread"].mention}', ephemeral=True)
         await self.disable_all()
 
     @button(label="No", custom_id="JoinThreadNo", style=ButtonStyle.red)
     async def no(self, _button: Button, interaction: Interaction):
-        await interaction.response.send_message(content=f"Okay, not joining {self.extras['thread'].mention}", ephemeral=True)
+        verb = 'join' if self.extras['method'].lower() == 'join' else 'leav'
+        await interaction.response.send_message(content=f"Okay, not {verb}ing {self.extras['thread'].mention}", ephemeral=True)
         await self.disable_all()
 
 
