@@ -13,6 +13,9 @@ class Version:
     def __str__(self):
         return self.version
 
+    def __repr__(self):
+        return f"<Version Obj:{self.version}>"
+
     def __eq__(self, other):
         if not isinstance(other, Version) and not isinstance(other, str):
             raise TypeError(f'{other} of type {type(other)} cannot be compared to {repr(self)}')
