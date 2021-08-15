@@ -2,7 +2,7 @@ from discord.ui import View, Button, Item, button, Select, select
 from discord import SelectOption
 from discord.ext.commands import Context
 from discord import Interaction, ButtonStyle
-from .errors import ThreadNotSpecified
+from .errors import *
 from discord import Thread
 
 
@@ -53,15 +53,15 @@ class ThreadJoinConfirmation(BaseView):
         if not isinstance(self.extras['thread'], Thread):
             raise ValueError('Argument "thread" is not of type Thread.')
 
-    @button(label="Yes", custom_id="JoinThreadYes", style=ButtonStyle.green, emoji='👍')
+    @button(label="Yes", custom_id="JoinThreadYes", style=ButtonStyle.green)
     async def yes(self, _button: Button, interaction: Interaction):
         await self.extras['thread'].join()
-        await interaction.message.edit(content=f'Joined thread: {self.extras["thread"].mention}')
+        await interaction.response.send_message(content=f'Joined thread: {self.extras["thread"].mention}', ephemeral=True)
         await self.disable_all()
 
-    @button(label="No", custom_id="JoinThreadNo", style=ButtonStyle.red, emoji='👎')
+    @button(label="No", custom_id="JoinThreadNo", style=ButtonStyle.red)
     async def no(self, _button: Button, interaction: Interaction):
-        await interaction.message.edit(content=f"Okay, not joining {self.extras['thread'].mention}")
+        await interaction.response.send_message(content=f"Okay, not joining {self.extras['thread'].mention}", ephemeral=True)
         await self.disable_all()
 
 
