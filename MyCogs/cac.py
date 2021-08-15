@@ -382,6 +382,5 @@ class Cac(Cog):
             view.message = await ctx.reply('Thread found. Do you want me to join?', view=view)
             await command_log_and_err(ctx, 'Success')
 
-
 def setup(bot: Bot):
     bot.add_cog(Cac(bot))
