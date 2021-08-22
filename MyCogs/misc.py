@@ -68,6 +68,7 @@ class Misc(Cog):
         if word:
             if word == word[::-1]:
                 await ctx.reply(f"{word} is a palindrome")
+                return
             await ctx.reply(f"{word} is not a palindrome")
         else:
             await command_log_and_err(ctx, err_code="Err_90348", text="Word = Give pls?")
