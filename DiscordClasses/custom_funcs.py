@@ -252,6 +252,3 @@ async def comm_log_local(ctx: Context, status: str):
     f.write("\n".join(lines))
     f.close()
 
-
-def this_is_to_test():
-    pass
