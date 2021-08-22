@@ -8,8 +8,6 @@ from bs4 import BeautifulSoup
 from .custom_funcs import time_set, number_system
 import nest_asyncio
 
-nest_asyncio.apply()
-
 url_time = None
 url = None
 
