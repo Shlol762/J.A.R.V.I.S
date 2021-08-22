@@ -11,3 +11,4 @@ aiohttp~=3.7.4.post0
 beautifulsoup4~=4.9.3
 PyYAML~=5.4.1
 speedtest_cli
+physics~=0.0.2
