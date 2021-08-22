@@ -66,24 +66,9 @@ class Misc(Cog):
                       usage='palindrome|pdm <text>', extras={'emoji': '🔁', 'number': '903'})
     async def palindrome(self, ctx: Context, word: str = None):
         if word:
-            if len(word) <= 14:
-                word_len = len(word)
-                fwd_idx = 0
-                bckwd_idx = word_len - 1
-                for char in word:
-                    if word[fwd_idx] != word[bckwd_idx]:
-                        await ctx.reply(f"{word} is not a palindrome")
-                        break
-                    else:
-                        if bckwd_idx - fwd_idx < 0:
-                            await ctx.reply(f"{word} is a palindrome.")
-                            break
-                    fwd_idx += 1
-                    bckwd_idx -= 1
-                await command_log_and_err(ctx, 'Success')
-            else:
-                await command_log_and_err(ctx, err_code="Err_90312",
-                                          text="Max characters for a word is 14.")
+            if word == word[::-1]:
+                await ctx.reply(f"{word} is a palindrome")
+            await ctx.reply(f"{word} is not a palindrome")
         else:
             await command_log_and_err(ctx, err_code="Err_90348", text="Word = Give pls?")
 
