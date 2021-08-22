@@ -15,9 +15,16 @@ url = None
 
 
 class Cricket:
+    __slots__ = ['status', 'score1', 'score2', 'team1', 'team2',
+                 'match_per', 'match_tim', 'match_num', 'match_loc', 'match_date',
+                 'match_ser', 'pt_rank1', 'pt_rank2', 'pt_rank3', 'pt_rank4',
+                 'pt_rank5', 'pt_rank6', 'pt_rank7', 'pt_rank8', 'pt_table',
+                 'teams_short_long', 'pt_ipl_logo', 'ipl_team_logos_web',
+                 'ipl_team_logos_local']
+    __doc__ = """A class created for scraping IPL information from https://www.espncricinfo.com/live-cricket-score
+            with the help of BeautifulSoup."""
+
     def __init__(self):
-        self.__doc__ = """A class created for scraping IPL information from https://www.espncricinfo.com/live-cricket-score
-        with the help of BeautifulSoup."""
         global url_time
         global url
         hour: datetime.datetime = datetime.datetime.now().strftime('%I')
@@ -225,9 +232,11 @@ class Cricket:
 
 
 class WorldoMeter:
+    __slots__ = ['url']
+    __doc__ = """A class created for scraping Covid-19 information from https://www.worldometers.info"""
+
     def __init__(self):
         self.url = "https://www.worldometers.info"
-        self.__doc__ = """A class created for scraping Covid-19 information from https://www.worldometers.info"""
 
     async def load_data(self, url_: str) -> BeautifulSoup:
         """Loads HTML data for scraping."""
