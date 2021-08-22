@@ -6,7 +6,7 @@ import discord, aiohttp, asyncio
 from bs4 import BeautifulSoup
 from discord.ext import commands
 from urllib.parse import quote_plus
-from DiscordClasses import BOT_TOKEN, get_prefix, Confirmation, JoinHomeServer
+from DiscordClasses import BOT_TOKEN, get_prefix, Confirmation, JoinHomeServer, Cricket
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, intents=intents,
@@ -38,36 +38,37 @@ sec_lvl = """
 
 
 @bot.command()
-async def test(ctx: commands.Context, id: int):
-    emblist = [discord.Embed(description="Hey!"),
-               discord.Embed(description="Hello!"),
-               discord.Embed(description="Greetings my friends!"),
-               discord.Embed(description="Hi")]
-    message: discord.Message = await ctx.send(embed=emblist[0])
-    emojis = ['⏮', '◀', '▶', '⏭']
-    [await message.add_reaction(emoji) for emoji in emojis]
-    count, timeout = 0, False
-    while not timeout:
-        try:
-            reaction, user = await bot.wait_for('reaction_add', timeout=30, check=lambda r, u: str(r.emoji) in emojis and u != bot.user)
-            if str(reaction.emoji) == '◀':
-                if count > 0:
-                    count -= 1
-                    await message.edit(embed=emblist[count])
-            elif str(reaction.emoji) == '▶':
-                if count < len(emblist) - 1:
-                    count += 1
-                    await message.edit(embed=emblist[count])
-            elif str(reaction.emoji) == '⏮':
-                count = 0
-                await message.edit(embed=emblist[count])
-            elif str(reaction.emoji) == '⏭':
-                count = len(emblist)-1
-                await message.edit(embed=emblist[count])
-            await message.remove_reaction(reaction, user)
-        except asyncio.TimeoutError:
-            timeout = True
-            await message.clear_reactions()
+async def test(ctx: commands.Context, text: str=''):
+    # emblist = [discord.Embed(description="Hey!"),
+    #            discord.Embed(description="Hello!"),
+    #            discord.Embed(description="Greetings my friends!"),
+    #            discord.Embed(description="Hi")]
+    # message: discord.Message = await ctx.send(embed=emblist[0])
+    # emojis = ['⏮', '◀', '▶', '⏭']
+    # [await message.add_reaction(emoji) for emoji in emojis]
+    # count, timeout = 0, False
+    # while not timeout:
+    #     try:
+    #         reaction, user = await bot.wait_for('reaction_add', timeout=30, check=lambda r, u: str(r.emoji) in emojis and u != bot.user)
+    #         if str(reaction.emoji) == '◀':
+    #             if count > 0:
+    #                 count -= 1
+    #                 await message.edit(embed=emblist[count])
+    #         elif str(reaction.emoji) == '▶':
+    #             if count < len(emblist) - 1:
+    #                 count += 1
+    #                 await message.edit(embed=emblist[count])
+    #         elif str(reaction.emoji) == '⏮':
+    #             count = 0
+    #             await message.edit(embed=emblist[count])
+    #         elif str(reaction.emoji) == '⏭':
+    #             count = len(emblist)-1
+    #             await message.edit(embed=emblist[count])
+    #         await message.remove_reaction(reaction, user)
+    #     except asyncio.TimeoutError:
+    #         timeout = True
+    #         await message.clear_reactions()
+    await ctx.reply(await Cricket('ok', text).get_tournament_home())
 
 
 @bot.command(hidden=True)
