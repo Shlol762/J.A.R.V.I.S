@@ -2,7 +2,7 @@ import datetime
 from typing import Optional
 import discord
 from discord.ext import commands
-from DiscordClasses.embeds import ipl_logo_maker, set_timestamp
+from DiscordClasses.embeds import logo_maker, set_timestamp
 from DiscordClasses.web_scrapers import Cricket
 from . import command_log_and_err
 from MyCogs import Bot, Cog, Context

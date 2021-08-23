@@ -6,7 +6,7 @@ import discord, aiohttp, asyncio
 from bs4 import BeautifulSoup
 from discord.ext import commands
 from urllib.parse import quote_plus
-from DiscordClasses import BOT_TOKEN, get_prefix, Confirmation, JoinHomeServer, Cricket, image_join as ij
+from DiscordClasses import BOT_TOKEN, get_prefix, Confirmation, JoinHomeServer, Cricket, logo_maker
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, intents=intents,
@@ -135,19 +135,9 @@ If you want to join my home server, click [`J.A.R.V.I.S`]({link})
 
 @bot.command(hidden=True)
 async def test1(ctx: commands.Context, *, url: str):
-    import aiohttp, aiofiles
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as req:
-            f = await aiofiles.open("C:/Users/Shlok/AppData/Local/JARVIScache/team1.png", "wb")
-            await f.write(await req.read())
-            await f.close()
-    path = ij("C:/Users/Shlok/AppData/Local/JARVIScache/team1.png",
-             "C:/Users/Shlok/AppData/Local/JARVIScache/team2.png")
-    img_name: str = path.split('/')[-1]
-    file = discord.File(path, filename=img_name)
-    embed = discord.Embed(description="_ _", type='image')
-    embed.set_thumbnail(url=f"attachment://{img_name}")
-    await ctx.send(embed=embed, file=file)
+    embed = discord.Embed(description='_ _', type='image')
+    await logo_maker(ctx, embed,
+                     url.split(', ')[0], url.split(', ')[1])
 
 
 

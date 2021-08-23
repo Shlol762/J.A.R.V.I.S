@@ -5,7 +5,7 @@ import discord
 from discord import Message, Embed
 from discord.ext import commands
 from DiscordClasses.web_scrapers import Cricket
-from DiscordClasses.custom_funcs import  reaction, image_join, time_set, comm_log_local
+from DiscordClasses.custom_funcs import  reaction, image_join, time_set, comm_log_local, download_images
 
 
 class TypeDefError(Exception):
@@ -102,21 +102,18 @@ async def command_log_and_err(ctx: commands.Context = None, status: Optional[str
     return await chnl.send(embed=e)
 
 
-async def ipl_logo_maker(ctx: commands.Context, embed: discord.Embed, team1: str, team2: str) -> Optional[Message]:
+async def logo_maker(ctx: commands.Context, embed: discord.Embed, team1_icon_url: str=None, team2_icon_url: str=None) -> Optional[Message]:
     """Takes the logos of the 2 teams playing a match and combines them into one, while pasting it into
     the thumbnail of an Embed."""
     standby = "C:/Users/Shlok/J.A.R.V.I.SV2021/image_resources/pls_stand_by.jpg"
-    cricket = Cricket()
-    if (team1, team2) != ('N/A', 'N/A') and team1 in cricket.teams_short_long and team2 in cricket.teams_short_long:
-        path: str = image_join(cricket.ipl_team_logos_local.get(team1) or standby,
-                          cricket.ipl_team_logos_local.get(team2 or standby))
-    else:
-        path = standby
+    paths = await download_images(team1_icon_url, team2_icon_url, file_names=['team1', 'team2'])
+    path: str = image_join(paths[0] or standby,
+                           paths[1] or standby)
     img_name: str = path.split('/')[-1]
     file = discord.File(path, filename=img_name)
     embed.set_thumbnail(url=f"attachment://{img_name}")
-    yield await ctx.reply(file=file, embed=embed)
-    os.remove(path) if path != standby else None
+    return await ctx.reply(file=file, embed=embed), os.remove(path) if path != standby else None
+
 
 
 async def set_timestamp(embed: discord.Embed,

@@ -8,7 +8,7 @@ from discord.ext.commands import RoleNotFound, RoleConverter, MemberConverter, B
 from discord import Role, Member, Message, Emoji
 from pytz import timezone
 from typing import Union, Optional, List, Coroutine
-import aiohttp
+import aiohttp, aiofiles
 import re
 
 
@@ -59,9 +59,25 @@ def image_join(img1: str, img2: str) -> str:
     new_image = Image.new('RGB', (im1.width + im2.width, im1.height))
     new_image.paste(im1, (0, 0))
     new_image.paste(im2, (im1.width, 0))
-    path: str = "C:/Users/Shlok/AppData/Local/JARVIScache/vs_logo.png"
+    path: str = "C:/Users/Shlok/AppData/Local/JARVIScache/vs_logo.jpg"
     new_image.save(path)
     return path
+
+
+async def download_images(*urls: str, file_names: List[str]) -> str:
+    """Downloads an image from a given url."""
+    counter = 0
+    files = []
+    for url in urls:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as req:
+                file = f"C:/Users/Shlok/AppData/Local/JARVIScache/{file_names[counter]}.jpg"
+                f = await aiofiles.open(file, "wb")
+                await f.write(await req.read())
+                await f.close()
+                files.append(file)
+        counter += 1
+    return files
 
 
 def time_set(time: datetime = None, time_format: str = None) -> Optional[datetime]:
