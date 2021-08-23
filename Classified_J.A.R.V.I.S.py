@@ -6,7 +6,7 @@ import discord, aiohttp, asyncio
 from bs4 import BeautifulSoup
 from discord.ext import commands
 from urllib.parse import quote_plus
-from DiscordClasses import BOT_TOKEN, get_prefix, Confirmation, JoinHomeServer, Cricket
+from DiscordClasses import BOT_TOKEN, get_prefix, Confirmation, JoinHomeServer, Cricket, image_join as ij
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, intents=intents,
@@ -38,7 +38,7 @@ sec_lvl = """
 
 
 @bot.command()
-async def test(ctx: commands.Context, text: str=''):
+async def test(ctx: commands.Context, *, text: str=''):
     # emblist = [discord.Embed(description="Hey!"),
     #            discord.Embed(description="Hello!"),
     #            discord.Embed(description="Greetings my friends!"),
@@ -68,7 +68,9 @@ async def test(ctx: commands.Context, text: str=''):
     #     except asyncio.TimeoutError:
     #         timeout = True
     #         await message.clear_reactions()
-    await ctx.reply(await Cricket('ok', text).get_tournament_home())
+    c = Cricket(text)
+    await c.get_tournament_home()
+    await ctx.reply(c.tournament_url)
 
 
 @bot.command(hidden=True)
@@ -132,11 +134,21 @@ If you want to join my home server, click [`J.A.R.V.I.S`]({link})
 
 
 @bot.command(hidden=True)
-async def test1(ctx: commands.Context):
-    await ctx.send("Context", view=Fran().add_item(
-        discord.ui.Button(style=discord.ButtonStyle.blurple, label="Test")))  # Blue button with button label of "Test"
-    res = await bot.wait_for("button_click")  # Wait for button to be clicked
-    await res.respond(type=discord.InteractionType.ChannelMessageWithSource, content=f'Button Clicked')
+async def test1(ctx: commands.Context, *, url: str):
+    import aiohttp, aiofiles
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as req:
+            f = await aiofiles.open("C:/Users/Shlok/AppData/Local/JARVIScache/team1.png", "wb")
+            await f.write(await req.read())
+            await f.close()
+    path = ij("C:/Users/Shlok/AppData/Local/JARVIScache/team1.png",
+             "C:/Users/Shlok/AppData/Local/JARVIScache/team2.png")
+    img_name: str = path.split('/')[-1]
+    file = discord.File(path, filename=img_name)
+    embed = discord.Embed(description="_ _", type='image')
+    embed.set_thumbnail(url=f"attachment://{img_name}")
+    await ctx.send(embed=embed, file=file)
+
 
 
 @bot.command(hidden=True)

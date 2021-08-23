@@ -14,18 +14,61 @@ url = None
 
 
 class Cricket:
-    __slots__ = ['tournament', 'text']
-    url = "https://www.espncricinfo.com/"
+    __slots__ = [
+        'tournament',
+        '_tournament_url'
+                ]
 
-    def __init__(self, tournament: str, text: str):
+    __teams_int__ = [
+        'sri lanka',
+        'india',
+        'england',
+        'pakistan',
+        'australia',
+        'south africa',
+        'west indies',
+        'new zealand',
+        'zimbabwe',
+        'ireland'
+    ]
+
+    __teams_ipl__ = {
+        'royal challengers bangalore',
+        'chennai super kings',
+        'kolkata knight riders',
+        'punjab kings',
+        'delhi capitals',
+        'rajasthan royals',
+        'mumbai indians',
+        'sunrisers hyderabad'
+                    }
+
+    url = "https://www.espncricinfo.com"
+
+    def __init__(self, tournament: str):
         self.tournament = tournament
-        self.text = text
+        self._tournament_url = None
 
     async def get_tournament_home(self):
         async with aiohttp.ClientSession() as session:
             async with session.get(self.url) as request:
                 soup = BeautifulSoup(await request.text(), 'lxml')
-        return soup.find(href=re.compile(self.text.replace(" vs ", "(.)*").replace(" ", "-"))).get('href')
+        self._tournament_url = self.url + ''.join([soup.find(href=re.compile('/series/' + t_url)).get('href') for t_url in self.format_trnmnt_str(self.tournament)
+                                           if soup.find(href=re.compile('/series/' + t_url)) is not None])
+
+    def format_trnmnt_str(self, preformat_text: str):
+        configs = [preformat_text.lower(), ]
+        if 'vs' in preformat_text:
+            teams = preformat_text.split(" vs ")
+            teams = [team_n for team_n in self.__teams_int__ for team in teams if re.search(r"^"+team, team_n)]
+            configs.append("(.)*".join(teams).lower())
+            configs.append("(.)*".join(teams[::-1]).lower())
+        return configs
+
+
+    @property
+    def tournament_url(self):
+        return self._tournament_url
 
 
 class WorldoMeter:

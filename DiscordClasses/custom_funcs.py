@@ -59,7 +59,7 @@ def image_join(img1: str, img2: str) -> str:
     new_image = Image.new('RGB', (im1.width + im2.width, im1.height))
     new_image.paste(im1, (0, 0))
     new_image.paste(im2, (im1.width, 0))
-    path: str = "C:/Users/Shlok/J.A.R.V.I.SV2021/image_resources/ipl_vs_logo.png"
+    path: str = "C:/Users/Shlok/AppData/Local/JARVIScache/vs_logo.png"
     new_image.save(path)
     return path
 
