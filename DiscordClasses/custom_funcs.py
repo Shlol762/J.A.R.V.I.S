@@ -282,7 +282,9 @@ class CricInfoCard:
         self._progress = progress
         self._teams = teams
         self._scores = scores
+        self._scores.extend(['']) if len(scores) < 2 else scores
         self._overs = overs
+        self._overs.extend(['']) if len(overs) < 2 else overs
         self._icons = icons
 
     def __str__(self):
