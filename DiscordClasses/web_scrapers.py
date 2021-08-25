@@ -86,22 +86,21 @@ class Cricket:
                 soup = BeautifulSoup(await request.text(), 'lxml')
         score = soup.select('.match-header .match-info .teams .team .score-detail .score-info')
         overs = soup.select('.match-header .match-info .teams .team .score-detail .score')
+        dummy = ['', '']
         match = CricInfoCard(soup.find(class_=re.compile("^description")).text,
                              soup.select('.match-header .match-info .status span')[0].text,
                              soup.select('.match-header .match-info .status-text span')[0].text,
                              [team.text for team in soup.select('.match-header .match-info .teams .team .name-link p')],
-                             [scr.text for scr in score] if score else ['', ''],
-                             [ovr.text for ovr in overs] if overs else ['', ''],
-                             ['', ''],
+                             ([scr.text for scr in score] or dummy) if score else dummy,
+                             ([ovr.text for ovr in overs] or dummy) if overs else dummy,
+                             dummy,
                              {'tournament': self.tournament_url, 'match': match_link})
-
+        print(match.teams)
         match._icons = self.get_img(match.teams['team1']['name'], match.teams['team2']['name'])
         return match
 
     def get_img(self, *teams: str):
         return [self.ROOT_IMG_DIR.format(self.__TEAMS_IPL__.get(team.lower()) or self.__TEAMS_INT__.get(team.lower())) for team in teams]
-
-
 
     @property
     def tournament_url(self) -> str:
