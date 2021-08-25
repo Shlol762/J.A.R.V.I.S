@@ -13,31 +13,22 @@ class Sports(Cog):
         self.bot = bot
         self.name = 'Sports'
         self.description = 'Collects sports data from the internet and displays as Embeds.(UNDER DEVELOPMENT)'
-        # self.c = Cricket()
 
-    @commands.command(name='Ipl score', aliases=['ipls', 'iplscore'],
-                      usage='iplscore|ipls', extras={'emoji': '🏏', 'number': '801'},
-                      help='Gets the score of the next or live IPL match | Command under reconfig.')
-    async def iplscore(self, ctx: Context):
-        # async with ctx.typing():
-        #     match = Cricket()
-        #     embed = discord.Embed(title=f'{match.match_ser}\n`{match.team1}` vs `{match.team2}`', description='',
-        #                           colour=discord.Colour.random()).set_footer(
-        #         text=match.status, icon_url=match.pt_ipl_logo)
-        #     if match.match_ser != 'N/A':
-        #         embed.description += f"""
-        # `{match.team1:<30}{match.score1:>35}`\n
-        # `{match.team2:<30}{match.score2:>35}`\n
-        # `{'Match Number':^12} - {match.match_num.replace("Qu", "Qualifier"):^12}`
-        # `{'Location':^12} - {match.match_loc:^12}`
-        # `{'Date':^12} - {match.match_date:^12}`
-        # `{'Period':^12} - {match.match_per:^12}`
-        # `{'Time':^12} - {match.match_tim:^12}`"""
-        #     else:
-        #         embed.description += f'Trouble getting info from [`ESPNcricinfo`](https://www.espncricinfo.com/).\n`Please Stand by`'
-        #     await command_log_and_err(ctx, 'Success')
-        #     await ipl_logo_maker(ctx, await set_timestamp(embed, ""), team1=match.team1, team2=match.team2)
-        await ctx.reply("Command under reconfig.")
+    @commands.command(name='Cricket Score', aliases=['cs', 'cricscore', 'cricketscore'],
+                      usage='cricscore|cricketscore|cs <series>', extras={'emoji': '🏏', 'number': '801'},
+                      help='Gets the score of the next or live match from any series.')
+    async def cricscore(self, ctx: Context, *, tournament: str = None):
+        if tournament:
+            async with ctx.typing():
+                match = await Cricket(tournament).get_match_data()
+                embed = discord.Embed(title=f'{match.series}\n`{match.teams["team1"]["name"].title()}` vs `{match.teams["team2"]["name"].title()}`', description='',
+                                      colour=discord.Colour.random(), url=match.link['tournament']).set_footer(
+                                      text=match.progress)
+                embed.description += str(match)
+                await command_log_and_err(ctx, 'Success')
+                await logo_maker(ctx, await set_timestamp(embed, ""), match._icons[0], match._icons[1])
+                return
+        await command_log_and_err(ctx, err_code="80148", text="Which series bub?")
 
     @commands.command(name='Ipl table', aliases=['iplt', 'ipltable'],
                       usage='ipltable|iplt (team)',
