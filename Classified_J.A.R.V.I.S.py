@@ -69,8 +69,7 @@ async def test(ctx: commands.Context, *, text: str=''):
     #         timeout = True
     #         await message.clear_reactions()
     c = Cricket(text)
-    await c.get_tournament_home()
-    await ctx.reply(c.tournament_url)
+    await c.get_match_data()
 
 
 @bot.command(hidden=True)
@@ -138,7 +137,6 @@ async def test1(ctx: commands.Context, *, url: str):
     embed = discord.Embed(description='_ _', type='image')
     await logo_maker(ctx, embed,
                      url.split(', ')[0], url.split(', ')[1])
-
 
 
 @bot.command(hidden=True)
