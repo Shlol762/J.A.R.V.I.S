@@ -102,16 +102,16 @@ async def command_log_and_err(ctx: commands.Context = None, status: Optional[str
     return await chnl.send(embed=e)
 
 
-async def logo_maker(ctx: commands.Context, embed: discord.Embed, team1_icon_url: str=None, team2_icon_url: str=None) -> Optional[Message]:
+async def logo_maker(ctx: commands.Context, embed: discord.Embed, team1_icon_url: str=None, team2_icon_url: str=None, online: bool = False) -> Optional[Message]:
     """Takes the logos of the 2 teams playing a match and combines them into one, while pasting it into
     the thumbnail of an Embed."""
     standby = "C:/Users/Shlok/J.A.R.V.I.SV2021/image_resources/pls_stand_by.jpg"
-    paths = await download_images(team1_icon_url, team2_icon_url, file_names=['team1', 'team2'])
+    paths = await download_images(team1_icon_url, team2_icon_url, file_names=['team1', 'team2']) if online is True else [team1_icon_url, team2_icon_url]
     path: str = image_join(paths[0] or standby,
                            paths[1] or standby)
     img_name: str = path.split('/')[-1]
     file = discord.File(path, filename=img_name)
-    embed.set_thumbnail(url=f"attachment://{img_name}")
+    embed.set_footer(icon_url=f"attachment://{img_name}", text=embed._footer['text'])
     return await ctx.reply(file=file, embed=embed), os.remove(path) if path != standby else None
 
 

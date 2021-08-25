@@ -7,7 +7,7 @@ from discord.ext.commands import RoleNotFound, RoleConverter, MemberConverter, B
     MessageConverter
 from discord import Role, Member, Message, Emoji
 from pytz import timezone
-from typing import Union, Optional, List, Coroutine
+from typing import Union, Optional, List, Coroutine, Tuple, Dict
 import aiohttp, aiofiles
 import re
 
@@ -64,7 +64,7 @@ def image_join(img1: str, img2: str) -> str:
     return path
 
 
-async def download_images(*urls: str, file_names: List[str]) -> str:
+async def download_images(*urls: str, file_names: Tuple[str]) -> str:
     """Downloads an image from a given url."""
     counter = 0
     files = []
@@ -249,6 +249,7 @@ async def get_prefix(bot: Bot, message: Message) -> str:
     for_guild = prefixes[id]
     return for_guild
 
+
 async def comm_log_local(ctx: Context, status: str):
     """Logs all command movement into a local text file."""
     with open("C:/Users/Shlok/bot_stuff/command_logs.txt", "r") as f:
@@ -267,4 +268,68 @@ async def comm_log_local(ctx: Context, status: str):
     f = open("C:/Users/Shlok/bot_stuff/command_logs.txt", "w")
     f.write("\n".join(lines))
     f.close()
+
+
+class CricInfoCard:
+    __slots__ = ['_description', '_status', '_progress', '_teams',
+                 '_scores', '_overs', 'link', "_icons"]
+
+    def __init__(self, description: str, status: str, progress: str, teams: List[str], scores: List[str],
+                 overs: List[str], icons: List[str], link: Dict[str, str]):
+        self.link = link
+        self._description = description.split(', ')
+        self._status = status
+        self._progress = progress
+        self._teams = teams
+        self._scores = scores
+        self._overs = overs
+        self._icons = icons
+
+    def __str__(self):
+        ret_string = f"""
+[```prolog
+{self.teams['team1']['name'].title():<28}{self.teams['team1']['score'].title():>32}\n
+{self.teams['team2']['name'].title():<28}{self.teams['team2']['score'].title():>32}\n```]({self.link['match']})```nim
+{'Match Number':^12} - {self.number:^12}
+{'Location':^12} - {self.location:^12}
+"""
+        return ret_string + f"{'Date - Time':^12} - {self.date_time.capitalize():^12}\n```"\
+            if self.date_time else ret_string + f"```"
+
+    @property
+    def number(self):
+        return self._description[0]
+
+    @property
+    def location(self):
+        return ', '.join(self._description[1:-2])
+
+    @property
+    def date_time(self):
+        if 'live' not in self._status and 'result' not in self._status:
+            time = datetime.strptime(self._status.split(', ')[-1].upper(), "%I:%M %p")
+            time = time_set(time, "%I:%M %p")
+            return ', '.join(self._status.split(', ')[:-1]).title() + ", " + time[:-5]+ f"{int(int(time[-5:-3]) - 23)} {time[-2:]}"
+        return self._status if self._status.lower() == 'live' else None
+
+    @property
+    def progress(self):
+        return self._progress
+
+    @property
+    def series(self):
+        return self._description[-1]
+
+    @property
+    def teams(self):
+        return {'team1': {
+            'name': self._teams[0].lower(),
+            'icon': self._icons[0],
+            'score': self._overs[0] + ' ' + self._scores[0]
+            },
+            'team2': {
+            'name': self._teams[1].lower(),
+            'icon': self._icons[1],
+            'score': self._overs[1] + ' ' + self._scores[1]
+            }}
 

@@ -4,9 +4,8 @@ from asyncio import get_event_loop
 import asyncio
 import aiohttp
 import bs4
-import requests
 from bs4 import BeautifulSoup
-from .custom_funcs import time_set, number_system
+from .custom_funcs import number_system, CricInfoCard
 import nest_asyncio
 
 url_time = None
@@ -19,28 +18,33 @@ class Cricket:
         '_tournament_url'
                 ]
 
-    __teams_int__ = [
-        'sri lanka',
-        'india',
-        'england',
-        'pakistan',
-        'australia',
-        'south africa',
-        'west indies',
-        'new zealand',
-        'zimbabwe',
-        'ireland'
-    ]
+    ROOT_IMG_DIR = "C:/Users/Shlok/J.A.R.V.I.SV2021/image_resources/{}1.png"
 
-    __teams_ipl__ = {
-        'royal challengers bangalore',
-        'chennai super kings',
-        'kolkata knight riders',
-        'punjab kings',
-        'delhi capitals',
-        'rajasthan royals',
-        'mumbai indians',
-        'sunrisers hyderabad'
+    __TEAMS_INT__ = {
+        'sri lanka': 'sl',
+        'india': 'ind',
+        'england': 'eng',
+        'pakistan': 'pak',
+        'australia': 'aus',
+        'south africa': 'sa',
+        'west indies': 'wi',
+        'new zealand': 'nz',
+        'zimbabwe': 'zim',
+        'ireland': 'ire',
+        'nottinghamshire': 'ntg',
+        'hampshire': 'hms',
+
+    }
+
+    __TEAMS_IPL__ = {
+        'royal challengers bangalore': 'rcb',
+        'chennai super kings': 'csk',
+        'kolkata knight riders': 'kkr',
+        'punjab kings': 'pbks',
+        'delhi capitals': 'dc',
+        'rajasthan royals': 'rr',
+        'mumbai indians': 'mi',
+        'sunrisers hyderabad': 'srh'
                     }
 
     url = "https://www.espncricinfo.com"
@@ -49,25 +53,58 @@ class Cricket:
         self.tournament = tournament
         self._tournament_url = None
 
-    async def get_tournament_home(self):
+    def format_trnmnt_str(self, preformat_text: str):
+        configs = [rf"(.)*{preformat_text.lower()}(.)*", ]
+        if 'vs' in preformat_text:
+            teams = preformat_text.split(" vs ")
+            teams = [team_n for team_n in self.__TEAMS_INT__ for team in teams if re.search(r"^" + team, team_n)]
+            configs.append("(.)*".join(teams).lower())
+            configs.append("(.)*".join(teams[::-1]).lower())
+        configs = [team.replace(' ', '-') for team in configs]
+        return configs
+
+    async def get_tournament_fixtures_link(self):
         async with aiohttp.ClientSession() as session:
             async with session.get(self.url) as request:
                 soup = BeautifulSoup(await request.text(), 'lxml')
-        self._tournament_url = self.url + ''.join([soup.find(href=re.compile('/series/' + t_url)).get('href') for t_url in self.format_trnmnt_str(self.tournament)
-                                           if soup.find(href=re.compile('/series/' + t_url)) is not None])
+        self._tournament_url = '/'.join((self.url + ''.join([soup.find(href=re.compile(r'/series/' + t_url)).get('href') for t_url in self.format_trnmnt_str(self.tournament)
+                                           if soup.find(href=re.compile(r'/series/' + t_url)) is not None])).split('/')[:5]) + '/match-schedule-fixtures'
 
-    def format_trnmnt_str(self, preformat_text: str):
-        configs = [preformat_text.lower(), ]
-        if 'vs' in preformat_text:
-            teams = preformat_text.split(" vs ")
-            teams = [team_n for team_n in self.__teams_int__ for team in teams if re.search(r"^"+team, team_n)]
-            configs.append("(.)*".join(teams).lower())
-            configs.append("(.)*".join(teams[::-1]).lower())
-        return configs
+    async def get_match_link(self) -> str:
+        await self.get_tournament_fixtures_link()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(self.tournament_url) as request:
+                soup = BeautifulSoup(await request.text(), 'lxml')
+        pattern = "^/" + '/'.join(self.tournament_url.split('/')[-3:-1]) + r'/(.)+/live-cricket-score'
+        return self.url + (soup.find(href=re.compile(pattern)) or soup.find(href=re.compile(
+            pattern.replace('/live-cricket-score', '/full-scorecard')))).get('href')
+
+    async def get_match_data(self):
+        async with aiohttp.ClientSession() as session:
+            match_link = await self.get_match_link()
+            async with session.get(match_link) as request:
+                soup = BeautifulSoup(await request.text(), 'lxml')
+        score = soup.select('.match-header .match-info .teams .team .score-detail .score-info')
+        overs = soup.select('.match-header .match-info .teams .team .score-detail .score')
+        match = CricInfoCard(soup.find(class_=re.compile("^description")).text,
+                             soup.select('.match-header .match-info .status span')[0].text,
+                             soup.select('.match-header .match-info .status-text span')[0].text,
+                             [team.text for team in soup.select('.match-header .match-info .teams .team .name-link p')],
+                             [scr.text for scr in score] if score else ['', ''],
+                             [ovr.text for ovr in overs] if overs else ['', ''],
+                             ['', ''],
+                             {'tournament': self.tournament_url, 'match': match_link})
+
+        match._icons = self.get_img(match.teams['team1']['name'], match.teams['team2']['name'])
+        return match
+
+    def get_img(self, *teams: str):
+        return [self.ROOT_IMG_DIR.format(self.__TEAMS_IPL__.get(team.lower()) or self.__TEAMS_INT__.get(team.lower())) for team in teams]
+
 
 
     @property
-    def tournament_url(self):
+    def tournament_url(self) -> str:
         return self._tournament_url
 
 
