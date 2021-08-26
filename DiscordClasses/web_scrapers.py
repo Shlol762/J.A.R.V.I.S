@@ -95,7 +95,6 @@ class Cricket:
                              ([ovr.text for ovr in overs] or dummy) if overs else dummy,
                              dummy,
                              {'tournament': self.tournament_url, 'match': match_link})
-        print(match.teams)
         match._icons = self.get_img(match.teams['team1']['name'], match.teams['team2']['name'])
         return match
 
