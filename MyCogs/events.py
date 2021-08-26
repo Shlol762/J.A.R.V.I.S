@@ -10,8 +10,8 @@ from . import hypesquad_emoji, command_log_and_err, set_timestamp,\
 
 severed_time = 0
 connect_time = 0
-chnls = [833995745690517524, 817299815900643348, 817300015176744971, 859801379996696576]
-webhooks = [861660340617084968, 861660166193807430, 861660711037960243, 861660517746999356]
+chnls = [833995745690517524, 817299815900643348, 817300015176744971, 859801379996696576, 880314505740046336]
+webhooks = [861660340617084968, 861660166193807430, 861660711037960243, 861660517746999356, 880318607643521075]
 prev_messages = []
 members = {}
 
@@ -92,11 +92,13 @@ class Events(Cog):
                     ref: Message = await MessageConverter().convert(await bot.get_context(message),
                                                                     message.reference.jump_url)
                     text: str = f"`╔═`***`{ref.author.name}`***: {ref.content[:50]}\n{message.content}"
-                ch1, ch2, ch3, ch4 = await bot.fetch_webhook(webhooks[0]), await bot.fetch_webhook(webhooks[1]), await bot.fetch_webhook(webhooks[2]), await bot.fetch_webhook(webhooks[3])
+                ch1, ch2, ch3, ch4, ch5 = await bot.fetch_webhook(webhooks[0]), await bot.fetch_webhook(webhooks[1]), await bot.fetch_webhook(webhooks[2]), await bot.fetch_webhook(webhooks[3]),\
+                    await bot.fetch_webhook(webhooks[4])
                 await ch1.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar.url) if channel.id != chnls[0] else None
                 await ch2.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar.url) if channel.id != chnls[1] else None
                 await ch3.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar.url) if channel.id != chnls[2] else None
                 await ch4.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar.url) if channel.id != chnls[3] else None
+                await ch5.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar.url) if channel.id != chnls[4] else None
             else:
                 try:
                     channel_id: str = str(channel.id)

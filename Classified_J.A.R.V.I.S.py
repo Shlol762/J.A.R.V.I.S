@@ -38,7 +38,7 @@ sec_lvl = """
 
 
 @bot.command()
-async def test(ctx: commands.Context, *, text: str=''):
+async def test(ctx: commands.Context, *, channel: discord.TextChannel):
     # emblist = [discord.Embed(description="Hey!"),
     #            discord.Embed(description="Hello!"),
     #            discord.Embed(description="Greetings my friends!"),
@@ -68,8 +68,8 @@ async def test(ctx: commands.Context, *, text: str=''):
     #     except asyncio.TimeoutError:
     #         timeout = True
     #         await message.clear_reactions()
-    c = Cricket(text)
-    await c.get_match_data()
+    webhook = await channel.create_webhook(name="J.A.R.V.I.S")
+    print(webhook.id)
 
 
 @bot.command(hidden=True)
