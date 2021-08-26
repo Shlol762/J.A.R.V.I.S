@@ -308,11 +308,11 @@ class CricInfoCard:
 
     @property
     def date_time(self):
-        if 'live' not in self._status and 'result' not in self._status:
+        if 'live' not in self._status and 'result' not in self._status and 'stumps' not in self._status:
             time = datetime.strptime(self._status.split(', ')[-1].upper(), "%I:%M %p")
             time = time_set(time, "%I:%M %p")
             return ', '.join(self._status.split(', ')[:-1]).title() + ", " + time[:-5]+ f"{int(int(time[-5:-3]) - 23)} {time[-2:]}"
-        return self._status if self._status.lower() == 'live' else None
+        return self._status if self._status.lower() == 'live' or self._status.lower() == 'stumps' else None
 
     @property
     def progress(self):
