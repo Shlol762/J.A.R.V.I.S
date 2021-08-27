@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import datetime
 import discord
 from PIL import Image
@@ -52,14 +53,14 @@ async def reaction(ctx: Context = None, success=None):
             await ctx.message.add_reaction('✅')
 
 
-def image_join(img1: str, img2: str) -> str:
+def image_join(img1: Union[str, os.PathLike], img2: Union[str, os.PathLike]) -> Union[str, os.PathLike]:
     """Joins 2 images into 1, and returns the new image's file path."""
     im1: Image = Image.open(img1)
     im2: Image = Image.open(img2)
     new_image = Image.new('RGB', (im1.width + im2.width, im1.height))
     new_image.paste(im1, (0, 0))
     new_image.paste(im2, (im1.width, 0))
-    path: str = "C:/Users/Shlok/AppData/Local/JARVIScache/vs_logo.jpg"
+    path: os.PathLike = "C:/Users/Shlok/AppData/Local/JARVIScache/vs_logo.jpg"
     new_image.save(path)
     return path
 
