@@ -232,16 +232,6 @@ async def send_to_paste_service(content: str) -> str:
     return url
 
 
-def file_opener(file: str, option: str = 'read') -> str:
-    """Redundant function. Being removed soon."""
-    path = re.sub("{}", file, "C:/Users/Shlok/J.A.R.V.I.SV2021/text_files/{}_forbidden_list.txt")
-    path = file if "C:/Users" in file else path
-    f = open(path, 'r')
-    lines, read = f.readlines(), f.read()
-    f.close()
-    return "".join(lines)
-
-
 async def get_prefix(bot: Bot, message: Message) -> str:
     """Multi-Prefix modifier for the bot."""
     with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/prefixes.json", "r") as f:
