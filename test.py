@@ -1,3 +1,22 @@
-from DiscordClasses import image_join as ij
+from typing import Callable
 
-print(ij("C:/Users/Shlok/AppData/Local/JARVIScache/team1.png", "C:/Users/Shlok/AppData/Local/JARVIScache/team2.png"))
+def yeet(func: Callable):
+    def wrapper(*args, **kwargs):
+        val = func(*args, **kwargs)
+        return val
+    print(f"YEET")
+    return wrapper
+
+def hello(func: Callable):
+    def wrapper(*args, **kwargs):
+        val = func(*args, **kwargs)
+        return val
+    print('HELLOO')
+    return wrapper
+
+@yeet
+@hello
+def testing(text):
+    print(text)
+
+testing('ok')
