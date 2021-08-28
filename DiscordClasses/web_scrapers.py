@@ -170,3 +170,25 @@ class WorldoMeter:
         total, deaths, recovered = int(data[0].text.replace(',', '')), int(data[1].text.replace(',', '')), int(data[2].text.replace(',', ''))
         country_data = {'Total': number_system(total), 'Deaths': number_system(deaths), 'Recovered': number_system(recovered), 'Active': number_system(total-(deaths+recovered))}
         return country_data
+
+
+class SFlix:
+    __slots__ = ['_query']
+
+    url = 'https://sflix.to'
+
+    def __init__(self, query: str):
+        self._query = self.format_as_url(query)
+        print(self._query)
+
+    @staticmethod
+    def format_as_url(to_be_formatted: str):
+        return to_be_formatted.replace('-', '').replace(' ', ' ').replace(' ', '-')
+
+    async def get_search_results(self):
+        query_url = self.url + "/search/{query}"
+        async with aiohttp.ClientSession() as session:
+            async with session.get(query_url.format(query=self._query)) as request:
+                soup = BeautifulSoup(await request.text(), 'lxml')
+        print(soup.find(href=re.compile(r'/free-.*' + self._query.lower())).get('href'))
+
