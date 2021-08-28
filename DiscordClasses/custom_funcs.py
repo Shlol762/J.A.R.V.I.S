@@ -8,9 +8,10 @@ from discord.ext.commands import RoleNotFound, RoleConverter, MemberConverter, B
     MessageConverter
 from discord import Role, Member, Message, Emoji
 from pytz import timezone
-from typing import Union, Optional, List, Coroutine, Tuple, Dict
+from typing import Union, Optional, List, Coroutine, Tuple, Dict, Callable
 import aiohttp, aiofiles
 import re
+from functools import wraps
 
 
 __doc__ = "Module containing all sorts of custom functions."
@@ -241,24 +242,36 @@ async def get_prefix(bot: Bot, message: Message) -> str:
     return for_guild
 
 
-async def comm_log_local(ctx: Context, status: str):
+def comm_log_local(command_: Callable):
     """Logs all command movement into a local text file."""
-    with open("C:/Users/Shlok/bot_stuff/command_logs.txt", "r") as f:
-        lines: list[str] = f.read().split("\n")
-    sl_no: str = "{0:0>4}".format(int(re.search(r'[0-9]{4}', lines[1]).group()) + 1)
-    header: str = re.sub("[0-9]{4}", sl_no, lines[1])
-    lines.pop(1)
-    lines.insert(1, header)
-    time: str = time_set(ctx.message.created_at, "%H:%M")
-    date: str = time_set(ctx.message.created_at, "%d-%m-%y")
-    com_name = ctx.command.name[:6] if ctx.command else "Invalid"
-    cog_name = ctx.command.cog_name[:4] if ctx.command else "Invalid"
-    com_num = str(ctx.command.extras.get('number')) if ctx.command else "Invalid"
-    status = "404" if "404" in status else status
-    lines.append(f"|{sl_no:^11}|{com_name:^9}|{cog_name:^10}|{com_num:^8}|{status:^44}|{time:^6}|{date:^8}| {ctx.author.id} | {ctx.channel.id if ctx.channel else ctx.author.id} | {ctx.guild.id if ctx.guild else ctx.author.id} |")
-    f = open("C:/Users/Shlok/bot_stuff/command_logs.txt", "w")
-    f.write("\n".join(lines))
-    f.close()
+    @wraps(command_)
+    async def wrapper(*args, **kwargs):
+        ctx = [arg for arg in args if isinstance(arg, Context)][0]
+        with open("C:/Users/Shlok/bot_stuff/command_logs.txt", "r") as f:
+            lines: list[str] = f.read().split("\n")
+        sl_no = "{0:0>6}".format(int(re.search(r'[0-9]{6}', lines[1]).group()) + 1)
+        header = re.sub("[0-9]{6}", sl_no, lines[1])
+        lines.pop(1), lines.insert(1, header)
+        time = time_set(ctx.message.created_at, "%H:%M")
+        date = time_set(ctx.message.created_at, "%d-%m-%y")
+        com_name = ctx.command.name[:6] if ctx.command else "Invalid"
+        cog_name = ctx.command.cog_name[:4] if ctx.command else "Invalid"
+        com_num = str(ctx.command.extras.get('number')) if ctx.command else "Invalid"
+        await command_(*args, **kwargs)
+        lines.extend([
+            f"+{'='*51}LOG-ENTRY-{sl_no}{'='*52}+",
+            f"|    Name   : {com_name:<45}Command Number: {com_num:<45}|",
+            f"|Timestamp  : {time + ' on ' + date:<106}|",
+            f"+{'-'*49}USAGE CONTEXT DETAILS{'-'*49}+",
+            f"|Used by: {ctx.author.id:<55}Server  : {ctx.guild.id:<45}|",
+            f"|Channel: {ctx.channel.id:<53}Message ID: {ctx.message.id:<45}|",
+            f"|Message Link: {ctx.message.jump_url:<105}|"
+            ])
+        f = open("C:/Users/Shlok/bot_stuff/command_logs.txt", "w")
+        f.write("\n".join(lines))
+        f.close()
+
+    return wrapper
 
 
 class CricInfoCard:
