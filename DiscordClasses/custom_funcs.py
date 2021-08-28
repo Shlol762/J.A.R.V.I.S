@@ -254,8 +254,8 @@ def comm_log_local(command_: Callable):
         lines.pop(1), lines.insert(1, header)
         time = time_set(ctx.message.created_at, "%H:%M")
         date = time_set(ctx.message.created_at, "%d-%m-%y")
-        com_name = ctx.command.name[:6] if ctx.command else "Invalid"
-        cog_name = ctx.command.cog_name[:4] if ctx.command else "Invalid"
+        com_name = ctx.command.name if ctx.command else "Invalid"
+        cog_name = ctx.command.cog_name if ctx.command else "Invalid"
         com_num = str(ctx.command.extras.get('number')) if ctx.command else "Invalid"
         await command_(*args, **kwargs)
         lines.extend([
