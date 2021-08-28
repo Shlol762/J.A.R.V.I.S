@@ -6,7 +6,7 @@ import discord, aiohttp, asyncio
 from bs4 import BeautifulSoup
 from discord.ext import commands
 from urllib.parse import quote_plus
-from DiscordClasses import BOT_TOKEN, get_prefix, Confirmation, JoinHomeServer, SFlix
+from DiscordClasses import BOT_TOKEN, get_prefix, Confirmation, JoinHomeServer, SFlix, comm_log_local_org
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, intents=intents,
