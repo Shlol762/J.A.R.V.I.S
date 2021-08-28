@@ -5,7 +5,7 @@ import discord
 from discord import Message, Embed
 from discord.ext import commands
 from DiscordClasses.web_scrapers import Cricket
-from DiscordClasses.custom_funcs import  reaction, image_join, time_set, comm_log_local_org, download_images
+from DiscordClasses.custom_funcs import  reaction, image_join, time_set, download_images
 
 
 class TypeDefError(Exception):
