@@ -6,7 +6,7 @@ import discord, aiohttp, asyncio
 from bs4 import BeautifulSoup
 from discord.ext import commands
 from urllib.parse import quote_plus
-from DiscordClasses import BOT_TOKEN, get_prefix, Confirmation, JoinHomeServer, Cricket, logo_maker
+from DiscordClasses import BOT_TOKEN, get_prefix, Confirmation, JoinHomeServer, SFlix
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, intents=intents,
@@ -38,7 +38,7 @@ sec_lvl = """
 
 
 @bot.command()
-async def test(ctx: commands.Context, *, channel: discord.TextChannel):
+async def test(ctx: commands.Context, *, query: str):
     # emblist = [discord.Embed(description="Hey!"),
     #            discord.Embed(description="Hello!"),
     #            discord.Embed(description="Greetings my friends!"),
@@ -68,8 +68,7 @@ async def test(ctx: commands.Context, *, channel: discord.TextChannel):
     #     except asyncio.TimeoutError:
     #         timeout = True
     #         await message.clear_reactions()
-    webhook = await channel.create_webhook(name="J.A.R.V.I.S")
-    print(webhook.id)
+    await SFlix(query).get_search_results()
 
 
 @bot.command(hidden=True)
