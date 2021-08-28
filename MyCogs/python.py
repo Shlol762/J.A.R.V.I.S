@@ -1,7 +1,7 @@
 import discord
 from MyCogs import command, Cog, Bot, datetime,\
     Colour, Embed, find_nth_occurrence, send_to_paste_service,\
-    command_log_and_err, cooldown, Context
+    command_log_and_err, cooldown, Context, comm_log_local
 from discord.utils import escape_markdown
 import datetime, re, itertools, aiohttp
 from typing import Tuple, Any, Optional
@@ -216,6 +216,7 @@ async def func():  # (None,) -> Any
     @command(name='Evaluate', aliases=['e', 'eval'],
                       extras={'emoji': '⌨', 'number': 'P01'}, help='Runs python code',
                       usage='$evaluate|eval|e <code>')
+    @comm_log_local
     async def evaluate_(self, ctx: Context, *, code: str) -> None:
         """Run eval in a REPL-like format."""
         async with ctx.typing():
@@ -242,6 +243,7 @@ async def func():  # (None,) -> Any
 
     @command(name="PyPi", aliases=["package", "pack"],
              extras={'emoji': '872388523934748692', 'number': 'P02'})
+    @comm_log_local
     async def get_package_info(self, ctx: Context, package: str = None) -> None:
         """Provide information about a specific package from PyPI."""
         async with ctx.typing():

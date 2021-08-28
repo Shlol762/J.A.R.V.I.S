@@ -8,7 +8,8 @@ from MyCogs import VERSION, command_log_and_err,\
     set_timestamp, time_set, hypesquad_emoji, Cog,\
     Bot, command, guild_only, cooldown, Context, BucketType,\
     Embed, Colour, Member, Forbidden, CustomActivity, Spotify,\
-    Game, Activity, ActivityType, Status, HTTPException, User
+    Game, Activity, ActivityType, Status, HTTPException, User,\
+    comm_log_local
 
 
 bot_ver = VERSION
@@ -27,6 +28,7 @@ class Utilities(Cog):
                       extras={'emoji': '♻', 'number': '301'})
     @cooldown(1, 30, BucketType.member)
     @guild_only()
+    @comm_log_local
     async def _clear(self, ctx: Context, amount: Optional[int] = 1):
         default_clear_amt = amount + 1
         author = ctx.message.author
@@ -55,6 +57,7 @@ class Utilities(Cog):
                       help="Calculates and gives result based on input. If 'help arith' or 'help compare' is put in the expression argument, you'll get a list of Operators.",
                       name="Calculator", extras={'emoji': '🧮', 'number': '302'},
                       usage="calculator|calc <expression>")
+    @comm_log_local
     async def calculator(self, ctx: Context, *, expression: Optional[str]):
         author = ctx.message.author
         if expression:
@@ -119,6 +122,7 @@ class Utilities(Cog):
                       extras={'emoji': '🎭', 'number': '303'})
     @cooldown(1, 30, BucketType.member)
     @guild_only()
+    @comm_log_local
     async def changenick(self, ctx, member: Member = None, *, new_nick=None):
         author = ctx.message.author
         if member:
@@ -147,6 +151,7 @@ class Utilities(Cog):
                       help="Displays the info of a given Member.",
                       usage='memberinfo|minfo (member)', extras={'emoji': '📃', 'number': '304'})
     @guild_only()
+    @comm_log_local
     async def memberinfo(self, ctx: Context, member: Optional[Member]):
         async with ctx.typing():
             bot: Bot = ctx.bot
@@ -199,6 +204,7 @@ class Utilities(Cog):
                       help="Displays info of the server.",
                       name="Server Info", extras={'emoji': '📜', 'number': '305'})
     @guild_only()
+    @comm_log_local
     async def serverinfo(self, ctx: Context):
         async with ctx.typing():
             server = ctx.guild
@@ -226,6 +232,7 @@ class Utilities(Cog):
     @command(aliases=['ecl', 'errorcodelist'], name="Error Code List",
                       help="Gives a list of error codes that the bot gives out in an error, and the codes' meanings.",
                       usage='errorcodelist|ecl <err code>', extras={'emoji': '📄', 'number': '306'})
+    @comm_log_local
     async def errorcodelist(self, ctx: Context, error: str = None):
         bot: Bot = ctx.bot
         async with ctx.typing():
@@ -315,6 +322,7 @@ For Example:- 1)Err_10124 means command '1' under category
     @command(aliases=['cinfo', 'clientinfo'], name="Client Info",
                       help='Displays information about the bot',
                       usage='clientinfo|cinfo', extras={'emoji': '📃', 'number': '307'})
+    @comm_log_local
     async def clientinfo(self, ctx: Context):
         async with ctx.typing():
             bot: Bot = ctx.bot
@@ -337,6 +345,7 @@ For Example:- 1)Err_10124 means command '1' under category
                       help='Deletes all active invites of the server.',
                       usage='delinvs|di', extras={'emoji': '🚷', 'number': '308'})
     @guild_only()
+    @comm_log_local
     async def delinvs(self, ctx: Context):
         async with ctx.typing():
             await ctx.reply(f"Deleting all access points to `{ctx.guild.name}`...")
@@ -351,6 +360,7 @@ For Example:- 1)Err_10124 means command '1' under category
                       help='Displays the Status of a given member',
                       usage='status|st (member)', extras={'emoji': '📲', 'number': '309'})
     @guild_only()
+    @comm_log_local
     async def status(self, ctx: Context, member: Member = None):
         async with ctx.typing():
             m = member if member else ctx.author
@@ -387,6 +397,7 @@ For Example:- 1)Err_10124 means command '1' under category
 
     @command(aliases=['abts', 'addbottoserver'], name='Add bot to server', extras={'emoji': '🔗', 'number': '310'},
                       usage='addbottoserver|abts', help='Generates and sends a link to add the bot to your server')
+    @comm_log_local
     async def addbottoserver(self, ctx: Context):
         await command_log_and_err(ctx, 'Success')
         bot: Bot = ctx.bot
@@ -400,6 +411,7 @@ For Example:- 1)Err_10124 means command '1' under category
     @command(name='Announce', aliases=['an'], extras={'emoji': '📢', 'number': '311'},
                       help='Announces to every member in the server.', usage='$announce|an <text>')
     @cooldown(60, 1, BucketType.guild)
+    @comm_log_local
     async def announce(self, ctx: Context, *, text: str = None):
         async with ctx.typing():
             bot: Bot = ctx.bot
@@ -423,6 +435,7 @@ For Example:- 1)Err_10124 means command '1' under category
     @command(name='Member List', aliases=['ml', 'members', 'memberlist'], extras={'emoji': '📋', 'number': '312'},
                       help='Returns a member list of everyone in the server.', usage='$members|memberlist|ml')
     @cooldown(1, 10, BucketType.guild)
+    @comm_log_local
     async def memberlist(self, ctx: Context):
         async with ctx.typing():
             await command_log_and_err(ctx, 'Success')
@@ -441,6 +454,7 @@ For Example:- 1)Err_10124 means command '1' under category
     @command(name="Profile Pic", aliases=['pfp', 'profilepic'], extras={'emoji': '🎭', 'number': '313'},
                       help="Displays the profile picture of a given user.",
                       usage="$profilepic|pfp (user)")
+    @comm_log_local
     async def _pfp(self, ctx: Context, user: User = None):
         user = user or ctx.author
         await command_log_and_err(ctx, status="Success")
@@ -449,6 +463,7 @@ For Example:- 1)Err_10124 means command '1' under category
     @command(name="Banner", aliases=['br'], extras={'emoji': '🖼', 'number': '314'},
                       help="Displays the banner of a nitro user.",
                       usage='$banner|b (member)')
+    @comm_log_local
     async def _banner(self, ctx: Context, member: Member = None):
         await command_log_and_err(ctx, status="Success")
         member = await self.bot.fetch_user(member.id if member else ctx.author.id)

@@ -4,7 +4,7 @@ import discord
 from MyCogs import encrypt, decrypt, command_log_and_err,\
     commands, Cog, command, cooldown, BucketType, Context,\
     Member, guild_only, Client, Embed, Colour, Message,\
-    choice, randint, Bot
+    choice, randint, Bot, comm_log_local
 import json
 #
 
@@ -19,6 +19,7 @@ class Games(Cog):
                       help='Rolls an imaginary dice.',
                       usage='rolldice|rd', extras={'emoji': '🎲', 'number': '401'})
     @cooldown(1, 0.5, BucketType.member)
+    @comm_log_local
     async def rolldice(self, ctx: Context):
         author: Member = ctx.message.author
         dice_num: int = randint(1, 6)
@@ -30,6 +31,7 @@ class Games(Cog):
                       help='Answers questions with 8ball ish results.',
                       usage='8ball|8b|eightball|oracle <question>')
     @cooldown(1, 1.5, BucketType.member)
+    @comm_log_local
     async def eightball(self, ctx: Context, *, question: str = None):
         if question:
             eight_ball_response: str = choice(['As I see it, yes.', 'Ask again later',
@@ -55,6 +57,7 @@ class Games(Cog):
                       help='Answers questions with Yes, No and Maybe.',
                       usage='yesnomaybe|ynm <question>', extras={'emoji': '🎱', 'number': '403'})
     @cooldown(1, 1.5, BucketType.member)
+    @comm_log_local
     async def yesnomaybe(self, ctx: Context, *, question: str = None):
         if question:
             await ctx.reply(embed=Embed(title="YesNoMaybe",
@@ -71,6 +74,7 @@ class Games(Cog):
                       usage='hack|hk <member>')
     @cooldown(1, 1.5, BucketType.member)
     @guild_only()
+    @comm_log_local
     async def hack(self, ctx: Context, member: Member = None):
         author: Member = ctx.message.author
         if member:
@@ -163,6 +167,7 @@ Password: {hack_pass}
                       help='Using this command you can either flip a coin by yourself or, challenge another player to flip a coin with you.',
                       usage='flipcoin|fc (member)', extras={'emoji': '💰', 'number': '405'})
     @cooldown(1, 1, BucketType.member)
+    @comm_log_local
     async def flipcoin(self, ctx: Context, member: Optional[Member] = None):
         author: Member = ctx.message.author
         bot: Bot = ctx.bot
@@ -261,6 +266,7 @@ Password: {hack_pass}
                       help='This command currently uses two types of encoding languages to encrypt a sample of text',
                       usage='encrypt|ncrpt <code/morse> <text>')
     @cooldown(1, 1.5, BucketType.member)
+    @comm_log_local
     async def encrypt(self, ctx: Context, code: str = None, *, text: str = None):
         if code:
             if text:
@@ -281,6 +287,7 @@ Password: {hack_pass}
                       help='This command decrypts messages in code and morse.',
                       usage='decrypt|dcrypt <code/morse> <encrypt text>')
     @cooldown(1, 1.5, BucketType.member)
+    @comm_log_local
     async def decrypt(self, ctx: Context, code: str = None, *, text: str = None):
         if code:
             if text:
@@ -301,6 +308,7 @@ Password: {hack_pass}
              help="Of course it impersonates people.",
              usage="impersonate|imp (member) (text)")
     @cooldown(1, 10, BucketType.channel)
+    @comm_log_local
     async def _impersonate(self, ctx: Context, member: Member = None, *, text: str = None):
         member: Member = member or ctx.author
         await command_log_and_err(ctx, "Success", used_on=member)

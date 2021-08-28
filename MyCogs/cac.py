@@ -5,7 +5,7 @@ from MyCogs import calculate_position, permission_confirm, \
     RoleConverter, MemberConverter, BucketType, ThreadNotFound,\
     VoiceChannel, TextChannel, Embed, Colour, VoiceRegion,\
     CategoryChannel, Member, Forbidden, HTTPException, Role,\
-    timezone, GuildChannel, Message, Bot, ThreadConfirmation, Thread
+    timezone, GuildChannel, Message, Bot, ThreadConfirmation, Thread, comm_log_local
 
 
 class Cac(Cog):
@@ -20,6 +20,7 @@ class Cac(Cog):
                       usage='createcc|ccc <name> <text/voice/category> (cateogry new channel will be in)')
     @cooldown(1, 15, BucketType.guild)
     @guild_only()
+    @comm_log_local
     async def createchnlctgry(self, ctx: Context, name: str = None, ch_tp: str = None, *,
                               category: Optional[Union[str, CategoryChannel]] = None):
         author: Member = ctx.message.author
@@ -60,6 +61,7 @@ class Cac(Cog):
                       usage='delchnlctgry|dcc <channel/category>', extras={'emoji': '🗑', 'number': '502'})
     @cooldown(1, 15, BucketType.guild)
     @guild_only()
+    @comm_log_local
     async def delchnlctgry(self, ctx: Context, *, channel: Union[CategoryChannel, VoiceChannel, TextChannel] = None):
         author: Member = ctx.message.author
         del_chnl: GuildChannel = channel
@@ -87,6 +89,7 @@ class Cac(Cog):
                       help='Pins a message with message link or id',
                       usage='pin|pn <message link/id>.', extras={'emoji': '📌', 'number': '503'})
     @cooldown(1, 3, BucketType.channel)
+    @comm_log_local
     async def pin(self, ctx: Context, message: Message = None):
         author: Member = ctx.message.author
         if message:
@@ -110,6 +113,7 @@ class Cac(Cog):
                       help='Unpins a message with message link or id',
                       usage='unpin|unpn <message link/id>.', extras={'emoji': '📌', 'number': '504'})
     @cooldown(1, 3, BucketType.channel)
+    @comm_log_local
     async def unpin(self, ctx: Context, message: Message = None):
         author: Member = ctx.message.author
         if message:
@@ -134,6 +138,7 @@ class Cac(Cog):
                       usage='editchannel|ec <attribute to edit/member or role> <attribute value/permissions:True, False or None>')
     @cooldown(1, 15, BucketType.channel)
     @guild_only()
+    @comm_log_local
     async def editchannel(self, ctx: Context, channel: Union[TextChannel, VoiceChannel,
                         CategoryChannel] = None, attribute: Union[str, Member, Role
                         ]=None, *, attr_val: Union[str, int, float, CategoryChannel, VoiceRegion]=None):
@@ -376,6 +381,7 @@ class Cac(Cog):
              usage='jointhread|jt <exact thread name>')
     @cooldown(1, 10, BucketType.channel)
     @guild_only()
+    @comm_log_local
     async def _jointhread(self, ctx: Context, thread: Thread = None):
         if thread:
             view = ThreadConfirmation(ctx, 20, thread=thread, method='join')
@@ -388,6 +394,7 @@ class Cac(Cog):
              usage='levethread|lt <exact thread name>')
     @cooldown(1, 10, BucketType.channel)
     @guild_only()
+    @comm_log_local
     async def _leavethread(self, ctx: Context, thread: Thread = None):
         if thread:
             view = ThreadConfirmation(ctx, 20, thread=thread, method='leave')

@@ -2,10 +2,8 @@ import datetime
 from typing import Optional
 import discord
 from discord.ext import commands
-from DiscordClasses.embeds import logo_maker, set_timestamp
-from DiscordClasses.web_scrapers import Cricket
-from . import command_log_and_err
-from MyCogs import Bot, Cog, Context
+from MyCogs import Bot, Cog, Context, command_log_and_err, Cricket,\
+    logo_maker, set_timestamp, comm_log_local
 
 
 class Sports(Cog):
@@ -17,6 +15,7 @@ class Sports(Cog):
     @commands.command(name='Cricket Score', aliases=['cs', 'cricscore', 'cricketscore'],
                       usage='cricscore|cricketscore|cs <series>', extras={'emoji': '🏏', 'number': '801'},
                       help='Gets the score of the next or live match from any series.')
+    @comm_log_local
     async def cricscore(self, ctx: Context, *, tournament: str = None):
         if tournament:
             async with ctx.typing():
@@ -33,6 +32,7 @@ class Sports(Cog):
     @commands.command(name='Ipl table', aliases=['iplt', 'ipltable'],
                       usage='ipltable|iplt (team)',
                       help='Gets the IPL table, or table statistics of a team based on your input | Command under reconfig.', extras={'emoji': '🏆', 'number': '802'})
+    @comm_log_local
     async def ipltable(self, ctx: Context, *, team: Optional[str] = None):
         # async with ctx.typing():
         #     cricket: Cricket = self.c

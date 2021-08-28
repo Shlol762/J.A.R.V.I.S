@@ -7,7 +7,7 @@ from MyCogs import command_log_and_err, set_timestamp, Context,\
     Cog, Client, command, cooldown, guild_only, User, Member,\
     BucketType, UserNotFound, Embed, Colour, HTTPException,\
     Forbidden, commands, has_guild_permissions, Message, TextChannel,\
-    Role, TextChannelConverter, RoleConverter, Bot, UserConverter
+    Role, TextChannelConverter, RoleConverter, Bot, UserConverter, comm_log_local
 #commands.
 
 class Mslo(Cog):
@@ -22,6 +22,7 @@ class Mslo(Cog):
     help='Invites people from outside the server. This can vary from user to user based on their privacy settings.')
     @cooldown(1, 5, BucketType.member)
     @guild_only()
+    @comm_log_local
     async def invite(self, ctx: Context, member: Union
     [User, Member, str] = None):
         invitelink = await ctx.channel.create_invite(max_uses=1)
@@ -50,6 +51,7 @@ class Mslo(Cog):
     @command(name="Kick", aliases=['k'], usage='kick|k <member> (reason)', extras={'emoji': '⛔', 'number': '202'},
                       help='Kicks members from the server. Owners of servers have an option to skip the conformation message as well use the kick command when it is de-activated, to access this, type: "override 403" in the place of reason.')
     @guild_only()
+    @comm_log_local
     async def kick(self, ctx: Context, member: Member = None, *, reason: Optional[str] = ''):
         author = ctx.message.author
         guild_id = str(ctx.guild.id)
@@ -132,6 +134,7 @@ class Mslo(Cog):
     @cooldown(1, 15, BucketType.guild)
     @guild_only()
     @has_guild_permissions(ban_members=True)
+    @comm_log_local
     async def ban(self, ctx: Context, member: Member = None, *, reason: Optional[str] = 'None'):
         author = ctx.message.author
         guild_id = str(ctx.guild.id)
@@ -198,6 +201,7 @@ class Mslo(Cog):
                       ' and invites them by looking through the servers'
                       ' bans list.')
     @guild_only()
+    @comm_log_local
     async def unban(self, ctx: Context, *, member = None):
         author = ctx.message.author
         member = await UserConverter().convert(ctx, member)
@@ -237,6 +241,7 @@ class Mslo(Cog):
                                "access to that channel.")
     @guild_only()
     @has_guild_permissions(administrator=True)
+    @comm_log_local
     async def _timeout(self, ctx: Context, member: Member = None):
         async with ctx.typing():
             if member:

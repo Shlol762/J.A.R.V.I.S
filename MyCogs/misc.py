@@ -5,7 +5,7 @@ from PyDictionary import PyDictionary
 from typing import Any, Tuple, Optional
 from MyCogs import timeto as tt, command_log_and_err, set_timestamp,\
     WorldoMeter, Embed, Colour, Context, find_nth_occurrence,\
-    send_to_paste_service, Bot, Cog, command, cooldown
+    send_to_paste_service, Bot, Cog, command, cooldown, comm_log_local
 import datetime, re, requests
 from datetime import datetime
 from io import StringIO
@@ -22,6 +22,7 @@ class Misc(Cog):
     @command(aliases=['latency'],
                       help='Gets latency of the reply time of the bot in milliseconds', name='Ping',
                       usage="ping|latency", extras={'emoji': '📶', 'number': '901'})
+    @comm_log_local
     async def ping(self, ctx: Context):
         await command_log_and_err(ctx, 'Success')
         await ctx.reply(embed=await set_timestamp(
@@ -31,6 +32,7 @@ class Misc(Cog):
     @command(name='Leap', aliases=['le'], usage='leap <year>',
                       help='Checks whether or not a given year is a leap one.',
                       extras={'emoji': '🗓', 'number': '902'})
+    @comm_log_local
     async def leap(self, ctx: Context, year: int = None):
         year = str(year)
         if year:
@@ -64,6 +66,7 @@ class Misc(Cog):
     @command(aliases=['pdm'], name='Palindrome',
                       help='Checks whether or not a snippet of text is a palindrome.',
                       usage='palindrome|pdm <text>', extras={'emoji': '🔁', 'number': '903'})
+    @comm_log_local
     async def palindrome(self, ctx: Context, word: str = None):
         if word:
             if word == word[::-1]:
@@ -76,6 +79,7 @@ class Misc(Cog):
     @command(aliases=['wk', 'wiki'], name='Wikipedia',
                       help='Searches wikipedia and returns info based on a given query.',
                       usage='wiki|wk <query>', extras={'emoji': '🌐', 'number': '904'})
+    @comm_log_local
     async def wiki(self, ctx: Context, *, query: str = 'wikipedia'):
         async with ctx.typing():
             if query:
@@ -122,6 +126,7 @@ class Misc(Cog):
     @command(aliases=['dct', 'dict'], name='Dictionary',
              help='Searches the internet and returns definitions, synonyms and antonyms.',
              usage='dct|dict|dictionary <word> (def/syn/ant)', extras={'emoji': '📔', 'number': '905'})
+    @comm_log_local
     async def dict(self, ctx: Context, word: str = None, *, synantdef: Optional[str]):
         async with ctx.typing():
             if word:
@@ -158,6 +163,7 @@ class Misc(Cog):
     @command(name="Time to", aliases=['tto', 'timeto'], extras={'emoji': '⏱', 'number': '906'},
              help='Returns the countdown to the given timestamp.',
              usage='$timeto|tto <timestamp in format of - "24hr:mins day/month/year">')
+    @comm_log_local
     async def timeto(self, ctx: Context, *, time_str: str = None):
         async with ctx.typing():
             if time_str:
@@ -174,6 +180,7 @@ class Misc(Cog):
     @command(aliases=['cd', 'covidata'], name='Covid Data',
                       help='Returns covid statistics for the whole world or a country',
                       usage='$covidata|cd (country)', extras={'emoji': '☣', 'number': '907'})
+    @comm_log_local
     async def covidata(self, ctx: Context, *, country: str = 'None'):
         async with ctx.typing():
             wm_logo = 'https://www.worldometers.info/img/worldometers-logo.gif'

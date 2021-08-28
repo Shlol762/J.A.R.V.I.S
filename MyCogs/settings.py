@@ -3,7 +3,8 @@ import discord, json
 from discord.ext import commands
 from discord import Embed, Colour
 from MyCogs import command_log_and_err, Cog, command,\
-    guild_only, Context, Client, set_timestamp, Bot
+    guild_only, Context, Client, set_timestamp, Bot,\
+    comm_log_local
 
 #commands.
 class Settings(Cog):
@@ -17,6 +18,7 @@ class Settings(Cog):
               usage='enable|en <feature> <scope>',
               extras={'emoji': '⚙', 'number': '701'})
     @guild_only()
+    @comm_log_local
     async def enable(self, ctx: Context, _command: str = 'none', server_or_channel: str = 'server'):
         if ctx.author.id == ctx.guild.owner_id:
             c_low = _command.lower()
@@ -126,6 +128,7 @@ class Settings(Cog):
       usage='disable|da <feature> <scope>',
       extras={'emoji': '⚙', 'number': '702'})
     @guild_only()
+    @comm_log_local
     async def disable(self, ctx: Context, _command: str = 'none', server_or_channel: str = 'server'):
         if ctx.author.id == ctx.guild.owner_id:
             c_low = _command.lower()
@@ -232,6 +235,7 @@ class Settings(Cog):
              usage='setprefix|sp <prefix>',
              extras={'emoji': '⚙', 'number': '703'})
     @guild_only()
+    @comm_log_local
     async def set_prefix(self, ctx: Context, *, prefix: str):
         if prefix:
             with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/prefixes.json", "r") as f:
@@ -251,6 +255,7 @@ class Settings(Cog):
              usage='settings|sts',
              extras={'emoji': '⚙', 'number': '704'})
     @guild_only()
+    @comm_log_local
     async def settings(self, ctx: Context):
         with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json", "r") as f:
             settings: dict[str:dict[str:bool]] = json.load(f)

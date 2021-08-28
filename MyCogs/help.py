@@ -2,7 +2,7 @@ from typing import Optional
 import discord
 from MyCogs import command_log_and_err, set_timestamp, Cog,\
     Context, command, Client, Colour, Embed, HTTPException,\
-    commands, Bot
+    commands, Bot, comm_log_local
 #discord.
 
 
@@ -12,6 +12,7 @@ class Help(Cog):
         self.name = 'Help'
 
     @command(extras={'emoji': '✉'}, name='Help', aliases=['hp'])
+    @comm_log_local
     async def help(self, ctx: Context, *, cog: Optional[str]):
         bot: Bot = ctx.bot
         icon = bot.user.avatar.url

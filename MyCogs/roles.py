@@ -4,7 +4,7 @@ from discord.ext import commands
 from MyCogs import command_log_and_err, set_timestamp, command,\
     Cog, cooldown, guild_only, BucketType, Context, has_permissions,\
     Client, Forbidden, Role, Member, Colour, Embed, HTTPException,\
-    InvalidArgument, Bot
+    InvalidArgument, Bot, comm_log_local
 
 #commands.
 
@@ -21,6 +21,7 @@ class Roles(Cog):
                       usage='createrole|cr (role name)', extras={'emoji': '🆕', 'number': '101'})
     @cooldown(1, 60, BucketType.guild)
     @guild_only()
+    @comm_log_local
     async def createrole(self, ctx: Context, *,
                          name: Optional[str] = 'New role.'):
         author = ctx.message.author
@@ -44,6 +45,7 @@ class Roles(Cog):
                       usage='delrole|dr <role>', extras={'emoji': '🗑', 'number': '102'})
     @cooldown(1, 60, BucketType.guild)
     @guild_only()
+    @comm_log_local
     async def delrole(self, ctx: Context, *, role: Role = None):
         author = ctx.message.author
         role_b4_del = role.name
@@ -66,6 +68,7 @@ class Roles(Cog):
     @cooldown(1, 10, BucketType.member)
     @guild_only()
     @has_permissions(manage_roles=True)
+    @comm_log_local
     async def addrole(self, ctx: Context, member: Member = None,
                       role: Role = None):
         author = ctx.message.author
@@ -100,6 +103,7 @@ class Roles(Cog):
                       usage='removerole|rr <member> <role>', extras={'emoji': '➖', 'number': '104'})
     @cooldown(1, 10, BucketType.member)
     @guild_only()
+    @comm_log_local
     async def removerole(self, ctx, member: Member = None, role: Role = None):
         author = ctx.message.author
         if member:
@@ -126,6 +130,7 @@ class Roles(Cog):
                       extras={'emoji': '✏', 'number': '105'})
     @cooldown(1, 60, BucketType.guild)
     @guild_only()
+    @comm_log_local
     async def editrole(self, ctx: Context, role: Role = None, attribute: str = None,
                        *, attr_val: Union[str, int, bool] = None):
         author: Member = ctx.author
@@ -502,6 +507,7 @@ class Roles(Cog):
     @guild_only()
     @has_permissions(administrator=True)
     @cooldown(1, 20, BucketType.role)
+    @comm_log_local
     async def addtoall(self, ctx: Context, role: Role):
         async with ctx.typing():
             for member in ctx.guild.members:

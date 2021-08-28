@@ -11,7 +11,7 @@ from discord.ext import commands
 from MyCogs import command_log_and_err, Context, Bot,\
     Cog, NoPrivateMessage, CommandError, command,\
     guild_only, PCMVolumeTransformer, FFmpegPCMAudio,\
-    Embed, Colour, Client, VoiceChannel
+    Embed, Colour, Client, VoiceChannel, comm_log_local
 
 youtube_dl.utils.bug_reports_message = lambda: ''
 
@@ -291,6 +291,7 @@ class Music(Cog):
                       help="Joins a voice channel.", extras={'emoji': '⤵', 'number': '601'},
                       usage='join|jn')
     @guild_only()
+    @comm_log_local
     async def _join(self, ctx: Context):
         destination = ctx.author.voice.channel
         await command_log_and_err(ctx, status='Success', joined=destination)
@@ -303,6 +304,7 @@ class Music(Cog):
                       help="Summons the bot to a voice channel. If no channel was specified, it joins your channel.",
                       usage='summon|smn (channel)')
     @guild_only()
+    @comm_log_local
     async def _summon(self, ctx: Context, *, channel: Optional[VoiceChannel] = None):
         if not channel and not ctx.author.voice:
             raise VoiceError('You are neither connected to a voice channel nor specified a channel to join.')
@@ -317,6 +319,7 @@ class Music(Cog):
                       help="Clears the queue and leaves the voice channel.",
                       usage='leave|disconnect|dc', extras={'emoji': '🚪', 'number': '603'})
     @guild_only()
+    @comm_log_local
     async def _leave(self, ctx: Context):
         if not ctx.voice_state.voice:
             return await ctx.reply('Not connected to any voice channel.')
@@ -328,6 +331,7 @@ class Music(Cog):
                       help="Sets the volume of the player.",
                       usage='volume|v <volume: out of hundred>')
     @guild_only()
+    @comm_log_local
     async def _volume(self, ctx: Context, *, volume: int):
         if not ctx.voice_state.is_playing:
             return await ctx.reply('Nothing being played at the moment.')
@@ -343,6 +347,7 @@ class Music(Cog):
                       help='Displays the currently playing song.', extras={'emoji': '🎶', 'number': '605'},
                       usage='now|n|current|playing')
     @guild_only()
+    @comm_log_local
     async def _now(self, ctx: Context):
         await command_log_and_err(ctx, status='Success')
         await ctx.reply(embed=ctx.voice_state.current.create_embed())
@@ -351,6 +356,7 @@ class Music(Cog):
                       help="Pauses the currently playing song.",
                       usage='pause|ps')
     @guild_only()
+    @comm_log_local
     async def _pause(self, ctx: Context):
         await command_log_and_err(ctx, status='Success')
         if ctx.voice_state.voice.is_playing():
@@ -360,6 +366,7 @@ class Music(Cog):
                       help="Resumes a currently paused song.",
                       usage='resume|res')
     @guild_only()
+    @comm_log_local
     async def _resume(self, ctx: Context):
         await command_log_and_err(ctx, status='Success')
         if ctx.voice_state.voice.is_paused():
@@ -369,6 +376,7 @@ class Music(Cog):
                       help="Stops playing song and clears the queue.",
                       usage='stop|sp')
     @guild_only()
+    @comm_log_local
     async def _stop(self, ctx: Context):
         ctx.voice_state.songs.clear()
         await command_log_and_err(ctx, status='Success')
@@ -379,6 +387,7 @@ class Music(Cog):
                       help="Vote to skip a song. The requester can automatically skip. 3 skip votes are needed for the song to be skipped.",
                       usage='skip|sk')
     @guild_only()
+    @comm_log_local
     async def _skip(self, ctx: Context):
         if not ctx.voice_state.is_playing:
             return await ctx.reply('Not playing any music right now...')
@@ -403,6 +412,7 @@ class Music(Cog):
                       help="Shows the player's queue. You can optionally specify the page to show. Each page contains 10 elements.",
                       usage='queue|q (page number)')
     @guild_only()
+    @comm_log_local
     async def _queue(self, ctx: Context, *, page: Optional[int] = 1):
         if len(ctx.voice_state.songs) == 0:
             return await ctx.reply('Empty queue.')
@@ -426,6 +436,7 @@ class Music(Cog):
                       help="Shuffles the queue.", extras={'emoji': '🔀', 'number': '611'},
                       usage='shuffle|shfl')
     @guild_only()
+    @comm_log_local
     async def _shuffle(self, ctx: Context):
         if len(ctx.voice_state.songs) == 0:
             return await ctx.reply('Empty queue.')
@@ -437,6 +448,7 @@ class Music(Cog):
                       help="Removes a song from the queue at a given index.",
                       usage='remove <index of song in queue>')
     @guild_only()
+    @comm_log_local
     async def _remove(self, ctx: Context, index: int):
         if len(ctx.voice_state.songs) == 0:
             return await ctx.reply('Empty queue.')
@@ -448,6 +460,7 @@ class Music(Cog):
                       help="Loops the currently playing song. Invoke this command again to unloop the song.",
                       usage='loop|lp')
     @guild_only()
+    @comm_log_local
     async def _loop(self, ctx: Context):
         if not ctx.voice_state.is_playing:
             return await ctx.reply('Nothing being played at the moment.')
@@ -460,6 +473,7 @@ class Music(Cog):
                       help="""Plays a song. If there are songs in the queue, this will be queued until the other songs finished playing. This command automatically searches from various sites if no URL is provided.""",
                       usage='play|p <query or url>')
     @guild_only()
+    @comm_log_local
     async def _play(self, ctx: Context, *, search: str):
         if not ctx.voice_state.voice:
             await ctx.invoke(self._join)
