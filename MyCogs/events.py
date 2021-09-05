@@ -27,9 +27,8 @@ class Events(Cog):
         birthday_role: Role = guild.get_role(874909501617238048)
         general: TextChannel = self.bot.get_channel(821278528108494878)
         now = datetime.datetime.now().strftime("%d/%m")
-        f = open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/birthdays.json")
-        birthdays: dict = json.load(f)
-        f.close()
+        with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/birthdays.json") as f:
+            birthdays: dict = json.load(f)
         for prev_bday_person in members.keys():
             prev_bday_person: Member = prev_bday_person
             if now != members.get(prev_bday_person):
