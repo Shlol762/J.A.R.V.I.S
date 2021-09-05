@@ -46,7 +46,7 @@ class Events(Cog):
         for bday_persona in members:
             if birthday_role not in bday_persona.roles:
                 await bday_persona.add_roles(birthday_role)
-                topic += f'Happy Birthday {bday_persona.name}! '
+            topic += f'Happy Birthday {bday_persona.name}! '
         await general.edit(topic=topic) if birthday_role not in bday_persona.roles else None
 
     @Cog.listener()
