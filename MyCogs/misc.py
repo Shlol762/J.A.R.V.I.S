@@ -1,3 +1,4 @@
+import json
 from discord.ext import commands
 import discord
 import wikipedia
@@ -5,7 +6,8 @@ from PyDictionary import PyDictionary
 from typing import Any, Tuple, Optional
 from MyCogs import timeto as tt, command_log_and_err, set_timestamp,\
     WorldoMeter, Embed, Colour, Context, find_nth_occurrence,\
-    send_to_paste_service, Bot, Cog, command, cooldown, comm_log_local
+    send_to_paste_service, Bot, Cog, command, cooldown, comm_log_local,\
+    MemberConverter
 import datetime, re, requests
 from datetime import datetime
 from io import StringIO
@@ -206,6 +208,22 @@ f"""
 """
 , colour=Colour.random()).set_thumbnail(url=wm_logo)))
             await command_log_and_err(ctx, status=country or 'Worldwide' + ' Successful')
+
+    @command(aliases=['ucb', 'comingbday', 'upcomingbday'], name="Up Coming Birthday",
+             help='Returns a birthday if it comes within a range of 2 weeks.',
+             usage="$upcomingbirthday|ucb|comingbday|upcomingbday", extras={'emoji': '🎂', 'number': '908',
+                                                                            'contributer': 'Moiz Delhve'})
+    @comm_log_local
+    async def upcomingbirthday(self, ctx: Context):
+        with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/birthdays.json", 'r') as f:
+            birthdays: dict = json.load(f)
+        birthdays = {birthdays[key]: key for key in birthdays.keys()}
+        for birthday in birthdays.keys():
+            if 14 > (datetime.strptime(birthday + '/2021', '%d/%M/%Y') - datetime.now()).days :
+                member = await MemberConverter().convert(ctx, birthdays[birthday])
+                await ctx.send(member.name)
+                break
+
 
 
 def setup(bot: Bot):

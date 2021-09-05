@@ -38,7 +38,7 @@ sec_lvl = """
 
 
 @bot.command()
-async def test(ctx: commands.Context, *, query: str):
+async def test(ctx: commands.Context, *, query: discord.User):
     # emblist = [discord.Embed(description="Hey!"),
     #            discord.Embed(description="Hello!"),
     #            discord.Embed(description="Greetings my friends!"),
@@ -68,7 +68,7 @@ async def test(ctx: commands.Context, *, query: str):
     #     except asyncio.TimeoutError:
     #         timeout = True
     #         await message.clear_reactions()
-    await SFlix(query).get_search_results()
+    await ctx.send(query.name)
 
 
 @bot.command(hidden=True)
