@@ -15,7 +15,7 @@
    "766356666273890314": {
       "ban": false,
       "kick": false,
-      "clear": false,
+      "clear": true,
       "message": true,
       "msghai": false,
       "noswear": false,
