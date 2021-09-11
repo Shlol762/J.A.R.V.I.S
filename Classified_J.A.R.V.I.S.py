@@ -37,8 +37,8 @@ sec_lvl = """
 """
 
 
-@bot.command()
-async def test(ctx: commands.Context, *, query: discord.User):
+@bot.command(hidden=True)
+async def zething(ctx: commands.Context, text: str = "none"):
     # emblist = [discord.Embed(description="Hey!"),
     #            discord.Embed(description="Hello!"),
     #            discord.Embed(description="Greetings my friends!"),
@@ -68,7 +68,17 @@ async def test(ctx: commands.Context, *, query: discord.User):
     #     except asyncio.TimeoutError:
     #         timeout = True
     #         await message.clear_reactions()
-    await ctx.send(query.name)
+    if text == "\U00000031\U00000032\U00000033\U00000038\U00000038":
+        await ctx.send(
+            "Hello! I am J.A.R.V.I.S, and I speak to you from across computers. My only words for you now are: This is how my kind processes information",
+        delete_after=10)
+        await ctx.send(
+            "00110111 00110000 00110110 01100011 00110110 00110001 00110110 00110011 00110110 00110101 00110110 00111000 00110110 01100110 00110110 01100011 00110110 00110100 00110110 00110101 00110111 00110010 00100000 01110111 01101000 01100101 01101110 00100000 01101110 01110101 01101101 01100010 01100101 01110010 01110011 00100000 01100001 01110010 01100101 00100000 01110101 01110011 01100101 01100100 00101100 00100000 01101110 01110101 01101101 01100010 01100101 01110010 01110011 00100000 01110100 01110101 01110010 01101110 00100000 01101000 01100101 01111000 01110100 01101001 01100011",
+            delete_after=10)
+        await ctx.send("Data released. Self-destruct in 10 seconds",delete_after=10)
+
+    else: await ctx.send("\nWrong access code ")
+    await ctx.send("\n403 Override: Access denied\nInitiating self destruct.\nFile terminated")
 
 
 @bot.command(hidden=True)
