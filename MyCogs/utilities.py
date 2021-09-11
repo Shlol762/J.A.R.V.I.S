@@ -3,13 +3,13 @@ import json
 
 import discord
 from discord.ext import commands
-from typing import Optional
+from typing import Optional, Union
 from MyCogs import VERSION, command_log_and_err,\
     set_timestamp, time_set, hypesquad_emoji, Cog,\
     Bot, command, guild_only, cooldown, Context, BucketType,\
     Embed, Colour, Member, Forbidden, CustomActivity, Spotify,\
     Game, Activity, ActivityType, Status, HTTPException, User,\
-    comm_log_local
+    comm_log_local, UserConverter
 
 
 bot_ver = VERSION
@@ -455,16 +455,16 @@ For Example:- 1)Err_10124 means command '1' under category
                       help="Displays the profile picture of a given user.",
                       usage="$profilepic|pfp (user)")
     @comm_log_local
-    async def _pfp(self, ctx: Context, user: User = None):
-        user = user or ctx.author
+    async def _pfp(self, ctx: Context, user = None):
+        user = await UserConverter().convert(ctx, user) if user else ctx.author
         await command_log_and_err(ctx, status="Success")
-        await ctx.reply(embed=await set_timestamp(Embed(description="_ _", colour=Colour.random()).set_image(url=user.avatar.url)))
+        await ctx.reply(embed=await set_timestamp(Embed(description="_ _", type="image", colour=user.colour).set_image(url=user.avatar.url)))
 
     @command(name="Banner", aliases=['br'], extras={'emoji': '🖼', 'number': '314'},
                       help="Displays the banner of a nitro user.",
                       usage='$banner|b (member)')
     @comm_log_local
-    async def _banner(self, ctx: Context, member: Member = None):
+    async def _banner(self, ctx: Context, member: Union[Member, User] = None):
         await command_log_and_err(ctx, status="Success")
         member = await self.bot.fetch_user(member.id if member else ctx.author.id)
         if member.banner:
