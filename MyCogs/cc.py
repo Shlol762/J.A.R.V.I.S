@@ -8,10 +8,10 @@ from MyCogs import calculate_position, permission_confirm, \
     timezone, GuildChannel, Message, Bot, ThreadConfirmation, Thread, comm_log_local
 
 
-class Cac(Cog):
+class Cc(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.name: str = 'Channels and Categories(cac)'
+        self.name: str = 'Channel Control(cc)'
         self.description = "Controls functions over text, voice and category channels."
 
     # 501
@@ -404,4 +404,4 @@ class Cac(Cog):
 
 
 def setup(bot: Bot):
-    bot.add_cog(Cac(bot))
+    bot.add_cog(Cc(bot))
