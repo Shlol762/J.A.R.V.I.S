@@ -9,7 +9,7 @@ from urllib.parse import quote_plus
 from DiscordClasses import BOT_TOKEN, get_prefix, Confirmation, JoinHomeServer, SFlix
 
 intents = discord.Intents.all()
-bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, intents=intents,
+bot = commands.AutoShardedBot(command_prefix=get_prefix, case_insensitive=True, intents=intents,
                    allowed_mentions=discord.AllowedMentions(everyone=False),
                    strip_after_prefix=True)
 bot.remove_command('help')
