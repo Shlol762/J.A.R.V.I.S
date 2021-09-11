@@ -66,7 +66,7 @@ class Events(Cog):
         await ch.send(embed=await set_timestamp(embed, ""))
         try: self.birthday.start()
         except RuntimeError: self.birthday.restart()
-        print("Confirmed")
+        print(f"Connection to discord instantiation success: {datetime.datetime.now().strftime('%d %B %Y at %X:%f')}")
 
     @Cog.listener()
     async def on_message(self, message: Message):

@@ -166,4 +166,6 @@ async def msg_dts(ctx: commands.Context, message: discord.Message):
     print(f"Content: {message.content}")
 
 
-bot.run(BOT_TOKEN)
+try: bot.run(BOT_TOKEN)
+except (KeyboardInterrupt, RuntimeError): pass
+finally: print(f"\nConnection to internet termniated willingly: {datetime.datetime.now().strftime('%d %B %Y at %X:%f')}")
