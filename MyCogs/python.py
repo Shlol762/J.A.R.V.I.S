@@ -39,7 +39,7 @@ NEGATIVE_REPLIES = [
 class Python(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.name = 'Python'
+        self.name = 'Python(py)'
         self.description = "Python related commands."
         self.env = {}
         self.ln = 0

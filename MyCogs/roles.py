@@ -13,7 +13,7 @@ class Roles(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
         self.description = 'Commands that deal with roles of server.'
-        self.name = 'Roles'
+        self.name = 'Roles(rs)'
 
     # 101
     @command(name="Create Role", aliases=['cr', 'createrole'],

@@ -14,7 +14,7 @@ class Moderation(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
         self.description = 'Moderation commands.'
-        self.name = 'Moderation'
+        self.name = 'Moderation(mod)'
 
     # 201
     @command(name="Invite", aliases=['i'], usage='invite|i <user>',

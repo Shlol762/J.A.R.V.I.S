@@ -262,7 +262,7 @@ class Music(Cog):
         self.bot = bot
         self.voice_states = {}
         self.description = "A list of commands that control the bot's music functions."
-        self.name = 'Music'
+        self.name = 'Music(ms)'
 
     def get_voice_state(self, ctx: Context):
         state = self.voice_states.get(ctx.guild.id)

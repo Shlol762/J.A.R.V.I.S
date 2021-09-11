@@ -9,7 +9,7 @@ from MyCogs import Bot, Cog, Context, command_log_and_err, Cricket,\
 class Sports(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.name = 'Sports'
+        self.name = 'Sports(sps)'
         self.description = 'Collects sports data from the internet and displays as Embeds.(UNDER DEVELOPMENT)'
 
     @commands.command(name='Cricket Score', aliases=['cs', 'cricscore', 'cricketscore'],

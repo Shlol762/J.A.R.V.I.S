@@ -12,7 +12,7 @@ class Games(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
         self.description = 'Have fun while you at it.'
-        self.name: str = 'Games'
+        self.name: str = 'Games(gs)'
 
     # 401
     @command(aliases=['rd', 'rolldice'], name='Roll Dice',

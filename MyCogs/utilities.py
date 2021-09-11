@@ -19,7 +19,7 @@ class Utilities(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
         self.description = 'Commands that can be used as tools.'
-        self.name = 'Utilities'
+        self.name = 'Utilities(utils)'
 
     # 301
     @command(name="Clear", aliases=['cl'],
@@ -243,16 +243,16 @@ class Utilities(Cog):
                     """
 `Error Code Classification`
 ```nim
-Categories    : 1 = Roles
-                2 = Moderation
-                3 = Utilities
-                4 = Games
+Categories    : 1 = Roles(rs)
+                2 = Moderation(mod)
+                3 = Utilities(utils)
+                4 = Games(gs)
                 5 = Channel Control(cc)
-                6 = Music
-                7 = Settings
-                8 = Sports
+                6 = Music(ms)
+                7 = Settings(stgs)
+                8 = Sports(sps)
                 9 = Miscellaneous(Misc)
-                P = Python
+                P = Python(py)
 
 Type of Errors: 24  = Missing Permissions
                 48  = Missing Arguments

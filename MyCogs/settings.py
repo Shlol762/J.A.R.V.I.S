@@ -11,7 +11,7 @@ class Settings(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
         self.description = "The commands that control the bot's settings in the server."
-        self.name = 'Settings'
+        self.name = 'Settings(stgs)'
 
     @command(name='Enable', aliases=['en'],
               help='Enables the selected setting the bot has for the server.',

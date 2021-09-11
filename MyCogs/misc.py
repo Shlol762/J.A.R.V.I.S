@@ -17,7 +17,7 @@ import inspect, contextlib, textwrap, traceback
 class Misc(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.name = 'Miscellaneous'
+        self.name = 'Miscellaneous(misc)'
         self.description = "Random stuff do whatever the heck you want."
         self.cocase = WorldoMeter()
 
