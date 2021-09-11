@@ -244,7 +244,7 @@ class Utilities(Cog):
 `Error Code Classification`
 ```nim
 Categories    : 1 = Roles
-                2 = Member Stay/Leave Options(mslo)
+                2 = Moderation
                 3 = Utilities
                 4 = Games
                 5 = Channels and Categories(cac)

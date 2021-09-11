@@ -10,11 +10,11 @@ from MyCogs import command_log_and_err, set_timestamp, Context,\
     Role, TextChannelConverter, RoleConverter, Bot, UserConverter, comm_log_local
 #commands.
 
-class Mslo(Cog):
+class Moderation(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.description = 'Commands that control a members stay/leave options.'
-        self.name = 'Mslo'
+        self.description = 'Moderation commands.'
+        self.name = 'Moderation'
 
     # 201
     @command(name="Invite", aliases=['i'], usage='invite|i <user>',
@@ -296,4 +296,4 @@ class Mslo(Cog):
 
 
 def setup(bot: Bot):
-    bot.add_cog(Mslo(bot))
+    bot.add_cog(Moderation(bot))
