@@ -14,50 +14,53 @@ class Help(Cog):
         self.bot = bot
         self.name = 'Help'
 
-    @command(extras={'emoji': '✉'}, name='Help', aliases=['hp'])
+    @command(extras={'emoji': '✉'}, name='Help', aliases=['hp'],
+             help="Displays the commands of me.",
+             usage="help|hp (command|command alias|category|category alias)")
     @comm_log_local
     async def help(self, ctx: Context, *, arg: Optional[str]):
         bot: Bot = self.bot
-        icon = bot.user.avatar.url
+        icon = ctx.author.avatar.url
         help_col = Colour.random()
         try:
             if not arg:
                 await command_log_and_err(ctx, status='Only Help')
                 help = Embed(title='Category Listing',
-                                     description='Use `$help <category>` to find out more about them!',
-                                     colour=help_col)
-                cogs_desc = ''
-                for cog_name, cog in bot.cogs.items():
-                    if cog_name.lower() not in NO_HELP_COGS:
-                        help.add_field(value=f'[`Hover for more info`](https://discord.gg/zt6j4h7ep3 "{cog.description}")', name=f'{cog.name}')
-                await ctx.reply(embed=await set_timestamp(help, ""))
+                                     description='Use `$help <category>` to get a list of commands in them!',
+                                     colour=help_col).set_footer(icon_url=icon,
+                                                                 text="Note: The 2-4 letter words in brackets are short forms of the categories. You can do $help <short form> if you wish.")
+                for cog in bot.cogs.values():
+                    if cog.name.lower() not in NO_HELP_COGS:
+                        help.add_field(value=f'[`Hover for description`](https://discord.gg/zt6j4h7ep3 "{cog.description}")', name=f'{cog.name}')
+                await ctx.reply(embed=await set_timestamp(help, "Requested"))
             else:
                 found = False
-                for cog_name, cog in bot.cogs.items():
+                for cog in bot.cogs.values():
+                    if re.search(fr"({arg.lower()})", cog.name.lower()) and cog.name.lower() not in NO_HELP_COGS:
+                        formatted_cog_name = re.sub(r"\(.+\)", "", cog.name)
+                        help = Embed(title=f'{formatted_cog_name} - `Command Listing`',
+                                     description=f"Use `$help <command>` for more details on a specific command\n{cog.description}\n",
+                                     colour=help_col)
+                        for _commands in cog.get_commands():
+                            if not _commands.hidden:
+                                help.add_field(name=_commands.name, value=f'[`Hover for description`](https://discord.gg/zt6j4h7ep3 "{_commands.help}")',
+                                               inline=True)
+                        found = True
+                if not found:
                     for _command in bot.commands:
-                        if str(cog_name).lower() == str(arg).lower() or re.search(fr"({arg.lower()})", bot.get_cog(cog_name).name.lower()):
-                            formatted_cog_name = re.sub(r"\(.+\)", "", cog.name)
-                            help = Embed(title=f'{formatted_cog_name} - `Command Listing`',
-                                         description=f"Use `$help <command>` for more details on a specific command\n{bot.cogs[cog_name].__doc__}\n",
-                                         colour=help_col)
-                            for c in bot.get_cog(cog_name).get_commands():
-                                if not c.hidden:
-                                    help.add_field(name="{} - `{}`".format(c.name, ', '.join(c.aliases)), value=c.help,
-                                                   inline=False)
-                            found = True
                         for alias in _command.aliases:
-                            if str(_command.name).lower() == str(arg).lower() or str(alias).lower() == str(arg).lower():
-                                help = Embed(title=str(_command.name)[0].upper() + str(_command.name)[1:],
-                                                     description="`{}`".format(str(_command.help)), colour=help_col)
-                                help.add_field(name='Syntax:', value="`{}`".format(str(_command.usage)))
-                                help.add_field(name='Aliases:', value="`{}`".format(', '.join(_command.aliases)))
-                                help.add_field(name='Cooldown period:', value="`{}` seconds".format(
-                                    _command._buckets._cooldown.per) if _command._buckets._cooldown else '`None`')
+                            if arg.lower() in (_command.name.lower(), alias.lower()):
+                                help = Embed(title=_command.name.title(),
+                                                     description=f"`{_command.help}`", colour=help_col)
+                                help.add_field(name='Syntax:', value=f"`{_command.usage}`")
+                                help.add_field(name='Aliases:', value=f"`{', '.join(_command.aliases)}`")
+                                help.add_field(name='Cooldown period:',
+                                               value=f"`{_command._buckets._cooldown.per}` seconds") if _command._buckets._cooldown else None
                                 help.set_footer(text=
-                                                """
-<> - required
-() - optional                                    
-                                                """, icon_url=icon)
+                                                    """
+<> - required, () - optional, | - or    
+Note: You do not need to actually put <> and () around the inputs they are for understanding purposes only
+\n""", icon_url=icon)
                                 found = True
                 if not found:
                     help = Embed(title='Error!', description='How do you even use "' + arg + '"?',

@@ -18,7 +18,7 @@ members = {}
 class Events(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.name = 'None'
+        self.name = 'events'
 
     @loop(minutes=5)
     async def birthday(self):
