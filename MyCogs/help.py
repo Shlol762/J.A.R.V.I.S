@@ -17,7 +17,7 @@ class Help(Cog):
     @command(extras={'emoji': '✉'}, name='Help', aliases=['hp'])
     @comm_log_local
     async def help(self, ctx: Context, *, arg: Optional[str]):
-        bot: Bot = ctx.bot
+        bot: Bot = self.bot
         icon = bot.user.avatar.url
         help_col = Colour.random()
         try:
@@ -28,22 +28,19 @@ class Help(Cog):
                                      colour=help_col)
                 cogs_desc = ''
                 for cog_name, cog in bot.cogs.items():
-                    cog_name: str = cog_name
-                    cog: Cog = cog
-                    if str(cog_name.lower()) not in NO_HELP_COGS:
-                        cogs_desc = f'**{cog.name}**\n'
-                        help.add_field(value=f'[`Hover for more info`](https://discord.gg/zt6j4h7ep3 "{cog.description}")', name=cogs_desc[0:-1])
+                    if cog_name.lower() not in NO_HELP_COGS:
+                        help.add_field(value=f'[`Hover for more info`](https://discord.gg/zt6j4h7ep3 "{cog.description}")', name=f'{cog.name}')
                 await ctx.reply(embed=await set_timestamp(help, ""))
             else:
                 found = False
-                for key, val in bot.cogs.items():
+                for cog_name, cog in bot.cogs.items():
                     for _command in bot.commands:
-                        if str(key).lower() == str(arg).lower() or re.search(fr"({arg.lower()})", bot.get_cog(key).name.lower()):
-                            formatted_cog_name = re.sub(r"\(.+\)", "", val.name)
+                        if str(cog_name).lower() == str(arg).lower() or re.search(fr"({arg.lower()})", bot.get_cog(cog_name).name.lower()):
+                            formatted_cog_name = re.sub(r"\(.+\)", "", cog.name)
                             help = Embed(title=f'{formatted_cog_name} - `Command Listing`',
-                                         description=f"Use `$help <command>` for more details on a specific command\n{bot.cogs[key].__doc__}\n",
+                                         description=f"Use `$help <command>` for more details on a specific command\n{bot.cogs[cog_name].__doc__}\n",
                                          colour=help_col)
-                            for c in bot.get_cog(key).get_commands():
+                            for c in bot.get_cog(cog_name).get_commands():
                                 if not c.hidden:
                                     help.add_field(name="{} - `{}`".format(c.name, ', '.join(c.aliases)), value=c.help,
                                                    inline=False)
