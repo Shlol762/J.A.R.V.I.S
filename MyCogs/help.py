@@ -36,7 +36,7 @@ class Help(Cog):
             else:
                 found = False
                 for cog in bot.cogs.values():
-                    if re.search(fr"({arg.lower()})", cog.name.lower()) and cog.name.lower() not in NO_HELP_COGS:
+                    if re.search(fr"({arg.lower()})", cog.name.lower()) and cog.name.lower() not in NO_HELP_COGS and not found:
                         formatted_cog_name = re.sub(r"\(.+\)", "", cog.name)
                         help = Embed(title=f'{formatted_cog_name} - `Command Listing`',
                                      description=f"Use `$help <command>` for more details on a specific command\n{cog.description}\n",
@@ -49,7 +49,7 @@ class Help(Cog):
                 if not found:
                     for _command in bot.commands:
                         for alias in _command.aliases:
-                            if arg.lower() in (_command.name.lower(), alias.lower()):
+                            if arg.lower() in (_command.name.lower(), alias.lower()) and not found:
                                 help = Embed(title=_command.name.title(),
                                                      description=f"`{_command.help}`", colour=help_col)
                                 help.add_field(name='Syntax:', value=f"`{_command.usage}`")
