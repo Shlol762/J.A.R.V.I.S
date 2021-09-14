@@ -5,7 +5,9 @@ import random
 import discord, aiohttp, asyncio
 from bs4 import BeautifulSoup
 from discord.ext import commands
+from discord import Thread, TextChannel
 from urllib.parse import quote_plus
+from typing import Union
 from DiscordClasses import BOT_TOKEN, get_prefix, Confirmation, JoinHomeServer, SFlix
 
 intents = discord.Intents.all()
@@ -18,6 +20,11 @@ bot.remove_command('help')
 for cog in os.listdir("C:/Users/Shlok/J.A.R.V.I.SV2021/MyCogs"):
     if cog.endswith(".py") and cog != '__init__.py':
         bot.load_extension(f'MyCogs.{cog[:-3]}')
+
+
+@bot.command(hidden=True)
+async def test(ctx: commands.Context):
+    pass
 
 
 @bot.command(hidden=True)
@@ -139,13 +146,6 @@ If you want to join my home server, click [`J.A.R.V.I.S`]({link})
             message: discord.Message = await channel.send(embed=embed, view=JoinHomeServer)
             await ctx.reply(
                 f'`Message link`: https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
-
-
-@bot.command(hidden=True)
-async def test1(ctx: commands.Context, *, url: str):
-    embed = discord.Embed(description='_ _', type='image')
-    await logo_maker(ctx, embed,
-                     url.split(', ')[0], url.split(', ')[1])
 
 
 @bot.command(hidden=True)

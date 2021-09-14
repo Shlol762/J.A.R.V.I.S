@@ -9,7 +9,7 @@ from MyCogs import VERSION, command_log_and_err,\
     Bot, command, guild_only, cooldown, Context, BucketType,\
     Embed, Colour, Member, Forbidden, CustomActivity, Spotify,\
     Game, Activity, ActivityType, Status, HTTPException, User,\
-    comm_log_local, UserConverter
+    comm_log_local, UserConverter, Thread, TextChannel
 
 
 bot_ver = VERSION
@@ -470,6 +470,32 @@ For Example:- 1)Err_10124 means command '1' under category
         if member.banner:
             await ctx.reply(embed=await set_timestamp(Embed(description="_ _", colour=Colour.random()).set_image(url=member.banner.url)))
         else: await ctx.reply(f"The banner feature is for nitro user exclusively.")
+
+    @command(name="Users Yesterday", aliases=['usersyesterday', 'uy'],
+             extras={'emoji': '💬', 'number': '315', 'contributer': 'Siddharth S'}, help="Gets the number of messages a user sent yesterday.",
+             usage="$usersyesterday|uy <channel/thread>")
+    @comm_log_local
+    async def _uy(self, ctx: Context, channel: Optional[Union[Thread, TextChannel]]):
+        async with ctx.typing():
+            channel = channel or ctx.channel
+            dateformat = "%d/%m/%Y"
+            _format = "%H:%M " + dateformat
+            t2 = datetime.datetime.strptime(f"00:00 {datetime.date.today().strftime('%d/%m/%Y')}", _format)
+            t1 = t2 - datetime.timedelta(days=1)
+            message_count = {}
+            messages = await channel.history(limit=None, before=t2, after=t1).flatten()
+            for message in messages:
+                key = message.author.mention
+                if not message_count.get(key):
+                    message_count[key] = 1
+                else: message_count[key] += 1
+            message_count = {key: val for key, val in sorted(message_count.items(), key=lambda p: p[1], reverse=True)}
+            embed = Embed(title=f"People who've sent messages in #{channel.name} yesterday.",
+                                  description='', colour=Colour.random())
+            for member, number_of_msgs in message_count.items():
+                embed.description += f'{member:<30}: {number_of_msgs:^5}\n'
+            await command_log_and_err(ctx, 'Success')
+            await ctx.reply(embed=embed)
 
 
 def setup(bot: Bot):
