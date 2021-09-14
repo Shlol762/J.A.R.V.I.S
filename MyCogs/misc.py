@@ -1,4 +1,6 @@
 import json
+import random
+
 from discord.ext import commands
 import discord
 import wikipedia
@@ -7,7 +9,7 @@ from typing import Any, Tuple, Optional
 from MyCogs import timeto as tt, command_log_and_err, set_timestamp,\
     WorldoMeter, Embed, Colour, Context, find_nth_occurrence,\
     send_to_paste_service, Bot, Cog, command, cooldown, comm_log_local,\
-    MemberConverter
+    UserConverter
 import datetime, re, requests
 from datetime import datetime
 from io import StringIO
@@ -214,15 +216,32 @@ f"""
              usage="$upcomingbirthday|ucb|comingbday|upcomingbday", extras={'emoji': '🎂', 'number': '908',
                                                                             'contributer': 'Moiz Delhve'})
     @comm_log_local
-    async def upcomingbirthday(self, ctx: Context):
+    async def upcomingbirthday(self, ctx: Context, days: int = 14):
         with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/birthdays.json", 'r') as f:
             birthdays: dict = json.load(f)
-        birthdays = {birthdays[key]: key for key in birthdays.keys()}
-        for birthday in birthdays.keys():
-            if 14 > (datetime.strptime(birthday + '/2021', '%d/%M/%Y') - datetime.now()).days :
-                member = await MemberConverter().convert(ctx, birthdays[birthday])
-                await ctx.send(member.name)
-                break
+        now = datetime.now()
+        format = '%d/%m/%Y'
+        year = int(now.strftime("%Y"))
+        birthdays = {user: datetime.strptime(date + f'/{year + 1 if datetime.strptime(date + f"/{now.year}", format) < now else year}', format)
+                     for user, date in birthdays.items()}
+        upcominbdays = {}
+        for user, birthday in birthdays.items():
+            if days > (birthday - now).days > 0:
+                user = await UserConverter().convert(ctx, user)
+                if not upcominbdays.get(birthday): upcominbdays[birthday] = [user,]
+                else: upcominbdays[birthday].append(user)
+        upcominbdays = sorted(upcominbdays.items(), key=lambda p: p[0])
+        upcominbdays = {key:val for key, val in upcominbdays}
+        embed = Embed(title=f"Birthdays coming up in the next {days} days!",
+                      description="If you don't see your birthday in this list, contact <@613044385910620190>",
+                      colour=ctx.author.colour)
+        for date, users in upcominbdays.items():
+            to_be_posted_users = ''
+            for user in users:
+                to_be_posted_users += f"• {user.mention}\n"
+            embed.add_field(name=date.strftime("%d, %b %Y"), value=to_be_posted_users)
+        await ctx.reply(embed=await set_timestamp(embed, random.choice(("Credit: Moiz Delhve", "", "", ""))))
+
 
 
 
