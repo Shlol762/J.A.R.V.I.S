@@ -132,10 +132,11 @@ class Events(Cog):
                             f.close()
                             if birthdays.get(str(person.id)):
                                 time: datetime.datetime = datetime.datetime.strptime(birthdays[str(person.id)]+datetime.datetime.now().strftime("/%Y"), "%d/%m/%Y")
+                                datending = (lambda t: {'1': 'st', '2': 'nd', '3': 'rd'}.get(str(t)[-1]) or 'th')(time.day)
                                 if time < datetime.datetime.now():
-                                    time: str = re.sub(" to `00:00 [0-9]{2}/[0-9]{2}/[0-9]{4}`", "", time.strftime(f"""The next occurrance of . birthday is in {timeto(f'{time.day}/{time.month}/{time.year + 1}')} on the `%dth of %B in {time.year + 1}`"""))
+                                    time: str = re.sub(" to `00:00 [0-9]{2}/[0-9]{2}/[0-9]{4}`", "", time.strftime(f"""The next occurrance of . birthday is in {timeto(f'{time.day}/{time.month}/{time.year + 1}')} on the `%d{datending} of %B in {time.year + 1}`"""))
                                 else:
-                                    time: str = re.sub(" to `00:00 [0-9]{2}/[0-9]{2}/[0-9]{4}`", "", time.strftime(f"""The next occurrance of . birthday is in {timeto(f'{time.day}/{time.month}/{time.year}')} on the `%dth of %B in %Y`"""))
+                                    time: str = re.sub(" to `00:00 [0-9]{2}/[0-9]{2}/[0-9]{4}`", "", time.strftime(f"""The next occurrance of . birthday is in {timeto(f'{time.day}/{time.month}/{time.year}')} on the `%d{datending} of %B in %Y`"""))
                                 await ctx.reply(time.replace(".", 'your' if person.id == author.id else person.name+"'s"))
                             else:
                                 await ctx.reply(f"I'm sorry but I don't think I have that birthday stored anywhere. Contact Shlol#2501 to add the birthday")
