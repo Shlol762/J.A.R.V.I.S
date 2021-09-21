@@ -88,7 +88,7 @@ class Cricket:
         overs = soup.select('.match-header .match-info .teams .team .score-detail .score')
         dummy = ['', '']
         match = CricInfoCard(soup.find(class_=re.compile("^description")).text,
-                             soup.select('.match-header .match-info .status span')[0].text,
+                             soup.select('.match-header-info .header-info .status span')[0].text,
                              soup.select('.match-header .match-info .status-text span')[0].text,
                              [team.text for team in soup.select('.match-header .match-info .teams .team .name-link p')],
                              ([scr.text for scr in score] or dummy) if score else dummy,
