@@ -299,7 +299,7 @@ class CricInfoCard:
 {'Match Number':^12} - {self.number:^12}
 {'Location':^12} - {self.location:^12}
 """
-        return ret_string + f"{'Date - Time':^12} - {self.date_time.capitalize():^12}\n```"\
+        return ret_string + f"{'Date - Time' if self._status not in ('live', 'result', 'stumps') else 'Status':^12} - {self.date_time.capitalize():^12}\n```"\
             if self.date_time else ret_string + f"```"
 
     @property
