@@ -312,6 +312,9 @@ class CricInfoCard:
 
     @property
     def date_time(self):
+        if self._status == '':
+            self._status = 'Match yet to begin'
+            return None
         if 'live' not in self._status and 'result' not in self._status and 'stumps' not in self._status:
             time = datetime.strptime(self._status.split(', ')[-1].upper(), "%I:%M %p")
             time = time_set(time, "%I:%M %p")
