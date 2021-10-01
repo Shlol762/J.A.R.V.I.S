@@ -6,7 +6,7 @@ from . import hypesquad_emoji, command_log_and_err, set_timestamp,\
     CommandOnCooldown, MemberNotFound, UserNotFound, RoleNotFound, MessageNotFound,\
     ChannelNotFound, NoPrivateMessage, Message, MessageConverter, BadUnionArgument,\
     trim, forbidden_word, noswear, greetings, farewells, nou, urnotgod, timeto, Bot,\
-    ThreadNotFound
+    ThreadNotFound, train
 
 severed_time = 0
 connect_time = 0
@@ -141,6 +141,7 @@ class Events(Cog):
                             else:
                                 await ctx.reply(f"I'm sorry but I don't think I have that birthday stored anywhere. Contact Shlol#2501 to add the birthday")
                         except AttributeError: pass
+                    await train(ctx)
                 except TypeError: print(ctx.message.content)
 
     @Cog.listener()

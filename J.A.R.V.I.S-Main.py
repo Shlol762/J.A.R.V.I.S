@@ -1,7 +1,7 @@
 import datetime
 import json
 import os
-import random
+import random, re
 import discord, aiohttp, asyncio
 from bs4 import BeautifulSoup
 from discord.ext import commands
@@ -164,6 +164,87 @@ async def devan(ctx: commands.Context, *, text: str):
 async def msg_dts(ctx: commands.Context, message: discord.Message):
     await ctx.send(f"Content: {message.content}")
     print(f"Content: {message.content}")
+
+
+@bot.command(name='train')
+async def train(ctx):
+    f = open('dump.txt', 'w', encoding="utf-8")
+    with open('mkvdb.json', 'r') as mkvdb:
+        mkvdct = json.load(mkvdb)
+    idf = 821278528108494878
+    channel = bot.get_channel(idf)
+    counter = 0
+    m_type = 0
+    l_rex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
+    mkvdct = {}
+    async for message in channel.history(limit=1000):
+        if message.author.id == bot.user.id or re.search(
+            r'\b(whore|cunt|tit|boob|ass(hole)?|milf|dick|cock|anal|homo|gay|vagina|pussy)\b|\b((skull)?f(u)?(c)?k|bitch|sex|cum)',
+            message.content.strip().lower()): return
+        if message.content != '':
+            content = message.content
+        else:
+            m_type = 1
+            try:
+                content = 'err' + message.attachments[0].content_type
+            except IndexError:
+                content = 'sticker'
+        ch = content[:1]
+        if ch == '!' or ch == '.':
+            content = ''
+            m_type = 1
+
+        url = re.findall(l_rex, content)
+        if url:
+            content = 'link'
+            m_type = 1
+
+        content = re.sub("<.*?>", '', content)
+        # content = re.sub(":.*?:", '', content)
+        content = re.sub(r'[^\w\s]', '', content)
+        if not content:
+            m_type = 1
+
+        if not m_type:
+            strn = str(counter) + ') ' + content + '\n'
+            f.write(strn)
+            ct = content.split()
+            if len(ct) == 1 and not mkvdct.get(ct[0]):
+                mkvdct[ct[0]] = ['']
+            for i in range(len(ct) - 1):
+                if ct[i] in mkvdct.keys():
+                    mkvdct[ct[i]].append(ct[i + 1])
+                else:
+                    mkvdct[ct[i]] = [ct[i + 1]]
+            print(strn)
+            counter += 1
+        m_type = 0
+    with open('mkvdb.json', 'w', encoding="utf-8") as mkvdb:
+        json.dump(mkvdct, mkvdb, indent=3)
+    await ctx.send(str(counter) + " sentences learned")
+
+
+@bot.command(name='talk', hidden=True)
+async def talk(ctx, sword, cnt = 20):
+    mkvdb = open('mkvdb.json', 'r', encoding="utf-8")
+    mkvdct = json.loads(mkvdb.read())
+    mkvdb.close()
+    count = 0
+    sword = sword.lower()
+    if sword not in mkvdct.keys():
+        await ctx.send("Word not in database")
+        return
+    str = sword
+    nxt = sword
+    while count < cnt:
+        nxt = random.choice(mkvdct[nxt])
+        str += (' ' + nxt)
+        if nxt not in mkvdct.keys():
+            str += '.'
+            nxt = random.choice(list(mkvdct.keys()))
+            str += (' ' + nxt)
+        count += 1
+    await ctx.send(str)
 
 
 try: bot.run(BOT_TOKEN)

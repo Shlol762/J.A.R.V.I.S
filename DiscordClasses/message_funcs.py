@@ -1,3 +1,4 @@
+import json
 import re, random
 from discord import Forbidden, Invite, Message, Member
 from discord.ext.commands import Context, Bot
@@ -118,6 +119,63 @@ async def urnotgod(ctx: Context) -> Union[Message, str]:
                                      ])
         return await ctx.reply(am_i_g_response)
     else: return x_was_not_in_msg.format("conceitedness")
+
+
+async def train(ctx: Context):
+    rstring = r'\b(whores?|cunts?|tits?|boobs?|ass(holes?)?|milfs?|dick(s|heads?)?|cocks?|anals?|homos?' \
+              r'|w?tf*|gays?|vaginas?|puss(y|ies))\b|\b((skull)?f(u)?(c+)?k|bitch|sex|cum|fuc+|porn)'
+    if ctx.author.id == ctx.bot.user.id or re.search(
+            rstring,
+            ctx.message.content.strip().lower()) or ctx.channel.name == 'nsfw':
+        return
+    f = open('dump.txt', 'a', encoding="utf-8")
+    with open('mkvdb.json', 'r') as mkvdb:
+        mkvdct = json.load(mkvdb)
+    counter = 0
+    m_type = 0
+    l_rex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
+    message = ctx.message
+    if message.content != '':
+        content = message.content.lower()
+    else:
+        m_type = 1
+        try:
+            content = 'err' + message.attachments[0].content_type
+        except IndexError:
+            content = 'sticker'
+    ch = content[:1]
+    if ch == '!' or ch == '.':
+        content = ''
+        m_type = 1
+
+    url = re.findall(l_rex, content)
+    if url:
+        content = 'link'
+        m_type = 1
+
+    content = re.sub("<.*?>", '', content)
+    # content = re.sub(":.*?:", '', content)
+    content = re.sub(r'[^\w\s]', '', content)
+    if not content:
+        m_type = 1
+
+    if not m_type:
+        strn = str(counter) + ') ' + content + '\n'
+        f.write(strn)
+        ct = content.split()
+        if len(ct) == 1 and not mkvdct.get(ct[0]):
+            mkvdct[ct[0]] = ['']
+        for i in range(len(ct) - 1):
+            if ct[i] in mkvdct.keys():
+                mkvdct[ct[i]].append(ct[i + 1])
+            else:
+                mkvdct[ct[i]] = [ct[i + 1]]
+        # print(strn)
+        # print('\n')
+        counter += 1
+    m_type = 0
+    with open('mkvdb.json', 'w', encoding="utf-8") as mkvdb:
+        json.dump(mkvdct, mkvdb, indent=3)
 
 
 

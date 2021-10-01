@@ -1,22 +1,25 @@
-from typing import Callable
+import json
+import re
 
-def yeet(func: Callable):
-    def wrapper(*args, **kwargs):
-        val = func(*args, **kwargs)
-        return val
-    print(f"YEET")
-    return wrapper
+with open("mkvdb.json", "r") as f:
+    words = json.load(f)
 
-def hello(func: Callable):
-    def wrapper(*args, **kwargs):
-        val = func(*args, **kwargs)
-        return val
-    print('HELLOO')
-    return wrapper
+new = {}
 
-@yeet
-@hello
-def testing(text):
-    print(text)
+for key, val in words.items():
+    rstring = r'\b(whores?|cunts?|tits?|boobs?|ass(holes?)?|milfs?|dick(s|heads?)?|cocks?|anals?|homos?' \
+              r'|w?tf*|gays?|vaginas?|puss(y|ies))\b|\b((skull)?f(u)?(c+)?k|bitch|sex|cum|fuc+)'
+    if not re.search(
+            rstring,
+            key.lower()) or not key.isascii():
+        new[key] = val
+    # for v in val:
+    #     if not new.get(key):
+    #         new[key] = []
+    #     if not re.search(
+    #             rstring,
+    #             v.lower()) or not v.isascii():
+    #         new[key].append(v)
 
-testing('ok')
+with open("mkvdb.json", "w") as f:
+    json.dump(new, f, indent=3)
