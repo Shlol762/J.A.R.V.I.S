@@ -174,7 +174,7 @@ async def train(ctx: Context):
         # print('\n')
         counter += 1
     m_type = 0
-    with open('mkvdb.json', 'w', encoding="utf-8") as mkvdb:
+    with open('C:/Users/Shlok/bot_stuff/mkvdb.json', 'w', encoding="utf-8") as mkvdb:
         json.dump(mkvdct, mkvdb, indent=3)
 
 

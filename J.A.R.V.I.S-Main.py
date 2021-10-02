@@ -200,7 +200,6 @@ async def train(ctx):
             m_type = 1
 
         content = re.sub("<.*?>", '', content)
-        # content = re.sub(":.*?:", '', content)
         content = re.sub(r'[^\w\s]', '', content)
         if not content:
             m_type = 1
