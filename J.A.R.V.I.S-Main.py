@@ -168,8 +168,8 @@ async def msg_dts(ctx: commands.Context, message: discord.Message):
 
 @bot.command(name='train')
 async def train(ctx):
-    f = open('dump.txt', 'w', encoding="utf-8")
-    with open('mkvdb.json', 'r') as mkvdb:
+    f = open('C:/Users/Shlok/bot_stuff/dump.txt', 'w', encoding="utf-8")
+    with open('C:/Users/Shlok/bot_stuff/mkvdb.json', 'r') as mkvdb:
         mkvdct = json.load(mkvdb)
     idf = 821278528108494878
     channel = bot.get_channel(idf)
@@ -226,7 +226,7 @@ async def train(ctx):
 
 @bot.command(name='talk', hidden=True)
 async def talk(ctx, sword, cnt = 20):
-    mkvdb = open('mkvdb.json', 'r', encoding="utf-8")
+    mkvdb = open('C:/Users/Shlok/bot_stuff/mkvdb.json', 'r', encoding="utf-8")
     mkvdct = json.loads(mkvdb.read())
     mkvdb.close()
     count = 0

@@ -128,8 +128,8 @@ async def train(ctx: Context):
             rstring,
             ctx.message.content.strip().lower()) or ctx.channel.name == 'nsfw':
         return
-    f = open('dump.txt', 'a', encoding="utf-8")
-    with open('mkvdb.json', 'r') as mkvdb:
+    f = open('C:/Users/Shlok/bot_stuff/dump.txt', 'a', encoding="utf-8")
+    with open('C:/Users/Shlok/bot_stuff/mkvdb.json', 'r') as mkvdb:
         mkvdct = json.load(mkvdb)
     counter = 0
     m_type = 0
