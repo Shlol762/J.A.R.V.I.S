@@ -6,7 +6,7 @@ from . import hypesquad_emoji, command_log_and_err, set_timestamp,\
     CommandOnCooldown, MemberNotFound, UserNotFound, RoleNotFound, MessageNotFound,\
     ChannelNotFound, NoPrivateMessage, Message, MessageConverter, BadUnionArgument,\
     trim, forbidden_word, noswear, greetings, farewells, nou, urnotgod, timeto, Bot,\
-    ThreadNotFound, train
+    ThreadNotFound, train, CheckFailure, eastereggs
 
 severed_time = 0
 connect_time = 0
@@ -79,12 +79,6 @@ class Events(Cog):
         with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json", 'r') as f:
             vals: dict = json.load(f)
         if ctx.guild:
-            if bot.user.mentioned_in(message)\
-                    and not ctx.command and not\
-                    re.search(r"(@everyone|@here)", message.content.lower()) \
-                    and ctx.author != bot.user\
-                    and ctx.message.webhook_id not in webhooks\
-                    and not ctx.message.reference: await ctx.reply("What can I do for ya?")
             if channel.id in chnls and ctx.message.webhook_id not in webhooks:
                 text: str = f"{message.content}"
                 if message.reference:
@@ -112,7 +106,9 @@ class Events(Cog):
                         if options["noswear"]:
                             await noswear(ctx)
                         if options["convo"]:
-                            if options["greetings"]:
+                            if options['eastereggs']:
+                                await eastereggs(ctx)
+                            elif options["greetings"]:
                                 await greetings(ctx)
                             elif options['farewells']:
                                 await farewells(ctx)
@@ -120,6 +116,7 @@ class Events(Cog):
                                 await nou(ctx)
                             if options['iamgod']:
                                 await urnotgod(ctx)
+
                     message_text: str = re.sub(r"when(s|'s| is)?", "when", message.content.lower()).replace("my", author.mention).replace('your', bot.user.name).replace(
                         "birthday", "bday").replace("i", author.mention)
                     if re.search(r"\b(when (is )?(the next occurrance of |will)?((.)+ (next )?bday)| the day (.)+ was born)", message_text.lower()):
@@ -212,6 +209,8 @@ class Events(Cog):
         elif isinstance(error, ChannelNotFound):
             await command_log_and_err(ctx=ctx, err_code="Err_50Ob404",
                                       text=f"**`The Channel:`**` `*`'{error.argument}'`*` doesn't exist` I don't know what you're looking for.")
+        elif isinstance(error, CheckFailure):
+            pass
         elif isinstance(error, NoPrivateMessage):
             await command_log_and_err(ctx=ctx, status='Server Only', error=error)
         elif isinstance(error, ThreadNotFound):
