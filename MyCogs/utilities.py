@@ -22,7 +22,7 @@ class Utilities(Cog):
         self.name = 'Utilities(utils)'
 
     # 301
-    @command(name="Clear", aliases=['cl'],
+    @command(name="Clear", aliases=['cls'],
                       help='Deletes any number of messages below 20.',
                       usage="clear|cl (amt of msgs to be deleted)",
                       extras={'emoji': '♻', 'number': '301'})
@@ -158,7 +158,7 @@ class Utilities(Cog):
             if not member:
                 member = ctx.message.author
             mber = await bot.fetch_user(member.id)
-            pfp = member.avatar.url
+            pfp = member.avatar.url if member.avatar else member.default_avatar.url
             name = member.name
             disc = member.discriminator
             nick = f'"{member.display_name}"' if member.nick else 'No nickname...'
