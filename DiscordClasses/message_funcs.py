@@ -1,3 +1,4 @@
+import asyncio
 import json
 import re, random
 from discord import Forbidden, Invite, Message, Member
@@ -5,6 +6,7 @@ from discord.ext.commands import Context, Bot
 from typing import Optional, Union, Any
 
 
+webhooks = [861660340617084968, 861660166193807430, 861660711037960243, 861660517746999356, 880318607643521075]
 src_was_bot = "Message was by bot"
 x_was_not_in_msg = "No {0} in message"
 
@@ -119,6 +121,31 @@ async def urnotgod(ctx: Context) -> Union[Message, str]:
                                      ])
         return await ctx.reply(am_i_g_response)
     else: return x_was_not_in_msg.format("conceitedness")
+
+
+async def eastereggs(ctx: Context) -> Union[Message, str]:
+    message = ctx.message
+    response = random.choice([
+        'Ya rang?', "'Sup?", "Heyyy!",
+        f'At your service{" sir" if ctx.author.id == 613044385910620190 else ""}!',
+        'Ayoooo whassuppp?', 'You summoned me?', 'Hello there! (gen kenobi vibes amirite?)',
+        "https://tenor.com/view/%D0%BE%D0%B4%D0%B8%D0%BD%D0%B4%D0%BE%D0%B"
+        "C%D0%B0-kevin-mc-callister-home-alone-wave-hi-gif-15750897"
+    ])
+    if (ctx.bot.user.mentioned_in(message) and not ctx.command and not re.search(r"(@everyone|@here)", message.content.lower())
+        and ctx.author != ctx.bot.user and message.webhook_id not in webhooksa and not message.reference) or re.search(
+        r"\b((j\.?)+(a\.?)+((r\.?)+(v\.?)+((i\.?)+(s\.?)+)?|y))\b", message.content.lower()):
+        await ctx.reply(response)
+        try:
+            message = await ctx.bot.wait_for('message', timeout=5.0, check=lambda msg: msg.author == ctx.author)
+            final_response: Message = await message.reply(f"Um idk how to converse further lol!") if re.search(
+                r"\b(y(e[spa]?|up)?h?|d(uh+|oy+))\b", message.content.lower()) else None
+        except asyncio.TimeoutError: pass
+        return final_response
+
+
+    return x_was_not_in_msg.format("eastereggs")
+
 
 
 async def train(ctx: Context):

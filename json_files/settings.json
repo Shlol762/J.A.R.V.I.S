@@ -10,7 +10,8 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
    },
    "766356666273890314": {
       "ban": false,
@@ -23,7 +24,8 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
    },
    "819515740490825771": {
       "ban": true,
@@ -36,7 +38,8 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
    },
    "798065860555702323": {
       "ban": true,
@@ -49,7 +52,8 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
    },
    "749834154517987372": {
       "ban": true,
@@ -62,7 +66,8 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
    },
    "846021160197685288": {
       "ban": true,
@@ -75,7 +80,8 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
    },
    "841630950252478515": {
       "ban": false,
@@ -88,7 +94,8 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
    },
    "733604843650023475": {
       "ban": true,
@@ -101,7 +108,8 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
    },
    "724635997752524851": {
       "ban": true,
@@ -114,7 +122,8 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
    },
    "754337930931077210": {
       "ban": true,
@@ -127,7 +136,8 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
    },
    "790956470518153219": {
       "ban": true,
@@ -140,7 +150,8 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
    },
    "737221099506630687": {
       "ban": true,
@@ -153,7 +164,8 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
    },
    "754611203128557569": {
       "ban": true,
@@ -166,7 +178,8 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
    },
    "771371259204075581": {
       "ban": true,
@@ -179,7 +192,8 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
    },
    "804023618714730507": {
       "ban": true,
@@ -192,7 +206,8 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
    },
    "817299815900643348": {
       "ban": false,
@@ -205,7 +220,8 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
    },
    "833995745690517524": {
       "ban": false,
@@ -218,7 +234,8 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
    },
    "859801379996696576": {
       "ban": false,
@@ -231,7 +248,8 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
    },
    "817300015176744971": {
       "ban": true,
@@ -244,7 +262,8 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
    },
    "866875566279360582": {
       "ban": true,
@@ -257,7 +276,8 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
    },
    "892703988938592296": {
       "ban": true,
@@ -270,6 +290,21 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
+   },
+   "888638288238379058": {
+      "ban": true,
+      "kick": true,
+      "clear": true,
+      "message": true,
+      "msghai": true,
+      "noswear": true,
+      "convo": true,
+      "nou": true,
+      "greetings": true,
+      "farewells": true,
+      "iamgod": true,
+      "eastereggs": true
    }
 }

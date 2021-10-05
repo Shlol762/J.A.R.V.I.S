@@ -42,7 +42,8 @@ class Settings(Cog):
                         "nou": True,
                         "greetings": True,
                         "farewells": True,
-                        "iamgod": True
+                        "iamgod": True,
+                        "eastereggs": True
                     }
 
                     with open(json_file, "r") as f: bot_comm_config: dict = json.load(f)
@@ -152,7 +153,8 @@ class Settings(Cog):
                         "nou": True,
                         "greetings": True,
                         "farewells": True,
-                        "iamgod": True
+                        "iamgod": True,
+                        "eastereggs": True
                     }
 
                     with open(json_file, "r") as f: bot_comm_config: dict = json.load(f)
