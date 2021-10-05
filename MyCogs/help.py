@@ -3,10 +3,12 @@ from typing import Optional
 import discord
 from MyCogs import command_log_and_err, set_timestamp, Cog,\
     Context, command, Client, Colour, Embed, HTTPException,\
-    commands, Bot, comm_log_local
-#discord.
+    commands, Bot, comm_log_local, caplist
 
-NO_HELP_COGS = ("help", "events")
+#discord.
+caps = caplist
+
+NO_HELP_COGS = ["help", "events"]
 
 
 class Help(Cog):
@@ -19,6 +21,11 @@ class Help(Cog):
              usage="help|hp (command|command alias|category|category alias)")
     @comm_log_local
     async def help(self, ctx: Context, *, arg: Optional[str]):
+        global caps
+        global NO_HELP_COGS
+        if str(ctx.guild.id) not in caplist['servers']:
+            NO_HELP_COGS.append('captains(cs)')
+        else: NO_HELP_COGS = ["help", "events"]
         bot: Bot = self.bot
         icon = ctx.author.avatar.url
         help_col = Colour.random()
