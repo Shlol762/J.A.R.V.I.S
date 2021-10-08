@@ -1,3 +1,4 @@
+import asyncio
 import random, datetime, discord, json, re
 from . import hypesquad_emoji, command_log_and_err, set_timestamp,\
     VERSION, loop, Cog, Context, command, Client, Guild, Role, TextChannel,\
@@ -14,6 +15,7 @@ chnls = [833995745690517524, 817299815900643348, 817300015176744971, 85980137999
 webhooks = [861660340617084968, 861660166193807430, 861660711037960243, 861660517746999356, 880318607643521075]
 prev_messages = []
 members = {}
+prev_topic = ''
 
 class Events(Cog):
     def __init__(self, bot: Bot):
@@ -22,7 +24,7 @@ class Events(Cog):
 
     @loop(minutes=5)
     async def birthday(self):
-        global members
+        global members, prev_topic
         guild: Guild = await self.bot.fetch_guild(766356666273890314)
         birthday_role: Role = guild.get_role(874909501617238048)
         general: TextChannel = self.bot.get_channel(821278528108494878)
@@ -42,12 +44,24 @@ class Events(Cog):
             else:
                 try: members.pop(bday_persona)
                 except (ValueError, KeyError): pass
+        prev_topic = general.topic
         topic = ''
         for bday_persona in members:
             if birthday_role not in bday_persona.roles:
                 await bday_persona.add_roles(birthday_role)
             topic += f'Happy Birthday {bday_persona.name}! '
-        await general.edit(topic=topic) if birthday_role not in bday_persona.roles else None
+        await general.edit(topic=topic if len(members) != 0 else prev_topic) if birthday_role not in bday_persona.roles else None
+
+    @loop(minutes=5)
+    async def timer(self):
+        timchnl: TextChannel = await self.bot.fetch_channel(821278528108494878)
+        tstr = timeto("12:15 8/10/21")
+        print(tstr)
+        try: time_ = re.search(r"(([0-9]+ days? )?([0-9]+ hrs? )?[0-9]+ mins?)", tstr).group(0)
+        except AttributeError: time_ = timchnl.topic
+        await asyncio.sleep(10)
+        time_ = "T-Minus " + time_ + " and counting"
+        await timchnl.edit(topic=time_)
 
     @Cog.listener()
     async def on_ready(self):
