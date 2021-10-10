@@ -48,11 +48,11 @@ async def noswear(ctx: Context) -> Union[Message, str]:
     else: return x_was_not_in_msg.format("swear words")
 
 
-async def greetings(ctx: Context) -> Union[Message, str]:
+async def greetings(ctx: Context, random_ = True) -> Union[Message, str]:
     """Checks for greetings and responds randomly"""
     author: Member = ctx.author
     bot: Bot = ctx.bot
-    response = random.choice([True, False, True, False, False, True])
+    response = random.choice([True, False, True, False, False, True]) if random_ else True
     if re.search(r'\b(h(i)+|he(y)+|(wh(a)+(s)*)*s(u)+(p)+|(he[nl]l(o)+)(w)*)\b',
                  ctx.message.content.strip().lower()):
         if author.name != bot.user.name:
@@ -133,15 +133,14 @@ async def eastereggs(ctx: Context) -> Union[Message, str]:
         "C%D0%B0-kevin-mc-callister-home-alone-wave-hi-gif-15750897"
     ])
     if (ctx.bot.user.mentioned_in(message) and not ctx.command and not re.search(r"(@everyone|@here)", message.content.lower())
-        and ctx.author != ctx.bot.user and message.webhook_id not in webhooksa and not message.reference) or re.search(
+        and ctx.author != ctx.bot.user and message.webhook_id not in webhooks and not message.reference) or re.search(
         r"\b((j\.?)+(a\.?)+((r\.?)+(v\.?)+((i\.?)+(s\.?)+)?|y))\b", message.content.lower()):
         await ctx.reply(response)
         try:
             message = await ctx.bot.wait_for('message', timeout=5.0, check=lambda msg: msg.author == ctx.author)
-            final_response: Message = await message.reply(f"Um idk how to converse further lol!") if re.search(
-                r"\b(y(e[spa]?|up)?h?|d(uh+|oy+))\b", message.content.lower()) else None
+            final_response: Message = await greetings(await ctx.bot.get_context(message), False) if not re.search(
+                r"\b(y[eu][sap]?h?)\b", message.content) else await message.reply("Um I don't know how to converse any further :D")
         except asyncio.TimeoutError: pass
-        return final_response
 
 
     return x_was_not_in_msg.format("eastereggs")
