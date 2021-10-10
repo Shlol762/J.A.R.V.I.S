@@ -224,26 +224,30 @@ async def train(ctx):
 
 
 @bot.command(name='talk', hidden=True)
-async def talk(ctx, sword, cnt = 20):
-    mkvdb = open('C:/Users/Shlok/bot_stuff/mkvdb.json', 'r', encoding="utf-8")
-    mkvdct = json.loads(mkvdb.read())
-    mkvdb.close()
-    count = 0
-    sword = sword.lower()
-    if sword not in mkvdct.keys():
-        await ctx.send("Word not in database")
-        return
-    str = sword
-    nxt = sword
-    while count < cnt:
-        nxt = random.choice(mkvdct[nxt])
-        str += (' ' + nxt)
-        if nxt not in mkvdct.keys():
-            str += '.'
-            nxt = random.choice(list(mkvdct.keys()))
+async def talk(ctx: commands.Context, *, sword: str = None):
+    if sword:
+        cnt = 20
+        if sword.split()[-1].isdigit():
+            cnt = int(sword.split()[-1])
+        mkvdb = open('C:/Users/Shlok/bot_stuff/mkvdb.json', 'r', encoding="utf-8")
+        mkvdct = json.loads(mkvdb.read())
+        mkvdb.close()
+        count = 0
+        sword = sword.lower()
+        if sword not in mkvdct.keys():
+            await ctx.send("Word not in database")
+            return
+        str = sword
+        nxt = sword
+        while count < cnt:
+            nxt = random.choice(mkvdct[nxt])
             str += (' ' + nxt)
-        count += 1
-    await ctx.send(str)
+            if nxt not in mkvdct.keys():
+                str += '.'
+                nxt = random.choice(list(mkvdct.keys()))
+                str += (' ' + nxt)
+            count += 1
+        await ctx.send(str)
 
 
 try: bot.run(BOT_TOKEN)
