@@ -294,18 +294,18 @@
       "eastereggs": true
    },
    "888638288238379058": {
-      "ban": true,
-      "kick": true,
+      "ban": false,
+      "kick": false,
       "clear": true,
       "message": true,
-      "msghai": true,
+      "msghai": false,
       "noswear": true,
       "convo": true,
       "nou": true,
       "greetings": true,
       "farewells": true,
       "iamgod": true,
-      "eastereggs": true
+      "eastereggs": false
    },
    "896835547237060700": {
       "ban": true,
@@ -318,6 +318,7 @@
       "nou": true,
       "greetings": true,
       "farewells": true,
-      "iamgod": true
+      "iamgod": true,
+      "eastereggs": true
    }
 }
