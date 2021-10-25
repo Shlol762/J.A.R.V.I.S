@@ -243,7 +243,5 @@ f"""
         await ctx.reply(embed=await set_timestamp(embed, random.choice(("Credit: Moiz Delhve", "", "", ""))))
 
 
-
-
 def setup(bot: Bot):
     bot.add_cog(Misc(bot))

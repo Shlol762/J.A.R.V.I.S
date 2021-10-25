@@ -237,17 +237,17 @@ async def talk(ctx: commands.Context, *, sword: str = None):
         if sword not in mkvdct.keys():
             await ctx.send("Word not in database")
             return
-        str = sword
+        stri = sword
         nxt = sword
         while count < cnt:
             nxt = random.choice(mkvdct[nxt])
-            str += (' ' + nxt)
+            stri += (' ' + nxt)
             if nxt not in mkvdct.keys():
-                str += '.'
+                stri += '.'
                 nxt = random.choice(list(mkvdct.keys()))
-                str += (' ' + nxt)
+                stri += (' ' + nxt)
             count += 1
-        await ctx.send(str)
+        await ctx.send(stri)
 
 
 try: bot.run(BOT_TOKEN)
