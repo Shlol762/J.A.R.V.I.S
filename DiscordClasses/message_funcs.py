@@ -134,7 +134,8 @@ async def eastereggs(ctx: Context) -> Union[Message, str]:
     ])
     if (ctx.bot.user.mentioned_in(message) and not ctx.command and not re.search(r"(@everyone|@here)", message.content.lower())
         and ctx.author != ctx.bot.user and message.webhook_id not in webhooks and not message.reference) or re.search(
-        r"\b((j\.?)+(a\.?)+((r\.?)+(v\.?)+((i\.?)+(s\.?)+)?|y))\b", message.content.lower()):
+        r"\b(^((j\.?)+(a\.?)+((r\.?)+(v\.?)+((i\.?)+(s\.?)+)?|y))|"
+        r"((j\.?)+(a\.?)+((r\.?)+(v\.?)+((i\.?)+(s\.?)+)?|y))$)\b", message.content.lower()):
         await ctx.reply(response)
         try:
             message = await ctx.bot.wait_for('message', timeout=5.0, check=lambda msg: msg.author == ctx.author)
