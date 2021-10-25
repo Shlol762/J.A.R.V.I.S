@@ -108,6 +108,7 @@ class Events(Cog):
                 await ch5.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar.url) if channel.id != chnls[4] else None
             else:
                 try:
+                    if bot.user == author: return
                     channel_id: str = str(channel.id)
                     guild_id: str = str(ctx.guild.id)
                     channel_config = vals.get(channel_id)
