@@ -205,4 +205,21 @@ async def train(ctx: Context):
         json.dump(mkvdct, mkvdb, indent=3)
 
 
+async def who_pinged(ctx: Context):
+    if ctx.message.mention_everyone:
+        ch_id = str(ctx.channel.id)
+        au_id = str(ctx.author.id)
+        fp = "C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/pings.json"
+        with open(fp, "r") as f:
+            pings: dict = json.load(f)
+        if not pings.get(ch_id):
+            pings[ch_id] = []
+        if au_id in pings[ch_id]:
+            pings[ch_id].remove(au_id)
+        pings[ch_id].append(au_id)
+        if len(pings[ch_id]) >= 10:
+            pings[ch_id].pop(0)
+        with open(fp, 'w') as f:
+            json.dump(pings, f, indent=3)
+
 

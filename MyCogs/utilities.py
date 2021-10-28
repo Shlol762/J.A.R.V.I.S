@@ -473,7 +473,7 @@ For Example:- 1)Err_10124 means command '1' under category
 
     @command(name="Users Yesterday", aliases=['usersyesterday', 'uy'],
              extras={'emoji': '💬', 'number': '315', 'contributer': 'Siddharth S'}, help="Gets the number of messages a user sent yesterday.",
-             usage="$usersyesterday|uy <channel/thread>")
+             usage="$usersyesterday|uy (channel/thread)")
     @comm_log_local
     async def _uy(self, ctx: Context, channel: Optional[Union[Thread, TextChannel]]):
         async with ctx.typing():
@@ -496,6 +496,22 @@ For Example:- 1)Err_10124 means command '1' under category
                 embed.description += f'{member:<30}: {number_of_msgs:^5}\n'
             await command_log_and_err(ctx, 'Success')
             await ctx.reply(embed=embed)
+
+    @command(name='Who Pinged', aliases=['whopinged', 'wp'],
+             extras={'emoji': '🔔', 'number': '316'}, help="Checks who the last person that pinged @ everyone or @ here is.",
+             usage="$whopinged|wp (channel/thread)")
+    @comm_log_local
+    async def whopinged_(self, ctx: Context, channel: Optional[Union[Thread, TextChannel]]):
+        ch_id = str((channel or ctx.channel).id)
+        embed = None
+        with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/pings.json", 'r') as f:
+            pings = json.load(f)
+        if pings.get(ch_id):
+            embed = Embed(title=f'Last {len(pings[ch_id])} {"people" if len(pings[ch_id]) > 1 else "person"} who pinged in `{(channel or ctx.channel).name}`',
+                          description="\n".join([f"• <@{_id}>" for _id in pings[ch_id][::-1]]), colour=Colour.random()).set_footer(
+                text="Top most recent."
+            )
+        await ctx.reply(f'No one pinged in <#{ch_id}>' if not pings.get(ch_id) else None, embed=embed)
 
 
 def setup(bot: Bot):
