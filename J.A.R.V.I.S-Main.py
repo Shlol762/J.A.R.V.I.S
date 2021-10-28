@@ -229,6 +229,7 @@ async def talk(ctx: commands.Context, *, sword: str = None):
         cnt = 20
         if sword.split()[-1].isdigit():
             cnt = int(sword.split()[-1])
+            sword = ''.join(sword.split()[:-1])
         mkvdb = open('C:/Users/Shlok/bot_stuff/mkvdb.json', 'r', encoding="utf-8")
         mkvdct = json.loads(mkvdb.read())
         mkvdb.close()
