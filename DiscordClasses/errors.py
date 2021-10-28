@@ -7,3 +7,7 @@ class ThreadNotSpecified(BadArgument):
 
 class MissingArgument(Exception):
     pass
+
+
+class ChannelArgMissing(BadArgument):
+    pass

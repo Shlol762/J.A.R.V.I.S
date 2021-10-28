@@ -1,3 +1,4 @@
+import re
 from typing import Union, Optional
 from MyCogs import calculate_position, permission_confirm, \
     role_member_conv, set_timestamp, command_log_and_err, \
@@ -5,7 +6,8 @@ from MyCogs import calculate_position, permission_confirm, \
     RoleConverter, MemberConverter, BucketType, ThreadNotFound,\
     VoiceChannel, TextChannel, Embed, Colour, VoiceRegion,\
     CategoryChannel, Member, Forbidden, HTTPException, Role,\
-    timezone, GuildChannel, Message, Bot, ThreadConfirmation, Thread, comm_log_local
+    timezone, GuildChannel, Message, Bot, ThreadConfirmation, Thread, comm_log_local,\
+    group, SelectChannelCategoryView as Sccv
 
 
 class Cc(Cog):
@@ -15,45 +17,45 @@ class Cc(Cog):
         self.description = "Controls functions over text, voice and category channels."
 
     # 501
-    @command(name="Create Channel or Category", aliases=['ccc', 'createcc'], extras={'emoji': '🆕', 'number': '501'},
-                      help="Creates a new text channel, voice channel or category. Note that the cateogry arg will not be required if you are creating a category.",
-                      usage='createcc|ccc <name> <text/voice/category> (cateogry new channel will be in)')
+    @group(name="Create Channel or Category", aliases=['ccc', 'createcc'], extras={'emoji': '🆕', 'number': '501'},
+            help="Creates a new text channel, voice channel or category. Note that the cateogry arg will not be required if you are creating a category.",
+            usage='createcc|ccc <text/voice/category> <name> (cateogry new channel will be in)',
+          invoke_without_command=True)
     @cooldown(1, 15, BucketType.guild)
     @guild_only()
     @comm_log_local
-    async def createchnlctgry(self, ctx: Context, name: str = None, ch_tp: str = None, *,
-                              category: Optional[Union[str, CategoryChannel]] = None):
-        author: Member = ctx.message.author
-        ctgry: str = 'None'
-        if category:
-            channels: list[CategoryChannel] = ctx.guild.categories
-            for channel in channels:
-                if channel.name.lower() == category.lower(): ctgry: CategoryChannel = channel
-        if name:
-            if ch_tp:
-                try:
-                    if ch_tp.lower() == 'text':
-                        type: str = 'text channel'
-                        chnl: TextChannel = await ctx.guild.create_text_channel(name=name, category=ctgry)
-                    elif ch_tp.lower() == 'voice':
-                        type: str = 'voice channel'
-                        chnl: VoiceChannel = await ctx.guild.create_voice_channel(name=name, category=ctgry)
-                    elif ch_tp.lower() == 'category':
-                        type: str = 'category'
-                        chnl: CategoryChannel = await ctx.guild.create_category(name=name)
-                    embed = Embed(title=f"Created a new {type}", colour=Colour.random(),
-                                          description=f"{chnl.mention}").add_field(name='Name: ',
-                                                                                   value=f"`{chnl.name}`").add_field(
-                        name='ID: ', value=f"`{chnl.id}`").add_field(name='Category: ',
-                                                                     value=f"`{ctgry.name if ctgry != 'None' else ctgry}`")
-                    await command_log_and_err(ctx, status='success', created=chnl)
-                    await ctx.reply(embed=await set_timestamp(embed, ""))
-                except Forbidden: await command_log_and_err(ctx, err_code="Err_50124",
-                                              text=f"Can't do that {author.mention}, sorry I'm missing permissions")
-            else: await command_log_and_err(ctx, err_code="Err_50148",
-                                          text="Give channel type please.")
-        else: await command_log_and_err(ctx, err_code="Err_50148",
-                                      text='Give name for new channel please...')
+    async def createchnlctgry(self, ctx: Context):
+        await ctx.reply("Tell me what kind of channel you wanna make: text/voice/category")
+
+    @createchnlctgry.command()
+    async def text(self, ctx: Context, *, name: str = None):
+        if not name:
+            return await ctx.reply("No name given to new channel.")
+        name = re.sub(r"[+_!@#$%^&*();',.:\"<>?`~=\\|\[\]{}]", '', name)
+        name = name.replace(' ', '-')
+        channel = await ctx.guild.create_text_channel(name)
+        view = Sccv(ctx=ctx, channel=channel)
+        view.message=await ctx.reply("Pick the channel's category.", view=view)
+
+    @createchnlctgry.command()
+    async def voice(self, ctx: Context, *, name: str = None):
+        if not name:
+            return await ctx.reply("No name given to new channel.")
+        name = re.sub(r"[+_!@#$%^&*();',.:\"<>?`~=\\|\[\]{}]", '', name)
+        name = name.replace(' ', '-')
+        channel = await ctx.guild.create_voice_channel(name)
+        view = Sccv(ctx=ctx, channel=channel)
+        view.message = await ctx.reply("Pick the channel's category.", view=view)
+
+    @createchnlctgry.command()
+    async def category(self, ctx: Context, *, name: str = None):
+        if not name:
+            return await ctx.reply("No name given to new channel.")
+        name = re.sub(r"[+_!@#$%^&*();',.:\"<>?`~=\\|\[\]{}]", '', name)
+        name = name.replace(' ', '-')
+        channel = await ctx.guild.create_category(name)
+        await ctx.reply("Pick the channel's category.")
+
 
     # 502
     @command(name="Delete Channel or Cateogry", aliases=['dcc', 'delcc'],
