@@ -7,7 +7,7 @@ from . import hypesquad_emoji, command_log_and_err, set_timestamp,\
     CommandOnCooldown, MemberNotFound, UserNotFound, RoleNotFound, MessageNotFound,\
     ChannelNotFound, NoPrivateMessage, Message, MessageConverter, BadUnionArgument,\
     trim, forbidden_word, noswear, greetings, farewells, nou, urnotgod, timeto, Bot,\
-    ThreadNotFound, train, CheckFailure, eastereggs
+    ThreadNotFound, train, CheckFailure, eastereggs, who_pinged
 
 severed_time = 0
 connect_time = 0
@@ -93,6 +93,7 @@ class Events(Cog):
         with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json", 'r') as f:
             vals: dict = json.load(f)
         if ctx.guild:
+            await who_pinged(ctx)
             if channel.id in chnls and ctx.message.webhook_id not in webhooks:
                 text: str = f"{message.content}"
                 if message.reference:
