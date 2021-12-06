@@ -14,6 +14,8 @@ class CategorySelect(Select):
         self.channel = channel
 
     async def callback(self, interaction: Interaction):
+        if interaction.user != self.view.ctx.author:
+            return
         chnl = self.channel
         if self.values[0] != 'None':
             ctgry: CategoryChannel = await chnl.guild.fetch_channel(int(self.values[0]))
@@ -28,3 +30,11 @@ class CategorySelect(Select):
                                                     ephemeral=True)
         self.disabled = True
         await self.view.message.edit(view=self.view)
+
+
+class HelpCategorySelect(Select):
+    def __init__(self, options: list[SelectOption]):
+        super().__init__(placeholder="Choose a category.", options=options)
+
+    async def callback(self, interaction: Interaction):
+        await self.message.edit(embed=self.view.pages[self.values[0].lower()])

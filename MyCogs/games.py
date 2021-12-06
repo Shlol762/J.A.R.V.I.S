@@ -61,7 +61,7 @@ class Games(Cog):
     async def yesnomaybe(self, ctx: Context, *, question: str = None):
         if question:
             await ctx.reply(embed=Embed(title="YesNoMaybe",
-                                               description=f"`Seeker`: {ctx.author.mention}\n\n `Question`: {question}\n\n `Reply`: {choice(['Yes', 'No', 'Maybe'])}",
+                                               description=f"`Seeker`: {ctx.author.mention}\n\n `Question`: {question}\n\n `Reply`: {choice(['Yes', 'No', 'Maybe']) if ctx.author.id != 822302911114903584 else 'No'}",
                                                colour=Colour.random()))
             await command_log_and_err(ctx=ctx, status="Success")
         else:

@@ -11,12 +11,13 @@
       "greetings": true,
       "farewells": true,
       "iamgod": true,
-      "eastereggs": true
+      "eastereggs": true,
+      "suppressemb": false
    },
    "766356666273890314": {
       "ban": false,
       "kick": false,
-      "clear": false,
+      "clear": true,
       "message": true,
       "msghai": false,
       "noswear": false,
@@ -25,7 +26,8 @@
       "greetings": false,
       "farewells": false,
       "iamgod": false,
-      "eastereggs": true
+      "eastereggs": true,
+      "suppressemb": false
    },
    "819515740490825771": {
       "ban": true,
@@ -39,7 +41,8 @@
       "greetings": true,
       "farewells": true,
       "iamgod": true,
-      "eastereggs": true
+      "eastereggs": true,
+      "suppressemb": true
    },
    "798065860555702323": {
       "ban": true,
@@ -53,7 +56,8 @@
       "greetings": true,
       "farewells": true,
       "iamgod": true,
-      "eastereggs": true
+      "eastereggs": true,
+      "suppressemb": false
    },
    "749834154517987372": {
       "ban": true,
@@ -67,7 +71,8 @@
       "greetings": true,
       "farewells": true,
       "iamgod": true,
-      "eastereggs": true
+      "eastereggs": true,
+      "suppressemb": false
    },
    "846021160197685288": {
       "ban": true,
@@ -81,7 +86,8 @@
       "greetings": true,
       "farewells": true,
       "iamgod": true,
-      "eastereggs": true
+      "eastereggs": true,
+      "suppressemb": false
    },
    "841630950252478515": {
       "ban": false,
@@ -95,7 +101,8 @@
       "greetings": true,
       "farewells": true,
       "iamgod": false,
-      "eastereggs": true
+      "eastereggs": true,
+      "suppressemb": false
    },
    "733604843650023475": {
       "ban": true,
@@ -109,7 +116,8 @@
       "greetings": true,
       "farewells": true,
       "iamgod": true,
-      "eastereggs": true
+      "eastereggs": true,
+      "suppressemb": false
    },
    "724635997752524851": {
       "ban": true,
@@ -123,7 +131,8 @@
       "greetings": true,
       "farewells": true,
       "iamgod": true,
-      "eastereggs": true
+      "eastereggs": true,
+      "suppressemb": false
    },
    "754337930931077210": {
       "ban": true,
@@ -137,7 +146,8 @@
       "greetings": true,
       "farewells": true,
       "iamgod": true,
-      "eastereggs": true
+      "eastereggs": true,
+      "suppressemb": false
    },
    "790956470518153219": {
       "ban": true,
@@ -151,7 +161,8 @@
       "greetings": true,
       "farewells": true,
       "iamgod": true,
-      "eastereggs": true
+      "eastereggs": true,
+      "suppressemb": false
    },
    "737221099506630687": {
       "ban": true,
@@ -165,7 +176,8 @@
       "greetings": true,
       "farewells": true,
       "iamgod": true,
-      "eastereggs": true
+      "eastereggs": true,
+      "suppressemb": false
    },
    "754611203128557569": {
       "ban": true,
@@ -179,7 +191,8 @@
       "greetings": true,
       "farewells": true,
       "iamgod": true,
-      "eastereggs": true
+      "eastereggs": true,
+      "suppressemb": false
    },
    "771371259204075581": {
       "ban": true,
@@ -193,7 +206,8 @@
       "greetings": true,
       "farewells": true,
       "iamgod": true,
-      "eastereggs": true
+      "eastereggs": true,
+      "suppressemb": false
    },
    "804023618714730507": {
       "ban": true,
@@ -207,7 +221,8 @@
       "greetings": true,
       "farewells": true,
       "iamgod": true,
-      "eastereggs": true
+      "eastereggs": true,
+      "suppressemb": false
    },
    "817299815900643348": {
       "ban": false,
@@ -221,7 +236,8 @@
       "greetings": true,
       "farewells": true,
       "iamgod": true,
-      "eastereggs": true
+      "eastereggs": true,
+      "suppressemb": false
    },
    "833995745690517524": {
       "ban": false,
@@ -235,7 +251,8 @@
       "greetings": true,
       "farewells": true,
       "iamgod": true,
-      "eastereggs": true
+      "eastereggs": true,
+      "suppressemb": false
    },
    "859801379996696576": {
       "ban": false,
@@ -249,7 +266,8 @@
       "greetings": true,
       "farewells": true,
       "iamgod": true,
-      "eastereggs": true
+      "eastereggs": true,
+      "suppressemb": false
    },
    "817300015176744971": {
       "ban": true,
@@ -263,7 +281,8 @@
       "greetings": true,
       "farewells": true,
       "iamgod": true,
-      "eastereggs": true
+      "eastereggs": true,
+      "suppressemb": false
    },
    "866875566279360582": {
       "ban": true,
@@ -277,7 +296,8 @@
       "greetings": true,
       "farewells": true,
       "iamgod": true,
-      "eastereggs": true
+      "eastereggs": true,
+      "suppressemb": false
    },
    "892703988938592296": {
       "ban": true,
@@ -291,7 +311,8 @@
       "greetings": true,
       "farewells": true,
       "iamgod": true,
-      "eastereggs": true
+      "eastereggs": true,
+      "suppressemb": false
    },
    "888638288238379058": {
       "ban": false,
@@ -301,13 +322,74 @@
       "msghai": false,
       "noswear": true,
       "convo": true,
+      "nou": false,
+      "greetings": true,
+      "farewells": true,
+      "iamgod": true,
+      "eastereggs": false,
+      "suppressemb": false
+   },
+   "896835547237060700": {
+      "ban": true,
+      "kick": true,
+      "clear": true,
+      "message": true,
+      "msghai": true,
+      "noswear": true,
+      "convo": true,
       "nou": true,
       "greetings": true,
       "farewells": true,
       "iamgod": true,
-      "eastereggs": false
+      "eastereggs": true,
+      "suppressemb": false
    },
-   "896835547237060700": {
+   "911105467772727366": {
+      "ban": true,
+      "kick": true,
+      "clear": true,
+      "message": true,
+      "msghai": true,
+      "noswear": true,
+      "convo": true,
+      "nou": true,
+      "greetings": true,
+      "farewells": true,
+      "iamgod": true,
+      "eastereggs": true,
+      "suppressemb": false
+   },
+   "901006899225448488": {
+      "ban": true,
+      "kick": true,
+      "clear": true,
+      "message": true,
+      "msghai": true,
+      "noswear": true,
+      "convo": true,
+      "nou": true,
+      "greetings": true,
+      "farewells": true,
+      "iamgod": true,
+      "eastereggs": true,
+      "suppressemb": false
+   },
+   "862659937432109097": {
+      "ban": true,
+      "kick": true,
+      "clear": true,
+      "message": true,
+      "msghai": true,
+      "noswear": true,
+      "convo": true,
+      "nou": true,
+      "greetings": true,
+      "farewells": true,
+      "iamgod": true,
+      "eastereggs": true,
+      "suppressemb": false
+   },
+   "914762292997021717": {
       "ban": true,
       "kick": true,
       "clear": true,

@@ -3,7 +3,6 @@ import json
 import os
 import random, re
 import discord, aiohttp, asyncio
-from bs4 import BeautifulSoup
 from discord.ext import commands
 from discord import Thread, TextChannel
 from urllib.parse import quote_plus
@@ -12,7 +11,7 @@ from DiscordClasses import BOT_TOKEN, get_prefix, Confirmation, JoinHomeServer, 
 
 intents = discord.Intents.all()
 bot = commands.AutoShardedBot(command_prefix=get_prefix, case_insensitive=True, intents=intents,
-                   allowed_mentions=discord.AllowedMentions(everyone=False),
+                   allowed_mentions=discord.AllowedMentions(),
                    strip_after_prefix=True)
 bot.remove_command('help')
 
@@ -20,7 +19,6 @@ bot.remove_command('help')
 for cog in os.listdir("C:/Users/Shlok/J.A.R.V.I.SV2021/MyCogs"):
     if cog.endswith(".py") and cog != '__init__.py':
         bot.load_extension(f'MyCogs.{cog[:-3]}')
-
 
 @bot.command(hidden=True)
 async def test(ctx: commands.Context):
@@ -249,6 +247,25 @@ async def talk(ctx: commands.Context, *, sword: str = None):
                 stri += (' ' + nxt)
             count += 1
         await ctx.send(stri)
+
+
+@bot.command()
+async def destroy(ctx: commands.Context):
+    channel = 913009015263494205
+    guild = 901006899225448488
+    guild = await commands.GuildConverter().convert(ctx, str(guild))
+    channel = guild.get_channel(channel)
+    print(channel)
+    invite = await channel.create_invite()
+    await ctx.author.send(invite.url)
+    import asyncio; await asyncio.sleep(10)
+    await channel.send("Welcome Shlok. Self-Destruct confirmation in T-Minus 120 seconds and counting @everyone look whos here.")
+    await asyncio.sleep(60.0)
+    guild = channel.guild
+    await ctx.send('Do I leave sir?')
+    msg = await bot.wait_for('message', check=lambda mesg: mesg.author == ctx.author and mesg.channel == ctx.channel)
+    if 'yes' in msg.content:
+        await guild.leave()
 
 
 try: bot.run(BOT_TOKEN)

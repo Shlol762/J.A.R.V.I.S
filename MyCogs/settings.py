@@ -43,7 +43,8 @@ class Settings(Cog):
                         "greetings": True,
                         "farewells": True,
                         "iamgod": True,
-                        "eastereggs": True
+                        "eastereggs": True,
+                        "suppressemb": False
                     }
 
                     with open(json_file, "r") as f: bot_comm_config: dict = json.load(f)
@@ -72,7 +73,9 @@ class Settings(Cog):
                             "nou": True,
                             "greetings": True,
                             "farewells": True,
-                            "iamgod": True
+                            "iamgod": True,
+                            "eastereggs": True,
+                            "suppressemb": False
                         }
                         channel_config: Union[dict, None] = bot_comm_config.get(channel_id)
                         if channel_config:
@@ -104,7 +107,9 @@ class Settings(Cog):
                             "nou": True,
                             "greetings": True,
                             "farewells": True,
-                            "iamgod": True
+                            "iamgod": True,
+                            "eastereggs": True,
+                            "suppressemb": False
                         }
                         guild_config: Union[dict, None] = bot_comm_config.get(guild_id)
                         if guild_config:
@@ -154,7 +159,8 @@ class Settings(Cog):
                         "greetings": True,
                         "farewells": True,
                         "iamgod": True,
-                        "eastereggs": True
+                        "eastereggs": True,
+                        "suppressemb": False
                     }
 
                     with open(json_file, "r") as f: bot_comm_config: dict = json.load(f)
@@ -181,7 +187,9 @@ class Settings(Cog):
                             "nou": True,
                             "greetings": True,
                             "farewells": True,
-                            "iamgod": True
+                            "iamgod": True,
+                            "eastereggs": True,
+                            "suppressemb": False
                         }
                         channel_config: Union[dict, None] = bot_comm_config.get(channel_id)
                         if channel_config:
@@ -213,7 +221,9 @@ class Settings(Cog):
                             "nou": True,
                             "greetings": True,
                             "farewells": True,
-                            "iamgod": True
+                            "iamgod": True,
+                            "eastereggs": True,
+                            "suppressemb": False
                         }
                         guild_config: Union[dict, None] = bot_comm_config.get(guild_id)
                         if guild_config:

@@ -247,7 +247,7 @@ def comm_log_local(command_: Callable):
     @wraps(command_)
     async def wrapper(*args, **kwargs):
         ctx = [arg for arg in args if isinstance(arg, Context)][0]
-        with open("C:/Users/Shlok/bot_stuff/command_logs.txt", "r") as f:
+        with open("C:/Users/Shlok/bot_stuff/safe_docs/command_logs.txt", "r") as f:
             lines: list[str] = f.read().split("\n")
         sl_no = "{0:0>6}".format(int(re.search(r'[0-9]{6}', lines[1]).group()) + 1)
         header = re.sub("[0-9]{6}", sl_no, lines[1])
@@ -267,7 +267,7 @@ def comm_log_local(command_: Callable):
             f"|Channel: {ctx.channel.id:<53}Message ID: {ctx.message.id:<45}|",
             f"|Message Link: {ctx.message.jump_url:<105}|"
             ])
-        f = open("C:/Users/Shlok/bot_stuff/command_logs.txt", "w")
+        f = open("C:/Users/Shlok/bot_stuff/safe_docs/command_logs.txt", "w")
         f.write("\n".join(lines))
         f.close()
 

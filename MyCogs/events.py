@@ -1,5 +1,7 @@
 import asyncio
 import random, datetime, discord, json, re
+import sys
+
 from . import hypesquad_emoji, command_log_and_err, set_timestamp,\
     VERSION, loop, Cog, Context, command, Client, Guild, Role, TextChannel,\
     Member, NotFound, Status, Activity, ActivityType, Embed, Colour, Invite,\
@@ -7,13 +9,14 @@ from . import hypesquad_emoji, command_log_and_err, set_timestamp,\
     CommandOnCooldown, MemberNotFound, UserNotFound, RoleNotFound, MessageNotFound,\
     ChannelNotFound, NoPrivateMessage, Message, MessageConverter, BadUnionArgument,\
     trim, forbidden_word, noswear, greetings, farewells, nou, urnotgod, timeto, Bot,\
-    ThreadNotFound, train, CheckFailure, eastereggs, who_pinged
+    ThreadNotFound, train, CheckFailure, eastereggs, who_pinged, ErrorView
 
 severed_time = 0
 connect_time = 0
 chnls = [833995745690517524, 817299815900643348, 817300015176744971, 859801379996696576, 880314505740046336]
 webhooks = [861660340617084968, 861660166193807430, 861660711037960243, 861660517746999356, 880318607643521075]
 prev_messages = []
+black_list = [914762292997021717, 901006899225448488]
 members = {}
 prev_topic = ''
 
@@ -87,6 +90,8 @@ class Events(Cog):
         global chnls
         global prev_messages
         ctx: Context = await self.bot.get_context(message)
+        if ctx.guild.id in black_list:
+            await ctx.guild.leave()
         channel: TextChannel = ctx.channel
         author: Member = ctx.author
         bot: Bot = ctx.bot
@@ -116,6 +121,8 @@ class Events(Cog):
                     server_config = vals.get(guild_id)
                     if channel_config: options = channel_config
                     else: options = server_config
+                    if options["suppressemb"]:
+                        await message.edit(suppress=True)
                     if options["message"]:
                         if options["msghai"]:
                             await forbidden_word(ctx)
@@ -204,10 +211,10 @@ class Events(Cog):
                                       text=f"Command not found {ctx.author.mention}",
                                       invalid_comname=error.args[0][9:-14])
         elif isinstance(error, CommandOnCooldown):
-            with open("C:/Users/Shlok/bot_stuff/command_logs.txt", "r") as f:
+            with open("C:/Users/Shlok/bot_stuff/safe_docs/command_logs.txt", "r") as f:
                 lines: list[str] = f.readlines()
             if ctx.author.id == 613044385910620190: await ctx.reinvoke()
-            elif str(ctx.command.extras.get('number')) in lines[-1] and str(ctx.author.id) in lines[-1] and "Err" in lines[-1]:
+            elif str(ctx.command.extras.get('number')) in ''.join(lines[-4:]) and str(ctx.author.id) in ''.join(lines[-4:]) and "Err" in ''.join(lines[-4:]):
                 await ctx.reinvoke()
             else: await command_log_and_err(ctx=ctx, status='Cooldown', error=error)
         elif isinstance(error, MemberNotFound):
@@ -235,20 +242,26 @@ class Events(Cog):
             await command_log_and_err(ctx, err_code="Err_000b12",
                                       text=f"There is no channel called {error.param}")
         else:
+            import traceback, sys
             err_embed = await set_timestamp(Embed(title=f"Error! - `{ctx.command.name}`", description="", colour=Colour.red()), "Unhandled Excpetion")
+            lines = f'\nIgnoring exception in on_command_error:\n' + ''.join(
+                traceback.format_exception(error.__class__, error, error.__traceback__))
+
             err_embed.description = f"""
 
 `Author`: {ctx.author.mention}
 `Channel`: {ctx.channel.mention}
 
 [```nim
-{error.with_traceback(error.__traceback__)}
+{lines[:3900]}
 ```]({ctx.message.jump_url})
 **Check Command Prompt**
 """
+            view = ErrorView(ctx, 20, embed=err_embed)
+            view.message = await ctx.reply("Whoops! Something went wrong...", view=view)
             error_channel: TextChannel = ctx.bot.get_channel(868640456328744960)
             await error_channel.send(embed=err_embed)
-            raise error
+            print(lines, file=sys.stderr)
 
     @Cog.listener()
     async def on_command_completion(self, ctx: Context):
@@ -270,7 +283,8 @@ class Events(Cog):
             "nou": True,
             "greetings": True,
             "farewells": True,
-            "iamgod": True
+            "iamgod": True,
+            "eastereggs": True
         }
         with open(settings_path, "w") as f: json.dump(settings, f, indent=3)
         with open(prefix_path, "r") as f: prefixes = json.load(f)

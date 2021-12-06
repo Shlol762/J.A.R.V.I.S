@@ -1,10 +1,13 @@
+import re, traceback, sys
 from discord.ui import View, Button, Item, button, Select, select
-from discord import SelectOption, CategoryChannel, TextChannel, VoiceChannel
+from discord import SelectOption,\
+    CategoryChannel, TextChannel,\
+    VoiceChannel, Thread, Interaction,\
+    ButtonStyle, Message
 from discord.ext.commands import Context
-from discord import Interaction, ButtonStyle
 from .errors import *
 from .components import *
-from discord import Thread
+
 
 
 HOME_SERVER_INVITE = 'https://discord.gg/zt6j4h7ep3'
@@ -15,6 +18,7 @@ class BaseView(View):
         super().__init__(timeout=timeout)
         self.ctx = ctx
         self.extras = kwargs
+        self.message: Message = None
         self.args_check()
 
     def args_check(self):
@@ -27,6 +31,26 @@ class BaseView(View):
 
     async def on_timeout(self):
         await self.disable_all()
+
+    async def interaction_check(self, interaction: Interaction) -> bool:
+        return self.ctx.author == interaction.user
+
+    async def kill(self):
+        for item in self.children:
+            if isinstance(item, Button):
+                item.style = ButtonStyle.red
+                item.label = 'Error!'
+            else:
+                item.placeholder = "Error! Contact Shlol#2501"
+            item.disabled = True
+        await self.message.edit(view=self)
+
+    async def on_error(self, error: Exception, item: Item, interaction: Interaction):
+        await self.kill()
+        file = sys.stderr
+        lines = f'\nIgnoring exception in view {self.__class__.__name__} for item \'{item.custom_id}\':\n'+ ''.join(traceback.format_exception(error.__class__, error, error.__traceback__))
+        print(lines, file=file)
+        await interaction.response.send_message(f"**Error!** Contact <@613044385910620190>\n```nim\n{lines}\n```", ephemeral=True)
 
 
 class Confirmation(BaseView):
@@ -87,7 +111,8 @@ class SelectChannelCategoryView(BaseView):
     def __init__(self, ctx: Context,  **kwargs):
         self.extras = kwargs
         self.args_check()
-        super().__init__(ctx, 10.0, **kwargs)
+        self.ctx = ctx
+        super().__init__(self.ctx, 10.0, **kwargs)
         options = [
             SelectOption(label=cat.name, value=str(cat.id)) for cat in ctx.guild.categories
         ]
@@ -101,3 +126,88 @@ class SelectChannelCategoryView(BaseView):
             raise MissingArgument('Argument "channel" is missing.')
         if not isinstance(self.extras['channel'], (TextChannel, VoiceChannel)):
             raise TypeError("Arg 'channel' is not of type TextChannel or VoiceChannel")
+
+
+class ConfirmDeletion(BaseView):
+    def args_check(self):
+        if not self.extras.get('channel'):
+            raise MissingArgument('Argument "channel" is missing.')
+        if not isinstance(self.extras['channel'], (TextChannel, VoiceChannel, CategoryChannel, Thread)):
+            raise TypeError("Argument 'channel' must be of type TextChannel, VoiceChannel, CategoryChannel or Thread.")
+
+
+class HelpView(BaseView):
+    def args_check(self):
+        if not self.extras.get('options'):
+            raise MissingArgument("'options' was not given.")
+        for arg in self.extras['options']:
+            if not isinstance(arg,  SelectOption):
+                raise TypeError(f"option {self.extras['optins'].index(arg)} was of invalid type: {arg.__class__.__name__}")
+
+
+class ConversionView(BaseView):
+    def args_check(self):
+        if not self.extras.get('text'):
+            raise MissingArgument("'text' was not specified.")
+        if not isinstance(self.extras['text'], (int, float, str)):
+            raise TypeError(f"Object must be of type(s) str, int or float and not {self.extras['text'].__class__.__name__}")
+
+    @button(label="ASCII", custom_id='asciibutton', style=ButtonStyle.grey)
+    async def _ascii(self, _button: Button, interaction: Interaction):
+        text: str = self.extras['text']
+        if text.startswith('0x'):
+            type_ = 'Hex'
+            text = text.replace('0x', '').replace(' ', '')
+            translated = ''.join([chr(int('0x'+val, base=16)) for val in re.findall(r'.{2}', text)])
+        elif text.startswith('0b'):
+            type_ = 'Binary'
+            text = text.replace('0b', '').replace(' ', '')
+            translated = ''.join([chr(int('0b' + val, base=2)) for val in re.findall(r'[01]{8}', text)])
+        elif not text.isalpha():
+            type_ = 'Decimal'
+            text = text.split()
+            translated = ''.join([chr(int(val)) for val in text])
+
+        _button.style = ButtonStyle.green
+        await self.disable_all()
+        await interaction.response.send_message(f'Converted from {type_} to ASCII: `{translated}`', ephemeral=True)
+
+    @button(label="Hex", custom_id='hexbutton', style=ButtonStyle.grey)
+    async def _hex(self, _button: Button, interaction: Interaction):
+        text: str = self.extras['text']
+        if text.startswith('0b'):
+            type_ = 'Binary'
+            translated = hex(int(text, base=2))
+        elif not text.isdigit():
+            type_ = 'ASCII'
+            translated = '0x' + ' '.join([hex(ord(ch)) for ch in text]).replace('0x', '')
+        else:
+            type_ = 'Decimal'
+            translated = hex(int(text))
+
+        _button.style = ButtonStyle.green
+        await self.disable_all()
+        await interaction.response.send_message(f'Converted from {type_} to Hex: `{translated}`', ephemeral=True)
+
+    @button(label="Decimal", custom_id='decbutton', style=ButtonStyle.grey)
+    async def _dec(self, _button: Button, interaction: Interaction):
+        text: str = self.extras['text']
+        if text.startswith('0b') and not text.isalpha():
+            type_ = 'Binary'
+            text = text.replace('0b', '')
+            translated = ' '.join([str(int('0b'+val, base=2)) for val in text.split()])
+
+        _button.style = ButtonStyle.green
+        await self.disable_all()
+        await interaction.response.send_message(f'Converted from {type_} to Hex: `{translated}`', ephemeral=True)
+
+
+class ErrorView(BaseView):
+    def args_check(self):
+        if 'embed' not in self.extras.keys():
+            raise MissingArgument("Argument 'error' is required.")
+
+    @button(label="View Error", custom_id='errorbutton', style=ButtonStyle.danger)
+    async def error(self, _button: Button, interaction: Interaction):
+        self.extras['embed'].description = self.extras['embed'].description.replace("**Check Command Prompt**", "")
+        await interaction.response.send_message("Contact <@613044385910620190>.", embed=self.extras['embed'], ephemeral=True)

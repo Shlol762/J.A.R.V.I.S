@@ -41,7 +41,6 @@ class Cc(Cog):
     async def voice(self, ctx: Context, *, name: str = None):
         if not name:
             return await ctx.reply("No name given to new channel.")
-        name = re.sub(r"[+_!@#$%^&*();',.:\"<>?`~=\\|\[\]{}]", '', name)
         name = name.replace(' ', '-')
         channel = await ctx.guild.create_voice_channel(name)
         view = Sccv(ctx=ctx, channel=channel)
@@ -51,7 +50,6 @@ class Cc(Cog):
     async def category(self, ctx: Context, *, name: str = None):
         if not name:
             return await ctx.reply("No name given to new channel.")
-        name = re.sub(r"[+_!@#$%^&*();',.:\"<>?`~=\\|\[\]{}]", '', name)
         name = name.replace(' ', '-')
         channel = await ctx.guild.create_category(name)
         await ctx.reply("Pick the channel's category.")

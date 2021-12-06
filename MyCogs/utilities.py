@@ -1,6 +1,5 @@
 import datetime
 import json
-
 import discord
 from discord.ext import commands
 from typing import Optional, Union
@@ -9,7 +8,8 @@ from MyCogs import VERSION, command_log_and_err,\
     Bot, command, guild_only, cooldown, Context, BucketType,\
     Embed, Colour, Member, Forbidden, CustomActivity, Spotify,\
     Game, Activity, ActivityType, Status, HTTPException, User,\
-    comm_log_local, UserConverter, Thread, TextChannel
+    comm_log_local, UserConverter, Thread, TextChannel, group,\
+    ConversionView
 
 
 bot_ver = VERSION
@@ -189,11 +189,13 @@ class Utilities(Cog):
             emb1 = Embed(title=f'Member Statistics - {name}  {flag_logos}', description='',
                                  colour=mber.accent_colour or Colour.default())
             emb1.set_thumbnail(url=pfp)
-            emb1.description += f'`{"Name":^27}:{name:^31}`\n`{"Discriminator":^27}:{disc:^31}`\n'
+            emb1.description += f'`{"Name":^27}:{name:^31}`\n`{"Tag":^27}:{disc:^31}`\n'
             emb1.description += f'`{"Nickname on this server":^27}:{nick:^31}`\n'
             emb1.description += f"`{'Joined this server on':^27}:{joined_at:^31}`\n"
             emb1.description += f"`{'Account created on':^27}:{created_at:^31}`\n"
-            emb1.description += f"`{'Public Flags':^27}:{public_flags:^31}`"
+            if not member.bot: emb1.description += f"`{'Public Flags':^27}:{public_flags:^31}`"
+            if member.id == 844517134562492417:
+                emb1.description += f"**My fellow bot! Guy's awesome at spreadsheets, planing and storing stuff!**"
             emb1.set_footer(icon_url=pfp, text=f"Status: {status}\nActivities: {activities}")
             emb1 = await set_timestamp(emb1)
             await command_log_and_err(ctx, 'Success', used_on=member)
@@ -512,6 +514,14 @@ For Example:- 1)Err_10124 means command '1' under category
                 text="Top most recent."
             )
         await ctx.reply(f'No one pinged in <#{ch_id}>' if not pings.get(ch_id) else None, embed=embed)
+
+    @command(name="Convert", aliases=['cnv'],
+           help="Convert from ASCII to binary/binary to hex/hex to ascii/ascii to decimal etc. Note that "
+                "when writing a hex number, you must prefix '0x' and for a binary number you must prefix '0b'",
+             usage='$convert|cnv <text>')
+    async def convert(self, ctx: Context, *, text: str):
+        view = ConversionView(ctx, 20.0, text=text)
+        view.message = await ctx.reply(f"Pick what you want to convert to.", view=view)
 
 
 def setup(bot: Bot):
