@@ -22,7 +22,7 @@ for cog in os.listdir("C:/Users/Shlok/J.A.R.V.I.SV2021/MyCogs"):
 
 @bot.command(hidden=True)
 async def test(ctx: commands.Context):
-    pass
+    print(await ctx.bot.is_owner(ctx.author))
 
 
 @bot.command(hidden=True)

@@ -1,5 +1,7 @@
 import datetime
 import json
+import re
+
 import discord
 from discord.ext import commands
 from typing import Optional, Union
@@ -9,7 +11,7 @@ from MyCogs import VERSION, command_log_and_err,\
     Embed, Colour, Member, Forbidden, CustomActivity, Spotify,\
     Game, Activity, ActivityType, Status, HTTPException, User,\
     comm_log_local, UserConverter, Thread, TextChannel, group,\
-    ConversionView
+    ConversionView, Guild, Role
 
 
 bot_ver = VERSION
@@ -522,6 +524,45 @@ For Example:- 1)Err_10124 means command '1' under category
     async def convert(self, ctx: Context, *, text: str):
         view = ConversionView(ctx, 20.0, text=text)
         view.message = await ctx.reply(f"Pick what you want to convert to.", view=view)
+
+    @command(name="Copy Server", aliases=['cser', 'copyserver', 'copyser'],
+             help="Makes a copy of this server to whichever server the bot is in.",
+             usage="$copyserver|cser|copyser <server> (components to be copied: channels, VCs etc)")
+    async def _cop_ser(self, ctx: Context, server: Guild, components: str):
+        async with ctx.typing():
+            roles = {}
+            async def del_role(role: Role):
+                try: await role.delete()
+                except HTTPException: pass
+            async def create_role(role: Role, guild: Guild):
+                if role.name != '@everyone':
+                    return await guild.create_role(
+                    name=role.name, permissions=role.permissions, colour=role.colour,
+                    hoist=role.hoist, mentionable=role.mentionable
+                    )
+                else:
+                    return await ctx.guild.default_role.edit(permissions=role.permissions)
+            if re.search(f"roles|all", components):
+                [await del_role(r) for r in ctx.guild.roles if r.name != 'everyone'] if 'overwrite' in components else None
+                roles = {role.id: await create_role(role, ctx.guild) for role in server.roles[::-1]}
+            if re.search(r"(v(oice|c)|t(ext|c)|all|channels)", components):
+                [await ch.delete() for ch in ctx.guild.channels] if 'overwrite' in components else None
+                categories = {c.id: await ctx.guild.create_category(
+                    name=c.name, overwrites={roles[rl.id]: overw for rl, overw in c.overwrites.items() if isinstance(rl, Role)},
+                    position=c.position
+                ) for c in server.categories}
+                [await ctx.guild.create_text_channel(
+                    name=tc.name, overwrites={roles[rl.id]: overw for rl, overw in tc.overwrites.items() if isinstance(rl, Role)},
+                    position=tc.position,
+                    category=categories[tc.category.id] if tc.category else None, topic=tc.topic, slowmode_delay=tc.slowmode_delay,
+                    nsfw=tc.nsfw
+                ) for tc in server.text_channels if re.search(r't(ext|c)|all|channels', components)]
+                [await ctx.guild.create_voice_channel(
+                    name=vc.name, overwrites={roles[rl.id]: overw for rl, overw in vc.overwrites.items() if isinstance(rl, Role)}, position=vc.position,
+                    category=categories[vc.category.id] if vc.category else None, bitrate=vc.bitrate, rtc_region=vc.rtc_region,
+                    user_limit=vc.user_limit, video_quality_mode=vc.video_quality_mode
+                ) for vc in server.voice_channels if re.search(r'v(oice|c)|all|channels', components)]
+
 
 
 def setup(bot: Bot):

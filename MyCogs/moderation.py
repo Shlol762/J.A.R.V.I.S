@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import json
 import re
 from typing import Optional, Union
@@ -7,7 +8,8 @@ from MyCogs import command_log_and_err, set_timestamp, Context,\
     Cog, Client, command, cooldown, guild_only, User, Member,\
     BucketType, UserNotFound, Embed, Colour, HTTPException,\
     Forbidden, commands, has_guild_permissions, Message, TextChannel,\
-    Role, TextChannelConverter, RoleConverter, Bot, UserConverter, comm_log_local
+    Role, TextChannelConverter, RoleConverter, Bot, UserConverter, comm_log_local,\
+    time_set
 #commands.
 
 class Moderation(Cog):
@@ -235,64 +237,27 @@ class Moderation(Cog):
                          f" {author.mention}.")
 
     #205
-    @command(name="Timeout", aliases=['to', 'isolate', 'isl'], usage="timeout|to|isolate|isl <member>",
+    @command(name="Timeout", aliases=['to'], usage="timeout|to <member> (time duration)",
              extras={'emoji': '🔒', 'number': '205'},
-             help="Keeps an annoying person in a timeout channel with no contact except those who have "
-                               "access to that channel.")
+             help="Keeps an annoying person in timeout with no way to interact in that server."
+                  "Note that time time duration must be suffixed by s, m, h, d, or  which are "
+                  "seconds, minutes, hours, days and weeks. It defaults to 5m.")
     @guild_only()
     @has_guild_permissions(administrator=True)
     @comm_log_local
-    async def _timeout(self, ctx: Context, member: Member = None):
+    async def _timeout(self, ctx: Context, member: Member = None, duration: str = '5m'):
         async with ctx.typing():
             if member:
-                role_names: list[str] = [role.name.lower() for role in ctx.guild.roles]
-                channel_names: list[str] = [channel.name.lower() for channel in ctx.guild.text_channels]
-                if "timeout" not in role_names:
-                    try:
-                        await ctx.reply(f"{ctx.author.mention}, **I need to create a role** called 'timeout' for this to work"
-                                        f" and there seem to be no roles like this in the server. **May I create one?** Respond "
-                                        f"with Y(es) or N(o) in the next 15 seconds.")
-                        message: Message = await ctx.bot.wait_for("message", check=lambda m: m.author == ctx.author and \
-                                                                                              m.channel == ctx.channel and (re.search(r"(y(es)*|n(o)*)", m.content.lower())), timeout=15.0)
-                        if re.search(r"y(es)*", message.content.lower()):
-                            await ctx.reply("Creating a role named `timeout`")
-                            try: t_role: Role = await ctx.guild.create_role(name="timeout")
-                            except Forbidden: return await command_log_and_err(ctx, err_code="20524",
-                                                                        text="Missing permissions to create role.")
-                        elif re.search(r"n(o)*", message.content.lower()):
-                            return await ctx.reply("Well then you would have to create a role called 'timeout' and "
-                                            "try this command again.")
-                    except TimeoutError:
-                        return await ctx.reply(f"Stopping `timeout` procedure for {member.name}")
-                else: t_role: Role = discord.utils.get(ctx.guild.roles, name="timeout")
-                if "timeout" not in channel_names:
-                    try:
-                        await ctx.reply(f"{ctx.author.mention}, **I need to create a channel** called 'timeout' for this to work"
-                                        f" and there seem to be no channels like this in the server. **May I create one?** Respond "
-                                        f"with Y(es) or N(o) in the next 15 seconds.")
-                        message: Message = await ctx.bot.wait_for("message", check=lambda m: m.author == ctx.author and \
-                                                                                              m.channel == ctx.channel and (re.search(r"(y(es)*|n(o)*)", m.content.lower())), timeout=15.0)
-                        if re.search(r"y(es)*", message.content.lower()):
-                            await ctx.reply("Creating a channel named `timeout`")
-                            try:
-                                t_channel: TextChannel = await ctx.guild.create_text_channel(name="timeout")
-                                await t_channel.set_permissions(ctx.guild.default_role, view_channel=False)
-                                await t_channel.set_permissions(t_role, view_channel=True)
-                            except Forbidden: return await command_log_and_err(ctx, err_code="20524",
-                                                                        text="Missing permissions to create channel.")
-                        elif re.search(r"n(o)*", message.content.lower()):
-                            return await ctx.reply("Well then you would have to create a channel called 'timeout' and "
-                                            "try this command again.")
-                    except TimeoutError:
-                        return await ctx.reply(f"Stopping `timeout` procedure for {member.name}")
-                else:
-                    t_channel: TextChannel = discord.utils.get(ctx.guild.channels, name="timeout")
-                [await member.remove_roles(rl) if rl.name != "@everyone" and rl.permissions.administrator else None for rl in member.roles]
-                [await channel.set_permissions(t_role, view_channel=False) for channel in ctx.guild.channels]
-                await member.add_roles(t_role)
+                duration = None if duration.lower() == 'none' else duration
+                stamp = await member.timeout(duration)
                 await command_log_and_err(ctx, status="Succesful", used_on=member)
-                await ctx.reply(f"{member.mention} is in {t_channel.mention}")
-            else: await command_log_and_err(ctx, err_code="20548", text="You've not given me who to isolte by the way.")
+                await ctx.reply(embed=Embed(
+                    title="Timeout status",
+                    description=f"{member.mention} has been {'placed in' if duration else 'removed from'} timeout"
+                                f"{'until '+time_set(stamp, '%d %b %Y at %I:%M %p') if duration else '.'}",
+                    colour=member.accent_colour or member.colour
+                ))
+            else: await command_log_and_err(ctx, err_code="20548", text="You've not given me who to timeout by the way.")
 
 
 def setup(bot: Bot):
