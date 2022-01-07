@@ -9,5 +9,5 @@ from .views import *
 with open("C:/Users/Shlok/bot_stuff/safe_docs/-... --- - ! - --- -.- . -..txt", "r") as f:
     BOT_TOKEN: str = f.read()
 
-__discord__ = discord.__version__
+__discord__ = nextcord.__version__
 __version__ = '0.00.0'

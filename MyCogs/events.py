@@ -1,5 +1,5 @@
 import asyncio
-import random, datetime, discord, json, re
+import random, datetime, json, re
 import sys
 
 from . import hypesquad_emoji, command_log_and_err, set_timestamp,\
@@ -9,62 +9,74 @@ from . import hypesquad_emoji, command_log_and_err, set_timestamp,\
     CommandOnCooldown, MemberNotFound, UserNotFound, RoleNotFound, MessageNotFound,\
     ChannelNotFound, NoPrivateMessage, Message, MessageConverter, BadUnionArgument,\
     trim, forbidden_word, noswear, greetings, farewells, nou, urnotgod, timeto, Bot,\
-    ThreadNotFound, train, CheckFailure, eastereggs, who_pinged, ErrorView
+    ThreadNotFound, train, CheckFailure, eastereggs, who_pinged, ErrorView, HTTPException
 
 severed_time = 0
 connect_time = 0
 chnls = [833995745690517524, 817299815900643348, 817300015176744971, 859801379996696576, 880314505740046336]
 webhooks = [861660340617084968, 861660166193807430, 861660711037960243, 861660517746999356, 880318607643521075]
-prev_messages = []
-black_list = [914762292997021717, 901006899225448488]
-members = {}
-prev_topic = ''
+prev_members = []
+
 
 class Events(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
         self.name = 'events'
 
-    @loop(minutes=5)
+    @loop(seconds=30.0)
     async def birthday(self):
-        global members, prev_topic
-        guild: Guild = await self.bot.fetch_guild(766356666273890314)
-        birthday_role: Role = guild.get_role(874909501617238048)
-        general: TextChannel = self.bot.get_channel(821278528108494878)
-        now = datetime.datetime.now().strftime("%d/%m")
+        global prev_members
+        now_ = datetime.datetime.now()
+        nxt_day = now_.day + 1
+        # if (datetime.datetime(now_.year, now_.month, nxt_day) - now_).total_seconds() > 30:
+        #     del nxt_day
+        #     return
+        del nxt_day
+        date = now_.strftime("%d/%m")
         with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/birthdays.json") as f:
             birthdays: dict = json.load(f)
-        for prev_bday_person in members.keys():
-            prev_bday_person: Member = prev_bday_person
-            if now != members.get(prev_bday_person):
-                await prev_bday_person.remove_roles(birthday_role)
-                await general.edit(topic=None)
-        for member, date in birthdays.items():
-            try: bday_persona: Member = await guild.fetch_member(int(member))
-            except NotFound: pass
-            if now == date:
-                members[bday_persona] = now
-            else:
-                try: members.pop(bday_persona)
-                except (ValueError, KeyError): pass
-        prev_topic = general.topic
+        # if date not in birthdays.keys():
+        #     del date, birthdays
+        #     _now = datetime.datetime.now()
+        #     print('no birthday')
+        #     print((_now - now_).total_seconds())
+        #     del _now
+        #     return
+        current_birthdays = birthdays.get(date)
+        guild = await self.bot.fetch_guild(766356666273890314)
+        birthday_role = guild.get_role(874909501617238048)
+        if len(birthday_role.members) != 0:
+            if [str(m.id) for m in birthday_role.members] != current_birthdays:
+                for member in birthday_role.members:
+                    try: await member.remove_roles(birthday_role)
+                    except HTTPException: pass
+            else: return
+
         topic = ''
-        for bday_persona in members:
-            if birthday_role not in bday_persona.roles:
-                await bday_persona.add_roles(birthday_role)
-            topic += f'Happy Birthday {bday_persona.name}! '
-        await general.edit(topic=topic if len(members) != 0 else prev_topic) if birthday_role not in bday_persona.roles else None
+        for user_id in current_birthdays:
+            m = await guild.fetch_member(user_id)
+            await m.add_roles(birthday_role)
+            if 'Happy' not in topic:
+                topic += f"Happy birthday {m.name}!"
+            else:
+                topic.replace('!', f", {m.name}!")
+
+        general: TextChannel = await guild.fetch_channel(821278528108494878)
+        await general.edit(topic = topic)
+        _now = datetime.datetime.now()
+        print((_now-now_).total_seconds())
 
     @loop(minutes=5)
     async def timer(self):
         timchnl: TextChannel = await self.bot.fetch_channel(821278528108494878)
-        tstr = timeto("12:15 8/10/21")
-        print(tstr)
-        try: time_ = re.search(r"(([0-9]+ days? )?([0-9]+ hrs? )?[0-9]+ mins?)", tstr).group(0)
-        except AttributeError: time_ = timchnl.topic
-        await asyncio.sleep(10)
-        time_ = "T-Minus " + time_ + " and counting"
-        await timchnl.edit(topic=time_)
+        tstr, now, till = timeto("00:00 1/1/2022")
+        if now > till:
+            print(tstr)
+            try: time_ = re.search(r"(([0-9]+ days? )?([0-9]+ hrs? )?[0-9]+ mins?)", tstr).group(0)
+            except AttributeError: time_ = timchnl.topic
+            await asyncio.sleep(10)
+            time_ = "T-Minus " + time_ + " and counting"
+            await timchnl.edit(topic=time_)
 
     @Cog.listener()
     async def on_ready(self):
@@ -83,15 +95,16 @@ class Events(Cog):
         await ch.send(embed=await set_timestamp(embed, ""))
         try: self.birthday.start()
         except RuntimeError: self.birthday.restart()
+        # try: self.timer.start()
+        # except RuntimeError: self.timer.restart()
         print(f"Connection to discord instantiation success: {datetime.datetime.now().strftime('%d %B %Y at %X:%f')}")
 
     @Cog.listener()
     async def on_message(self, message: Message):
         global chnls
-        global prev_messages
         ctx: Context = await self.bot.get_context(message)
-        if ctx.guild.id in black_list:
-            await ctx.guild.leave()
+        # if ctx.guild.id in black_list:
+        #     await ctx.guild.leave()
         channel: TextChannel = ctx.channel
         author: Member = ctx.author
         bot: Bot = ctx.bot
@@ -258,7 +271,8 @@ class Events(Cog):
 **Check Command Prompt**
 """
             view = ErrorView(ctx, 20, embed=err_embed)
-            view.message = await ctx.reply("Whoops! Something went wrong...", view=view)
+            try: view.message = await ctx.reply("Whoops! Something went wrong...", view=view)
+            except HTTPException: pass
             error_channel: TextChannel = ctx.bot.get_channel(868640456328744960)
             await error_channel.send(embed=err_embed)
             print(lines, file=sys.stderr)

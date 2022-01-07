@@ -1,5 +1,5 @@
-from discord import Embed
-from discord.ext import commands
+from nextcord import Embed
+from nextcord.ext import commands
 
 class CustomHelpCommand(commands.HelpCommand):
     def __init__(self):

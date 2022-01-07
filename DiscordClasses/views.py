@@ -1,10 +1,10 @@
 import re, traceback, sys
-from discord.ui import View, Button, Item, button, Select, select
-from discord import SelectOption,\
+from nextcord.ui import View, Button, Item, button, Select, select
+from nextcord import SelectOption,\
     CategoryChannel, TextChannel,\
     VoiceChannel, Thread, Interaction,\
     ButtonStyle, Message
-from discord.ext.commands import Context
+from nextcord.ext.commands import Context
 from .errors import *
 from .components import *
 
@@ -200,6 +200,25 @@ class ConversionView(BaseView):
         _button.style = ButtonStyle.green
         await self.disable_all()
         await interaction.response.send_message(f'Converted from {type_} to Hex: `{translated}`', ephemeral=True)
+
+    @button(label="Binary", custom_id='binbutton', style=ButtonStyle.grey)
+    async def _bin(self, _button: Button, interaction: Interaction):
+        text: str = self.extras['text']
+        if text.startswith('0b') and not text.isalpha():
+            await interaction.response.send_message(f"Um. Why convert binary to binary??", ephemeral=True)
+            return
+        elif not text.isdigit():
+            type_ = 'ASCII'
+            translated = '0b' + ' '.join([bin(ord(ch)) for ch in text]).replace('0b', '')
+        elif text.startswith('0x'):
+            type_ = 'Hex'
+            text = text.replace('0x', '').replace(' ', '')
+            translated = ''.join([bin(int('0x'+val, base=16)) for val in re.findall(r'.{2}', text)])
+        else:
+            type_ = 'Decimal'
+            translated = bin(int(text))
+        await interaction.response.send_message(f'Converted from {type_} to Binary : `{translated}`', ephemeral=True)
+
 
 
 class ErrorView(BaseView):

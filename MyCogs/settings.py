@@ -1,7 +1,7 @@
 from typing import Union
-import discord, json
-from discord.ext import commands
-from discord import Embed, Colour
+import nextcord, json
+from nextcord.ext import commands
+from nextcord import Embed, Colour
 from MyCogs import command_log_and_err, Cog, command,\
     guild_only, Context, Client, set_timestamp, Bot,\
     comm_log_local

@@ -1,8 +1,8 @@
 import asyncio
 import json
 import re, random
-from discord import Forbidden, Invite, Message, Member
-from discord.ext.commands import Context, Bot
+from nextcord import Forbidden, Invite, Message, Member
+from nextcord.ext.commands import Context, Bot
 from typing import Optional, Union, Any
 
 

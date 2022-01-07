@@ -1,5 +1,5 @@
-from discord.errors import *
-from discord.ext.commands import *
+from nextcord.errors import *
+from nextcord.ext.commands import *
 
 class ThreadNotSpecified(BadArgument):
     pass

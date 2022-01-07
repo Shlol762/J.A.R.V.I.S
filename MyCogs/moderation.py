@@ -3,7 +3,6 @@ import datetime
 import json
 import re
 from typing import Optional, Union
-import discord
 from MyCogs import command_log_and_err, set_timestamp, Context,\
     Cog, Client, command, cooldown, guild_only, User, Member,\
     BucketType, UserNotFound, Embed, Colour, HTTPException,\
@@ -241,7 +240,8 @@ class Moderation(Cog):
              extras={'emoji': '🔒', 'number': '205'},
              help="Keeps an annoying person in timeout with no way to interact in that server."
                   "Note that time time duration must be suffixed by s, m, h, d, or  which are "
-                  "seconds, minutes, hours, days and weeks. It defaults to 5m.")
+                  "seconds, minutes, hours, days and weeks. It defaults to 5m. If timeout is set to 'none' then "
+                  "the person in question will be removed from timeout.")
     @guild_only()
     @has_guild_permissions(administrator=True)
     @comm_log_local
@@ -254,7 +254,7 @@ class Moderation(Cog):
                 await ctx.reply(embed=Embed(
                     title="Timeout status",
                     description=f"{member.mention} has been {'placed in' if duration else 'removed from'} timeout"
-                                f"{'until '+time_set(stamp, '%d %b %Y at %I:%M %p') if duration else '.'}",
+                                f"{' until '+time_set(stamp, '%d %b %Y at %I:%M %p') if duration else '.'}",
                     colour=member.accent_colour or member.colour
                 ))
             else: await command_log_and_err(ctx, err_code="20548", text="You've not given me who to timeout by the way.")

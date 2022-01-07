@@ -1,6 +1,6 @@
 from typing import Optional, Union
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 from MyCogs import command_log_and_err, set_timestamp, command,\
     Cog, cooldown, guild_only, BucketType, Context, has_permissions,\
     Client, Forbidden, Role, Member, Colour, Embed, HTTPException,\

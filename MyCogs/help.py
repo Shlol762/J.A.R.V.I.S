@@ -1,6 +1,5 @@
 import re
 from typing import Optional
-import discord
 from MyCogs import command_log_and_err, set_timestamp, Cog,\
     Context, command, Client, Colour, Embed, HTTPException,\
     commands, Bot, comm_log_local, caplist

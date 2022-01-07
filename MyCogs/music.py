@@ -4,10 +4,9 @@ import itertools
 import math
 import random
 from typing import Optional
-import discord
 import youtube_dl
 from async_timeout import timeout
-from discord.ext import commands
+from nextcord.ext import commands
 from MyCogs import command_log_and_err, Context, Bot,\
     Cog, NoPrivateMessage, CommandError, command,\
     guild_only, PCMVolumeTransformer, FFmpegPCMAudio,\

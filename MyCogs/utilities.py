@@ -2,8 +2,8 @@ import datetime
 import json
 import re
 
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 from typing import Optional, Union
 from MyCogs import VERSION, command_log_and_err,\
     set_timestamp, time_set, hypesquad_emoji, Cog,\
@@ -213,20 +213,17 @@ class Utilities(Cog):
         async with ctx.typing():
             server = ctx.guild
             name = server.name
-            bot_count = 0
-            for member in ctx.guild.members:
-                if member.bot is True:
-                    bot_count += 1
             boosters = ', '.join([member.name for member in server.premium_subscribers]) if len(server.premium_subscribers) > 0 else None
-            server_region = server.region[0][0].upper() + server.region[0][1:]
+            try: server_region = str(ctx.guild.voice_channels[0].rtc_region).capitalize()
+            except IndexError: server_region = 'Null'
             created_at = time_set(server.created_at, "%d %b %Y at %I:%M %p")
             server_info = Embed(title=name, description=f'Details of `{name}`\n\n', colour=Colour.random())
-            server_info.description += f'`{"Name":^17}: {name:^30}`\n`{"Id":^17}: {server.id:^30}`\n'
-            server_info.description += f'`{"Region":^17}: {server_region:^30}`\n`{"Owner":^17}: {str(server.owner):^30}`\n'
-            server_info.description += f'`{"Emoji Limit":^17}: {server.emoji_limit:^30}`\n`{"Bitrate Limit":^17}: {f"{server.bitrate_limit / 1000} kbps":^30}`\n'
-            server_info.description += f'`{"File Size Limit":^17}: {f"{round(server.filesize_limit / 1000000)} mb":^30}`\n`{"Boosters":^17}: {boosters or "No boosters":^30}`\n'
-            server_info.description += f'`{"Created on":^17}: {created_at:^30}`\n'
-            server_info.description += f'`{"Member Count":^17}: {f"Total - {len(ctx.guild.members)}, Bots - {bot_count}":^30}`'
+            server_info.description += f'`{"Name":^17}: {name:^32}`\n`{"Id":^17}: {server.id:^32}`\n'
+            server_info.description += f'`{"Region":^17}: {server_region:^32}`\n`{"Owner":^17}: {str(server.owner):^32}`\n'
+            server_info.description += f'`{"Emoji Limit":^17}: {server.emoji_limit:^32}`\n`{"Bitrate Limit":^17}: {f"{server.bitrate_limit / 1000} kbps":^32}`\n'
+            server_info.description += f'`{"File Size Limit":^17}: {f"{round(server.filesize_limit / 1000000)} mb":^32}`\n`{"Boosters":^17}: {boosters or "No boosters":^32}`\n'
+            server_info.description += f'`{"Created on":^17}: {created_at:^32}`\n'
+            server_info.description += f'`{"Member Count":^17}: {f"Humans: {len(server.humans)}, Bots: {len(server.bots)}, Total: {len(server.members)}":^32}`'
             server_info.set_thumbnail(url=server.icon.url)
             server_info = await set_timestamp(server_info)
             await command_log_and_err(ctx, 'Success')

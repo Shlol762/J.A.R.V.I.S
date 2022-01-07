@@ -1,8 +1,8 @@
-import discord
+import nextcord
 from MyCogs import command, Cog, Bot, datetime,\
     Colour, Embed, find_nth_occurrence, send_to_paste_service,\
     command_log_and_err, cooldown, Context, comm_log_local
-from discord.utils import escape_markdown
+from nextcord.utils import escape_markdown
 import datetime, re, itertools, aiohttp
 from typing import Tuple, Any, Optional
 from io import StringIO
@@ -45,7 +45,7 @@ class Python(Cog):
         self.ln = 0
         self.stdout = StringIO()
 
-    def _format(self, inp: str, out: Any) -> Tuple[str, Optional[discord.Embed]]:
+    def _format(self, inp: str, out: Any) -> Tuple[str, Optional[nextcord.Embed]]:
         """Format the eval output into a string & attempt to format it into an Embed."""
         self._ = out
 
@@ -105,7 +105,7 @@ class Python(Cog):
             return (res, None)
 
 
-        if isinstance(out, discord.Embed):
+        if isinstance(out, nextcord.Embed):
             # We made an embed? Send that as embed
             res += "<Embed>"
             res = (res, out)
@@ -138,7 +138,7 @@ class Python(Cog):
 
         return res  # Return (text, embed)
 
-    async def _eval(self, ctx: Context, code: str) -> Optional[discord.Message]:
+    async def _eval(self, ctx: Context, code: str) -> Optional[nextcord.Message]:
         """Eval the input code string & send an embed to the invoking context."""
         self.ln += 1
 

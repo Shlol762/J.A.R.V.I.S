@@ -92,7 +92,7 @@
    "841630950252478515": {
       "ban": false,
       "kick": false,
-      "clear": false,
+      "clear": true,
       "message": true,
       "msghai": false,
       "noswear": false,
@@ -402,7 +402,7 @@
       "farewells": true,
       "iamgod": true,
       "eastereggs": true,
-      "suppressemb":false
+      "suppressemb": false
    },
    "917675275066695700": {
       "ban": true,
@@ -417,6 +417,6 @@
       "farewells": true,
       "iamgod": true,
       "eastereggs": true,
-      "suppressemb":false
+      "suppressemb": false
    }
 }

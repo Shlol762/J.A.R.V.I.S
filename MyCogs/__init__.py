@@ -1,10 +1,10 @@
 from DiscordClasses import *
-import discord
-from discord import *
-from discord.abc import *
-from discord.ext import commands
-from discord.ext.commands import *
-from discord.ext.tasks import *
+import nextcord
+from nextcord import *
+from nextcord.abc import *
+from nextcord.ext import commands
+from nextcord.ext.commands import *
+from nextcord.ext.tasks import *
 from pytz import timezone
 from random import choice, randint
 from asyncio import sleep, TimeoutError

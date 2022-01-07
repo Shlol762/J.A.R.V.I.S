@@ -1,6 +1,6 @@
 from .errors import *
-from discord.ui import Select
-from discord import SelectOption, TextChannel, VoiceChannel,\
+from nextcord.ui import Select
+from nextcord import SelectOption, TextChannel, VoiceChannel,\
     Interaction, CategoryChannel, Embed, Colour
 from typing import Union
 import re

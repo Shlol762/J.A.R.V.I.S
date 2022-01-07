@@ -2,16 +2,16 @@ import datetime
 import json
 import os
 import random, re
-import discord, aiohttp, asyncio
-from discord.ext import commands
-from discord import Thread, TextChannel
+import nextcord, aiohttp, asyncio
+from nextcord.ext import commands
+from nextcord import Thread, TextChannel
 from urllib.parse import quote_plus
 from typing import Union
 from DiscordClasses import BOT_TOKEN, get_prefix, Confirmation, JoinHomeServer, SFlix
 
-intents = discord.Intents.all()
+intents = nextcord.Intents.all()
 bot = commands.AutoShardedBot(command_prefix=get_prefix, case_insensitive=True, intents=intents,
-                   allowed_mentions=discord.AllowedMentions(),
+                   allowed_mentions=nextcord.AllowedMentions(),
                    strip_after_prefix=True)
 bot.remove_command('help')
 
@@ -22,11 +22,11 @@ for cog in os.listdir("C:/Users/Shlok/J.A.R.V.I.SV2021/MyCogs"):
 
 @bot.command(hidden=True)
 async def test(ctx: commands.Context):
-    print(await ctx.bot.is_owner(ctx.author))
+    print(await ctx.guild.scheduled_events())
 
 
 @bot.command(hidden=True)
-async def del_message(ctx: commands.Context, message: discord.Message):
+async def del_message(ctx: commands.Context, message: nextcord.Message):
     await ctx.reply(f"Deleted message with content: `{message.content}`")
     await message.delete()
 
@@ -44,11 +44,11 @@ sec_lvl = """
 
 @bot.command(hidden=True)
 async def zething(ctx: commands.Context, text: str = "none"):
-    # emblist = [discord.Embed(description="Hey!"),
-    #            discord.Embed(description="Hello!"),
-    #            discord.Embed(description="Greetings my friends!"),
-    #            discord.Embed(description="Hi")]
-    # message: discord.Message = await ctx.send(embed=emblist[0])
+    # emblist = [nextcord.Embed(description="Hey!"),
+    #            nextcord.Embed(description="Hello!"),
+    #            nextcord.Embed(description="Greetings my friends!"),
+    #            nextcord.Embed(description="Hi")]
+    # message: nextcord.Message = await ctx.send(embed=emblist[0])
     # emojis = ['⏮', '◀', '▶', '⏭']
     # [await message.add_reaction(emoji) for emoji in emojis]
     # count, timeout = 0, False
@@ -91,15 +91,15 @@ async def refseclvl(ctx: commands.Context):
     with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/mainframe_members.json", "r") as f:
         mem_list: dict = json.load(f)
     now = datetime.datetime.now().date()
-    lvl0: discord.Role = ctx.guild.get_role(839068777521479691)
-    lvl1: discord.Role = ctx.guild.get_role(839069487113699358)
-    lvl2: discord.Role = ctx.guild.get_role(839427084219842561)
-    lvl3: discord.Role = ctx.guild.get_role(839427298075476019)
-    admin: discord.Role = ctx.guild.get_role(839069357581139998)
+    lvl0: nextcord.Role = ctx.guild.get_role(839068777521479691)
+    lvl1: nextcord.Role = ctx.guild.get_role(839069487113699358)
+    lvl2: nextcord.Role = ctx.guild.get_role(839427084219842561)
+    lvl3: nextcord.Role = ctx.guild.get_role(839427298075476019)
+    admin: nextcord.Role = ctx.guild.get_role(839069357581139998)
     for member, join_time in mem_list.items():
         diff = (now - datetime.datetime.strptime(join_time, "%d %b %Y at %I:%M %p").date())
         try:
-            member: discord.Member = await ctx.guild.fetch_member(int(member))
+            member: nextcord.Member = await ctx.guild.fetch_member(int(member))
             if diff.seconds > 600:
                 await member.add_roles(lvl0)
             elif diff.days > 14:
@@ -111,10 +111,10 @@ async def refseclvl(ctx: commands.Context):
             elif diff.days > 270:
                 await member.add_roles(admin, lvl3, lvl2, lvl1, lvl0)
             await ctx.send(f"Clerance updates for {member.mention}")
-        except (commands.MemberNotFound, discord.NotFound):
+        except (commands.MemberNotFound, nextcord.NotFound):
             try:
-                user: discord.User = await bot.fetch_user(int(member))
-            except (commands.UserNotFound, discord.NotFound):
+                user: nextcord.User = await bot.fetch_user(int(member))
+            except (commands.UserNotFound, nextcord.NotFound):
                 await ctx.reply(f"{member} not found.")
             else:
                 await ctx.reply(user.mention)
@@ -123,8 +123,8 @@ async def refseclvl(ctx: commands.Context):
 
 @bot.command(hidden=True)
 async def update(ctx: commands.Context):
-    channels: list[discord.abc.GuildChannel] = bot.get_all_channels()
-    embed = discord.Embed(title='`Update!` - New command: `Banner`',
+    channels: list[nextcord.abc.GuildChannel] = bot.get_all_channels()
+    embed = nextcord.Embed(title='`Update!` - New command: `Banner`',
                           description=
                           f"""
 **Banner**
@@ -138,10 +138,10 @@ You can banish the annoying person by doing:
 `$banner|br (member)`
 
 If you want to join my home server, click [`J.A.R.V.I.S`]({link})
-""", colour=discord.Colour.random())
+""", colour=nextcord.Colour.random())
     for channel in channels:
-        if 'general' in channel.name and isinstance(channel, discord.TextChannel):
-            message: discord.Message = await channel.send(embed=embed, view=JoinHomeServer)
+        if 'general' in channel.name and isinstance(channel, nextcord.TextChannel):
+            message: nextcord.Message = await channel.send(embed=embed, view=JoinHomeServer)
             await ctx.reply(
                 f'`Message link`: https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
 
@@ -149,17 +149,17 @@ If you want to join my home server, click [`J.A.R.V.I.S`]({link})
 @bot.command(hidden=True)
 async def devan(ctx: commands.Context, *, text: str):
     if text:
-        embed = discord.Embed(title="Announcement from `central mainframe`", description=text,
-                              colour=discord.Colour.random())
+        embed = nextcord.Embed(title="Announcement from `central mainframe`", description=text,
+                              colour=nextcord.Colour.random())
         for channel in ctx.bot.get_all_channels():
-            if 'general' in channel.name and isinstance(channel, discord.TextChannel):
-                message: discord.Message = await channel.send(embed=embed)
+            if 'general' in channel.name and isinstance(channel, nextcord.TextChannel):
+                message: nextcord.Message = await channel.send(embed=embed)
                 await ctx.reply(
                     f'`Message link`: https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
 
 
 @bot.command(hidden=True)
-async def msg_dts(ctx: commands.Context, message: discord.Message):
+async def msg_dts(ctx: commands.Context, message: nextcord.Message):
     await ctx.send(f"Content: {message.content}")
     print(f"Content: {message.content}")
 

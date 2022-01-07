@@ -1,12 +1,12 @@
 import json
 import os
 from datetime import datetime
-import discord
+import nextcord
 from PIL import Image
-from discord.ext import commands
-from discord.ext.commands import RoleNotFound, RoleConverter, MemberConverter, Bot, Context, when_mentioned_or,\
+from nextcord.ext import commands
+from nextcord.ext.commands import RoleNotFound, RoleConverter, MemberConverter, Bot, Context, when_mentioned_or,\
     MessageConverter
-from discord import Role, Member, Message, Emoji
+from nextcord import Role, Member, Message, Emoji
 from pytz import timezone
 from typing import Union, Optional, List, Coroutine, Tuple, Dict, Callable
 import aiohttp, aiofiles
@@ -50,7 +50,7 @@ async def reaction(ctx: Context = None, success=None):
         emoji: Emoji = ctx.bot.get_emoji(int(emoji)) if emoji.isnumeric() else emoji
         try:
             await ctx.message.add_reaction(emoji)
-        except discord.HTTPException:
+        except nextcord.HTTPException:
             await ctx.message.add_reaction('✅')
 
 
@@ -120,7 +120,7 @@ async def hypesquad_emoji(bot: Bot, squad: str) -> Optional[Union[str, Emoji]]:
     return await get_emoji(bot=bot, emoji=emoji)
 
 
-def timeto(time_str: str) -> str:
+def timeto(time_str: str) -> Union[str, datetime, datetime]:
     """Calculates the difference between the present and any given timestamp."""
     now: datetime = datetime.now()
     num: bool = True if time_str.replace("/", "").replace(":", "").replace(" ", "").isdigit() else False
@@ -166,10 +166,10 @@ def timeto(time_str: str) -> str:
     time_ += f"{diff[0].strip()} hr{'s' if int(diff[0].strip()) > 1 else ''} " if int(diff[0].strip()) != 0 else ""
     time_ += f"{diff[1].strip()} min{'s' if int(diff[1].strip()) > 1 else ''} " if int(diff[1].strip()) != 0 else ""
     time_ += f"{diff[2].strip().split('.')[0]} sec` {'to' if till > now else 'from'} `{till.strftime('%H:%M %d/%m/%Y')}`"
-    return time_
+    return time_, now, till
 
 
-def calculate_position(channel: Union[discord.TextChannel, discord.VoiceChannel], pos: int) -> int:
+def calculate_position(channel: Union[nextcord.TextChannel, nextcord.VoiceChannel], pos: int) -> int:
     """Calculates the heirarchy position of channels and categories in a discord server."""
     ctgry_pos = channel.category.position
     index_start = 0
