@@ -16,6 +16,10 @@ bot = commands.AutoShardedBot(command_prefix=get_prefix, case_insensitive=True, 
 bot.remove_command('help')
 
 
+with open('C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/mainframe_members.json', 'r') as f:
+    setattr(bot, 'MAINFRAME_MEMBERS', json.load(f))
+
+
 for cog in os.listdir("C:/Users/Shlok/J.A.R.V.I.SV2021/MyCogs"):
     if cog.endswith(".py") and cog != '__init__.py':
         bot.load_extension(f'MyCogs.{cog[:-3]}')

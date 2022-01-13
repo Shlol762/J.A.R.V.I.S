@@ -10,7 +10,7 @@ from . import hypesquad_emoji, command_log_and_err, set_timestamp,\
     ChannelNotFound, NoPrivateMessage, Message, MessageConverter, BadUnionArgument,\
     trim, forbidden_word, noswear, greetings, farewells, nou, urnotgod, timeto, Bot,\
     ThreadNotFound, train, CheckFailure, eastereggs, who_pinged, ErrorView, HTTPException,\
-    stopwatch
+    stopwatch, time_set
 
 severed_time = 0
 connect_time = 0
@@ -204,11 +204,18 @@ class Events(Cog):
 
     @Cog.listener()
     async def on_member_join(self, member: Member):
+        if member.guild.id == 819515740490825771:
+            if self.bot.MAINFRAME_MEMBERS.get(str(member.id)):
+                return
+            self.bot.MAINFRAME_MEMBERS[str(member.id)] = time_set(member.joined_at, '%d %b %Y at %X')
+            with open('C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/mainframe_members.json', 'w') as f:
+                json.dump(self.bot.MAINFRAME_MEMBERS, f, indent=3)
         channels: list[GuildChannel] = await member.guild.fetch_channels()
         try:
             for channel in channels:
                 if ('hello' in channel.name or 'welcome' in channel.name or 'ello' in channel.name) and isinstance(channel, TextChannel):
                     await channel.send(f"Hello {member.name}, Welcome to {member.guild.name}.")
+                    break
         except Forbidden:
             pass
 
