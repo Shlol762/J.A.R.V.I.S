@@ -9,7 +9,8 @@ from . import hypesquad_emoji, command_log_and_err, set_timestamp,\
     CommandOnCooldown, MemberNotFound, UserNotFound, RoleNotFound, MessageNotFound,\
     ChannelNotFound, NoPrivateMessage, Message, MessageConverter, BadUnionArgument,\
     trim, forbidden_word, noswear, greetings, farewells, nou, urnotgod, timeto, Bot,\
-    ThreadNotFound, train, CheckFailure, eastereggs, who_pinged, ErrorView, HTTPException
+    ThreadNotFound, train, CheckFailure, eastereggs, who_pinged, ErrorView, HTTPException,\
+    stopwatch
 
 severed_time = 0
 connect_time = 0
@@ -24,33 +25,40 @@ class Events(Cog):
         self.name = 'events'
 
     @loop(seconds=30.0)
+    @stopwatch
     async def birthday(self):
         global prev_members
         now_ = datetime.datetime.now()
         nxt_day = now_.day + 1
-        # if (datetime.datetime(now_.year, now_.month, nxt_day) - now_).total_seconds() > 30:
-        #     del nxt_day
-        #     return
+
+        if (datetime.datetime(now_.year, now_.month, nxt_day) - now_).total_seconds() > 30:
+            del nxt_day
+            return
+
         del nxt_day
         date = now_.strftime("%d/%m")
-        with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/birthdays.json") as f:
+        del now_
+
+        with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/birthdays_.json") as f:
             birthdays: dict = json.load(f)
-        # if date not in birthdays.keys():
-        #     del date, birthdays
-        #     _now = datetime.datetime.now()
-        #     print('no birthday')
-        #     print((_now - now_).total_seconds())
-        #     del _now
-        #     return
+
         current_birthdays = birthdays.get(date)
-        guild = await self.bot.fetch_guild(766356666273890314)
+        guild = self.bot.get_guild(766356666273890314)
         birthday_role = guild.get_role(874909501617238048)
+        general: TextChannel = await guild.fetch_channel(821278528108494878)
+
         if len(birthday_role.members) != 0:
             if [str(m.id) for m in birthday_role.members] != current_birthdays:
                 for member in birthday_role.members:
                     try: await member.remove_roles(birthday_role)
                     except HTTPException: pass
-            else: return
+                await general.edit(topic=None)
+            else:
+                return
+
+        if date not in birthdays.keys():
+            del date, birthdays
+            return
 
         topic = ''
         for user_id in current_birthdays:
@@ -59,12 +67,9 @@ class Events(Cog):
             if 'Happy' not in topic:
                 topic += f"Happy birthday {m.name}!"
             else:
-                topic.replace('!', f", {m.name}!")
+                topic = topic.replace('!', f", {m.name}!")
 
-        general: TextChannel = await guild.fetch_channel(821278528108494878)
         await general.edit(topic = topic)
-        _now = datetime.datetime.now()
-        print((_now-now_).total_seconds())
 
     @loop(minutes=5)
     async def timer(self):
@@ -167,9 +172,9 @@ class Events(Cog):
                                 time: datetime.datetime = datetime.datetime.strptime(birthdays[str(person.id)]+datetime.datetime.now().strftime("/%Y"), "%d/%m/%Y")
                                 datending = (lambda t: {'1': 'st', '2': 'nd', '3': 'rd'}.get(str(t)[-1]) or 'th')(time.day)
                                 if time < datetime.datetime.now():
-                                    time: str = re.sub(" to `00:00 [0-9]{2}/[0-9]{2}/[0-9]{4}`", "", time.strftime(f"""The next occurrance of . birthday is in {timeto(f'{time.day}/{time.month}/{time.year + 1}')} on the `%d{datending} of %B in {time.year + 1}`"""))
+                                    time: str = re.sub(" to `00:00 [0-9]{2}/[0-9]{2}/[0-9]{4}`", "", time.strftime(f"""The next occurrance of . birthday is in {timeto(f'{time.day}/{time.month}/{time.year + 1}')[0]} on the `%d{datending} of %B in {time.year + 1}`"""))
                                 else:
-                                    time: str = re.sub(" to `00:00 [0-9]{2}/[0-9]{2}/[0-9]{4}`", "", time.strftime(f"""The next occurrance of . birthday is in {timeto(f'{time.day}/{time.month}/{time.year}')} on the `%d{datending} of %B in %Y`"""))
+                                    time: str = re.sub(" to `00:00 [0-9]{2}/[0-9]{2}/[0-9]{4}`", "", time.strftime(f"""The next occurrance of . birthday is in {timeto(f'{time.day}/{time.month}/{time.year}')[0]} on the `%d{datending} of %B in %Y`"""))
                                 await ctx.reply(time.replace(".", 'your' if person.id == author.id else person.name+"'s"))
                             else:
                                 await ctx.reply(f"I'm sorry but I don't think I have that birthday stored anywhere. Contact Shlol#2501 to add the birthday")

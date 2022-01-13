@@ -11,6 +11,7 @@ from pytz import timezone
 from typing import Union, Optional, List, Coroutine, Tuple, Dict, Callable
 import aiohttp, aiofiles
 import re
+from inspect import isawaitable
 from functools import wraps
 
 
@@ -246,7 +247,7 @@ def comm_log_local(command_: Callable):
     """Logs all command movement into a local text file."""
     @wraps(command_)
     async def wrapper(*args, **kwargs):
-        ctx = [arg for arg in args if isinstance(arg, Context)][0]
+        ctx = [arg for arg in (args+tuple(kwargs.values())) if isinstance(arg, Context)][0]
         with open("C:/Users/Shlok/bot_stuff/safe_docs/command_logs.txt", "r") as f:
             lines: list[str] = f.read().split("\n")
         sl_no = "{0:0>6}".format(int(re.search(r'[0-9]{6}', lines[1]).group()) + 1)
@@ -341,4 +342,15 @@ class CricInfoCard:
             'icon': self._icons[1],
             'score': self._overs[1] + ' ' + self._scores[1]
             }}
+
+
+def stopwatch(coro: Coroutine):
+    @wraps(coro)
+    async def wrapper(*args, **kwargs):
+        now = datetime.now()
+        await coro(*args, **kwargs)
+        later = datetime.now()
+        diff = round((later-now).total_seconds()*1000, 3)
+        print(str(diff)+' ms') if diff > 0 else None
+    return wrapper
 
