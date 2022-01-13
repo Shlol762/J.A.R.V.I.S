@@ -509,7 +509,7 @@ For Example:- 1)Err_10124 means command '1' under category
             pings = json.load(f)
         if pings.get(ch_id):
             embed = Embed(title=f'Last {len(pings[ch_id])} {"people" if len(pings[ch_id]) > 1 else "person"} who pinged in `{(channel or ctx.channel).name}`',
-                          description="\n".join([f"• <@{_id}>" for _id in pings[ch_id][::-1]]), colour=Colour.random()).set_footer(
+                          description="\n".join([f"• <@{_id}> - `{timstmp}`" for _id, timstmp in list(pings[ch_id].items())[::-1]]), colour=Colour.random()).set_footer(
                 text="Top most recent."
             )
         await ctx.reply(f'No one pinged in <#{ch_id}>' if not pings.get(ch_id) else None, embed=embed)
