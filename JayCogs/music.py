@@ -6,8 +6,8 @@ import random
 from typing import Optional
 import youtube_dl
 from async_timeout import timeout
-from nextcord.ext import commands
-from MyCogs import command_log_and_err, Context, Bot,\
+from disnake.ext import commands
+from JayCogs import command_log_and_err, Context, Bot,\
     Cog, NoPrivateMessage, CommandError, command,\
     guild_only, PCMVolumeTransformer, FFmpegPCMAudio,\
     Embed, Colour, Client, VoiceChannel, comm_log_local

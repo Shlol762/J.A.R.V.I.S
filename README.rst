@@ -14,18 +14,18 @@ Dependencies
 ------------
 .. image:: https://discord.com/api/guilds/336642139381301249/embed.png
    :target: https://discord.gg/r3sSKJJ
-   :alt: Nextcord server invite
-.. image:: https://img.shields.io/pypi/v/nextcord.svg
-   :target: https://pypi.python.org/pypi/nextcord
+   :alt: disnake server invite
+.. image:: https://img.shields.io/pypi/v/disnake.svg
+   :target: https://pypi.python.org/pypi/disnake
    :alt: PyPI version info
-.. image:: https://img.shields.io/pypi/pyversions/nextcord.py.svg
-   :target: https://pypi.python.org/pypi/nextcord
+.. image:: https://img.shields.io/pypi/pyversions/disnake.py.svg
+   :target: https://pypi.python.org/pypi/disnake
    :alt: PyPI supported Python versions
 
-- Nextcord - The new fork of discord.py
+- disnake - The new fork of discord.py
 
-  - `Documentation <https://nextcord.readthedocs.io/en/latest/>`_
-  - `Installation <https://pypi.org/project/nextcord>`_
+  - `Documentation <https://disnake.readthedocs.io/en/latest/>`_
+  - `Installation <https://pypi.org/project/disnake>`_
 - discord.py (formerly)
 
   - `Documentation <https://discordpy.readthedocs.io/en/stable/>`_

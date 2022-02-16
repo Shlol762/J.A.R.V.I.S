@@ -1,7 +1,7 @@
 import asyncio
 from typing import Optional
-import nextcord
-from MyCogs import encrypt, decrypt, command_log_and_err,\
+import disnake
+from JayCogs import encrypt, decrypt, command_log_and_err,\
     commands, Cog, command, cooldown, BucketType, Context,\
     Member, guild_only, Client, Embed, Colour, Message,\
     choice, randint, Bot, comm_log_local
@@ -317,7 +317,7 @@ Password: {hack_pass}
         else:
             await ctx.message.delete()
             if ctx.bot.user not in [webhook.user for webhook in await ctx.channel.webhooks()]:
-                webhook: nextcord.Webhook = await ctx.channel.create_webhook(name=ctx.bot.user.name, avatar=None)
+                webhook: disnake.Webhook = await ctx.channel.create_webhook(name=ctx.bot.user.name, avatar=None)
                 await webhook.send(text or f"I have no idea who to impersonate so I'll just impersonate you.",
                                    username=member.display_name,
                                    avatar_url=member.avatar.url)
@@ -329,7 +329,7 @@ Password: {hack_pass}
             else:
                 with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/webhooks.json", "r") as f:
                     webhooks: dict = json.load(f)
-                webhook: nextcord.Webhook = await ctx.bot.fetch_webhook(int(webhooks.get(str(ctx.channel.id))))
+                webhook: disnake.Webhook = await ctx.bot.fetch_webhook(int(webhooks.get(str(ctx.channel.id))))
                 await webhook.send(text or f"I have no idea who to impersonate so I'll just impersonate you.",
                                    username=member.display_name,
                                    avatar_url=member.avatar.url)

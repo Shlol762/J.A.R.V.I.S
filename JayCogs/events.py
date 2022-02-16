@@ -1,22 +1,74 @@
 import asyncio
 import random, datetime, json, re
 import sys
-
-from . import hypesquad_emoji, command_log_and_err, set_timestamp,\
-    VERSION, loop, Cog, Context, command, Client, Guild, Role, TextChannel,\
+import string, nltk
+import disnake
+import numpy as np
+from . import command_log_and_err,\
+    loop, Cog, Context, command, Client, Guild, Role, TextChannel,\
     Member, NotFound, Status, Activity, ActivityType, Embed, Colour, Invite,\
     Forbidden, GuildChannel, MemberConverter, CommandError, CommandNotFound,\
     CommandOnCooldown, MemberNotFound, UserNotFound, RoleNotFound, MessageNotFound,\
     ChannelNotFound, NoPrivateMessage, Message, MessageConverter, BadUnionArgument,\
     trim, forbidden_word, noswear, greetings, farewells, nou, urnotgod, timeto, Bot,\
     ThreadNotFound, train, CheckFailure, eastereggs, who_pinged, ErrorView, HTTPException,\
-    stopwatch, time_set
+    stopwatch, time_set, AllowedMentions, load
 
 severed_time = 0
 connect_time = 0
-chnls = [833995745690517524, 817299815900643348, 817300015176744971, 859801379996696576, 880314505740046336]
-webhooks = [861660340617084968, 861660166193807430, 861660711037960243, 861660517746999356, 880318607643521075]
+chnls = [833995745690517524, 817299815900643348, 817300015176744971, 859801379996696576]
+webhooks = [861660340617084968, 861660166193807430, 861660711037960243, 938268473623212053]
 prev_members = []
+
+model = None
+if load:
+    from nltk.stem import WordNetLemmatizer
+    from . import load_model
+    lemmatizer = WordNetLemmatizer()
+
+    model, words, classes, data = load_model(lemmatizer)
+
+    def clean_text(_text):
+        _tokens = nltk.word_tokenize(_text)
+        _tokens = [lemmatizer.lemmatize(word) for word in _tokens]
+        return _tokens
+
+
+    def bag_of_words(_text, vocab):
+        _tokens = clean_text(_text)
+        bow = [0] * len(vocab)
+        for w in _tokens:
+            for idx, word in enumerate(vocab):
+                if word == w:
+                    bow[idx] = 1
+        return np.array(bow)
+
+
+    def pred_class(_text, vocab, labels):
+        bow = bag_of_words(_text, vocab)
+        result = model.predict(np.array([bow]))[0]
+        thresh = 0.2
+        y_pred = [[idx, res] for idx, res in enumerate(result) if res > thresh]
+
+        y_pred.sort(key=lambda x: x[1], reverse=True)
+        return_list = []
+        for r in y_pred:
+            return_list.append(labels[r[0]])
+        return return_list
+
+
+    def get_response(intents_list, intents_json):
+        tag = intents_list[0]
+        list_of_intents = intents_json["intents"]
+        for i in list_of_intents:
+            if i["tag"] == tag:
+                result = random.choice(i["responses"])
+                break
+        return result
+
+
+with open("C:/Users/Shlok/bot_stuff/version.txt", 'r') as f:
+    VERSION = f.read()
 
 
 class Events(Cog):
@@ -92,12 +144,12 @@ class Events(Cog):
         ch: TextChannel = self.bot.get_channel(823216455733477387)
         embed = Embed(title="Connection to discord",
                               description=f"*`Successful`*: `Confirmed`\n *`Connection at`*: `{connect_time}`",
-                              colour=Colour.gold())
-        await ch.send(embed=await set_timestamp(embed, ""))
+                              colour=Colour.gold(), timestamp=datetime.datetime.utcnow())
+        await ch.send(embed=embed)
         embed = Embed(title="Bot is ready",
                       description=f'`{self.bot.user.name}` is ready, Version: `{VERSION}`\n',
-                      colour=Colour.teal())
-        await ch.send(embed=await set_timestamp(embed, ""))
+                      colour=Colour.teal(), timestamp=datetime.datetime.utcnow())
+        await ch.send(embed=embed)
         try: self.birthday.start()
         except RuntimeError: self.birthday.restart()
         # try: self.timer.start()
@@ -108,14 +160,38 @@ class Events(Cog):
     async def on_message(self, message: Message):
         global chnls
         ctx: Context = await self.bot.get_context(message)
-        # if ctx.guild.id in black_list:
-        #     await ctx.guild.leave()
         channel: TextChannel = ctx.channel
         author: Member = ctx.author
         bot: Bot = ctx.bot
         with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json", 'r') as f:
             vals: dict = json.load(f)
+        if re.search(r"[a-zA-Z0-9]{24}\.[a-zA-Z0-9]{6}\.[a-zA-Z0-9\-_]{27}", message.content):
+            await ctx.send('none')
         if ctx.guild:
+            if author == ctx.guild.owner and message.content.lower().startswith("jarvis disengage alpha lock"):
+                [await channel.edit(overwrites={ctx.guild.default_role: disnake.PermissionOverwrite(send_messages=True)}) for channel in ctx.guild.text_channels]
+                await ctx.send("Alpha lock disengaged")
+            if re.search(r'ultron kill (<@!?749830638982529065>|j.?a.?r.?v.?i.?s.?)', message.content.lower()):
+                await self.bot.wait_for('message', check=lambda m: m.author.id == 933591106950684712, timeout=2)
+                await ctx.send(f'@everyone Secuirity warning! Ultron has breeched the network take cover.', allowed_mentions=AllowedMentions(everyone=False))
+                await self.bot.change_presence(status=Status.idle,
+                                               activity=Activity(type=ActivityType.watching,
+                                                                 name=f"Ultron's movements"))
+                await asyncio.sleep(1)
+                await self.bot.change_presence(status=Status.online,
+                                               activity=Activity(type=ActivityType.watching,
+                                                                 name=f"Ultron's movements"))
+                await asyncio.sleep(1)
+                await self.bot.change_presence(status=Status.do_not_disturb,
+                                               activity=Activity(name="Warning! Going offline"))
+                await asyncio.sleep(1)
+                await self.bot.change_presence(status=Status.invisible)
+                await asyncio.sleep(10)
+                await ctx.send(f'Systems back online...')
+                await self.bot.change_presence(status=Status.dnd,
+                                               activity=Activity(type=ActivityType.watching,
+                                                                 name=f'people talk...    V{VERSION}'))
+                return
             await who_pinged(ctx)
             if channel.id in chnls and ctx.message.webhook_id not in webhooks:
                 text: str = f"{message.content}"
@@ -123,13 +199,13 @@ class Events(Cog):
                     ref: Message = await MessageConverter().convert(await bot.get_context(message),
                                                                     message.reference.jump_url)
                     text: str = f"`╔═`***`{ref.author.name}`***: {ref.content[:50]}\n{message.content}"
-                ch1, ch2, ch3, ch4, ch5 = await bot.fetch_webhook(webhooks[0]), await bot.fetch_webhook(webhooks[1]), await bot.fetch_webhook(webhooks[2]), await bot.fetch_webhook(webhooks[3]),\
-                    await bot.fetch_webhook(webhooks[4])
+                ch1, ch2, ch3, ch4 = await bot.fetch_webhook(webhooks[0]), await bot.fetch_webhook(webhooks[1]), await bot.fetch_webhook(webhooks[2]), await bot.fetch_webhook(webhooks[3])
+                # ch5 = await bot.fetch_webhook(webhooks[4])
                 await ch1.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar.url) if channel.id != chnls[0] else None
                 await ch2.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar.url) if channel.id != chnls[1] else None
                 await ch3.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar.url) if channel.id != chnls[2] else None
                 await ch4.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar.url) if channel.id != chnls[3] else None
-                await ch5.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar.url) if channel.id != chnls[4] else None
+                # await ch5.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar.url) if channel.id != chnls[4] else None
             else:
                 try:
                     if bot.user == author: return
@@ -142,6 +218,10 @@ class Events(Cog):
                     if options["suppressemb"]:
                         await message.edit(suppress=True)
                     if options["message"]:
+                        if model:
+                            intents = pred_class(message.content.lower(), words, classes)
+                            _result = get_response(intents, data)
+                            await ctx.send(_result)
                         if options["msghai"]:
                             await forbidden_word(ctx)
                         if options["noswear"]:
@@ -157,7 +237,6 @@ class Events(Cog):
                                 await nou(ctx)
                             if options['iamgod']:
                                 await urnotgod(ctx)
-
                     message_text: str = re.sub(r"when(s|'s| is)?", "when", message.content.lower()).replace("my", author.mention).replace('your', bot.user.name).replace(
                         "birthday", "bday").replace("i", author.mention)
                     if re.search(r"\b(when (is )?(the next occurrance of |will)?((.)+ (next )?bday)| the day (.)+ was born)", message_text.lower()):
@@ -199,8 +278,8 @@ class Events(Cog):
         ch: TextChannel = self.bot.get_channel(823216455733477387)
         embed = Embed(title="Re-connection to discord",
                               description=f"*`Successful`*: `Confirmed`\n *`Last disconnect`*: `{severed_time}`\n*`Re-connection at`*: `{time}`",
-                              colour=Colour.gold())
-        await ch.send(embed=await set_timestamp(embed, ""))
+                              colour=Colour.gold(), timestamp=datetime.datetime.utcnow())
+        await ch.send(embed=embed)
 
     @Cog.listener()
     async def on_member_join(self, member: Member):
@@ -234,41 +313,42 @@ class Events(Cog):
         if isinstance(error, CommandNotFound):
             await command_log_and_err(ctx=ctx, err_code="Err_A113",
                                       text=f"Command not found {ctx.author.mention}",
-                                      invalid_comname=error.args[0][9:-14])
+                                      invalid_comname=error.args[0][9:-14], send=False)
         elif isinstance(error, CommandOnCooldown):
             with open("C:/Users/Shlok/bot_stuff/safe_docs/command_logs.txt", "r") as f:
                 lines: list[str] = f.readlines()
-            if ctx.author.id == 613044385910620190: await ctx.reinvoke()
-            elif str(ctx.command.extras.get('number')) in ''.join(lines[-4:]) and str(ctx.author.id) in ''.join(lines[-4:]) and "Err" in ''.join(lines[-4:]):
+            # if ctx.author.id == 613044385910620190: await ctx.reinvoke()
+            if str(ctx.command.extras.get('number')) in ''.join(lines[-4:]) and str(ctx.author.id) in ''.join(lines[-4:]) and "Err" in ''.join(lines[-4:]):
                 await ctx.reinvoke()
             else: await command_log_and_err(ctx=ctx, status='Cooldown', error=error)
         elif isinstance(error, MemberNotFound):
             await command_log_and_err(ctx=ctx, err_code="Err_a11404",
-                                      text=f"**`The Member:`**` `*`'{error.argument}'`*` doesn't exist` I don't know what you're looking for.")
+                                      text=f"The Member *`'{error.argument}'`* doesn't exist. I don't know what you're looking for.")
         elif isinstance(error, RoleNotFound):
             await command_log_and_err(ctx=ctx, err_code="Err_b20404",
-                                      text=f"**`The Role:`**` `*`'{error.argument}'`*` doesn't exist` I don't know what you're looking for.")
+                                      text=f"The Role *`'{error.argument}'`* doesn't exist. I don't know what you're looking for.")
         elif isinstance(error, MessageNotFound):
             await command_log_and_err(ctx=ctx, err_code="Err_O30404",
-                                      text=f"**`The Message:`**` `*`'{error.argument}'`*` doesn't exist` I don't know what you're looking for.")
+                                      text=f"The Message *`'{error.argument}'`* doesn't exist. I don't know what you're looking for.")
         elif isinstance(error, UserNotFound):
             await command_log_and_err(ctx=ctx, err_code="Err_40bO404",
-                                      text=f"**`The User:`**` `*`'{error.argument}'`*` doesn't exist` I don't know what you're looking for.")
+                                      text=f"The User *`'{error.argument}'`* doesn't exist. I don't know what you're looking for.")
         elif isinstance(error, ChannelNotFound):
             await command_log_and_err(ctx=ctx, err_code="Err_50Ob404",
-                                      text=f"**`The Channel:`**` `*`'{error.argument}'`*` doesn't exist` I don't know what you're looking for.")
+                                      text=f"The Channel *`'{error.argument}'`* doesn't exist. I don't know what you're looking for.")
         elif isinstance(error, CheckFailure):
             pass
         elif isinstance(error, NoPrivateMessage):
             await command_log_and_err(ctx=ctx, status='Server Only', error=error)
         elif isinstance(error, ThreadNotFound):
-            await command_log_and_err(ctx, err_code='TNFi404', text=f"**`The Thread:`**` `*`'{error.argument}'`*` doesn't exist` I don't know what you're looking for.")
+            await command_log_and_err(ctx, err_code='TNFi404', text=f"The Thread *`'{error.argument}'`* doesn't exist. I don't know what you're looking for.")
         elif isinstance(error, BadUnionArgument):
-            await command_log_and_err(ctx, err_code="Err_000b12",
-                                      text=f"There is no channel called {error.param}")
+            if 'dcc' in ctx.command.aliases:
+                await command_log_and_err(ctx, err_code="Err_000b12",
+                                      text=f"That's not a channel bub.")
         else:
             import traceback, sys
-            err_embed = await set_timestamp(Embed(title=f"Error! - `{ctx.command.name}`", description="", colour=Colour.red()), "Unhandled Excpetion")
+            err_embed = Embed(title=f"Error! - `{ctx.command.name}`", description="", colour=Colour.red(), timestamp=datetime.datetime.utcnow()).set_footer(text="Unhandled Excpetion")
             lines = f'\nIgnoring exception in on_command_error:\n' + ''.join(
                 traceback.format_exception(error.__class__, error, error.__traceback__))
 

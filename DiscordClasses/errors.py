@@ -1,5 +1,5 @@
-from nextcord.errors import *
-from nextcord.ext.commands import *
+from disnake.errors import *
+from disnake.ext.commands import *
 
 class ThreadNotSpecified(BadArgument):
     pass

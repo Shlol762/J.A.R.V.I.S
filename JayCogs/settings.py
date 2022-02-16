@@ -1,8 +1,8 @@
 from typing import Union
-import nextcord, json
-from nextcord.ext import commands
-from nextcord import Embed, Colour
-from MyCogs import command_log_and_err, Cog, command,\
+import disnake, json
+from disnake.ext import commands
+from disnake import Embed, Colour
+from JayCogs import command_log_and_err, Cog, command,\
     guild_only, Context, Client, set_timestamp, Bot,\
     comm_log_local
 

@@ -1,6 +1,6 @@
 from .errors import *
-from nextcord.ui import Select
-from nextcord import SelectOption, TextChannel, VoiceChannel,\
+from disnake.ui import Select
+from disnake import SelectOption, TextChannel, VoiceChannel,\
     Interaction, CategoryChannel, Embed, Colour
 from typing import Union
 import re
@@ -8,13 +8,13 @@ import re
 
 class CategorySelect(Select):
     def __init__(self, channel: Union[TextChannel, VoiceChannel]):
-        super().__init__(custom_id='selectcategory', placeholder="Select Category(Optional)",
+        super().__init__(custom_id='selectcategory', placeholder="Select Category",
                          options=[SelectOption(label='None', description='Pick this if you dont '
                                                      'want the channel to be in any category.')])
         self.channel = channel
 
     async def callback(self, interaction: Interaction):
-        if interaction.user != self.view.ctx.author:
+        if interaction.user != self.view.ctx.user:
             return
         chnl = self.channel
         if self.values[0] != 'None':
@@ -26,10 +26,10 @@ class CategorySelect(Select):
                                                                value=f"`{chnl.name}`").add_field(
             name='ID: ', value=f"`{chnl.id}`").add_field(name='Category: ',
                                                          value=f"`{ctgry.name if self.values[0] != 'None' else 'None'}`")
+        self.disabled = True
+        await self.view.ctx.edit_original_message(view=self.view)
         await interaction.response.send_message(embed=embed,
                                                     ephemeral=True)
-        self.disabled = True
-        await self.view.message.edit(view=self.view)
 
 
 class HelpCategorySelect(Select):

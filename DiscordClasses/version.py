@@ -40,12 +40,3 @@ class Version:
     @property
     def version(self):
         return f'{self.major}.{self.minor:0>2}.{self.micro}'
-
-
-with open("C:/Users/Shlok/bot_stuff/version.txt", 'r') as f:
-    ver = Version(f.read())
-
-VERSION = ver.increment().version if not re.search("(no?(ah)?|deny)", input("Version increment? ")) else ver.version
-
-with open("C:/Users/Shlok/bot_stuff/version.txt", 'w') as f:
-    f.write(VERSION)

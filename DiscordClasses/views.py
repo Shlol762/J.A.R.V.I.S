@@ -1,10 +1,10 @@
 import re, traceback, sys
-from nextcord.ui import View, Button, Item, button, Select, select
-from nextcord import SelectOption,\
+from disnake.ui import View, Button, Item, button, Select, select
+from disnake import SelectOption,\
     CategoryChannel, TextChannel,\
     VoiceChannel, Thread, Interaction,\
-    ButtonStyle, Message
-from nextcord.ext.commands import Context
+    ButtonStyle, Message, InteractionMessage
+from disnake.ext.commands import Context
 from .errors import *
 from .components import *
 
@@ -14,7 +14,7 @@ HOME_SERVER_INVITE = 'https://discord.gg/zt6j4h7ep3'
 
 
 class BaseView(View):
-    def __init__(self, ctx: Context, timeout: float = 180.0, **kwargs):
+    def __init__(self, ctx: Interaction, timeout: float = 180.0, **kwargs):
         super().__init__(timeout=timeout)
         self.ctx = ctx
         self.extras = kwargs
@@ -27,13 +27,13 @@ class BaseView(View):
     async def disable_all(self):
         for item in self.children:
             item.disabled = True
-        await self.message.edit(view=self)
+        await self.message.edit(view=self) if self.message else await self.ctx.edit_original_message(view=self)
 
     async def on_timeout(self):
         await self.disable_all()
 
     async def interaction_check(self, interaction: Interaction) -> bool:
-        return self.ctx.author == interaction.user
+        return self.ctx.user == interaction.user
 
     async def kill(self):
         for item in self.children:
@@ -43,7 +43,7 @@ class BaseView(View):
             else:
                 item.placeholder = "Error! Contact Shlol#2501"
             item.disabled = True
-        await self.message.edit(view=self)
+        await self.message.edit(view=self) if self.message else await self.ctx.edit_original_message(view=self)
 
     async def on_error(self, error: Exception, item: Item, interaction: Interaction):
         await self.kill()
@@ -108,7 +108,7 @@ class JoinHomeServer(BaseView):
 
 
 class SelectChannelCategoryView(BaseView):
-    def __init__(self, ctx: Context,  **kwargs):
+    def __init__(self, ctx: Interaction,  **kwargs):
         self.extras = kwargs
         self.args_check()
         self.ctx = ctx

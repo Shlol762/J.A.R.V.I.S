@@ -1,7 +1,7 @@
 from typing import Optional, Union
-import nextcord
-from nextcord.ext import commands
-from MyCogs import command_log_and_err, set_timestamp, command,\
+import disnake
+from disnake.ext import commands
+from JayCogs import command_log_and_err, set_timestamp, command,\
     Cog, cooldown, guild_only, BucketType, Context, has_permissions,\
     Client, Forbidden, Role, Member, Colour, Embed, HTTPException,\
     InvalidArgument, Bot, comm_log_local

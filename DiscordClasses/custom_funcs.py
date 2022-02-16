@@ -1,26 +1,26 @@
 import json
 import os
 from datetime import datetime
-import nextcord
+import disnake
 from PIL import Image
-from nextcord.ext import commands
-from nextcord.ext.commands import RoleNotFound, RoleConverter, MemberConverter, Bot, Context, when_mentioned_or,\
+from disnake.ext import commands
+from disnake.ext.commands import RoleNotFound, RoleConverter, MemberConverter, Bot, Context, when_mentioned_or,\
     MessageConverter
-from nextcord import Role, Member, Message, Emoji
+from disnake import Role, Member, Message, Emoji, Forbidden
 from pytz import timezone
 from typing import Union, Optional, List, Coroutine, Tuple, Dict, Callable
 import aiohttp, aiofiles
 import re
 from inspect import isawaitable
 from functools import wraps
-
+from time import time as unixtim
 
 __doc__ = "Module containing all sorts of custom functions."
 
 
-def trim(string: str) -> str:
+def trim(string_: str) -> str:
     """Takes in a string argument and trims every extra whitespace from in between as well as the ends."""
-    return re.sub(" +", " ", string.strip())
+    return re.sub(" +", " ", string_.strip())
 
 
 def print_methods(obj: object, magic_methods: bool = False):
@@ -43,16 +43,19 @@ def print_vars(obj):
 
 async def reaction(ctx: Context = None, success=None):
     """Adds a reaction to any command invoking message."""
-    if success is False:
-        await ctx.message.clear_reactions()
-        await ctx.message.add_reaction('❌')
-    if success is True:
-        emoji: str = ctx.command.extras.get('emoji')
-        emoji: Emoji = ctx.bot.get_emoji(int(emoji)) if emoji.isnumeric() else emoji
-        try:
-            await ctx.message.add_reaction(emoji)
-        except nextcord.HTTPException:
-            await ctx.message.add_reaction('✅')
+    try:
+        if success is False:
+            await ctx.message.clear_reactions()
+            await ctx.message.add_reaction('❌')
+        if success is True:
+            emoji: str = ctx.command.extras.get('emoji')
+            emoji: Emoji = ctx.bot.get_emoji(int(emoji)) if emoji.isnumeric() else emoji
+            try:
+                await ctx.message.add_reaction(emoji)
+            except disnake.HTTPException:
+                await ctx.message.add_reaction('✅')
+    except Forbidden:
+        pass
 
 
 def image_join(img1: Union[str, os.PathLike], img2: Union[str, os.PathLike]) -> Union[str, os.PathLike]:
@@ -94,31 +97,10 @@ def time_set(time: datetime = None, time_format: str = None) -> Optional[datetim
         timezone('Asia/Kolkata'))
 
 
-async def get_emoji(bot: Bot, emoji: int) -> Optional[Union[str, Emoji]]:
+async def get_emoji(bot: Bot, emoji: Union[int, str]) -> Optional[Emoji]:
     """Getting the emoji from inside a Bot instance."""
-    for squad in bot.emojis:
-        if squad.id == emoji or squad.name == emoji:
-            returned: bool = True
-            break
-        else:
-            returned = False
-    return "" if returned is False else squad
-
-
-async def hypesquad_emoji(bot: Bot, squad: str) -> Optional[Union[str, Emoji]]:
-    """Gets the emoji by the ID from https://discord.gg/zt6j4h7ep3"""
-    emoji: int = {"Hypesquad Brilliance": 840464223326306305,
-             "Hypesquad Balance": 840464223280824320,
-             "Hypesquad Bravery": 840464223560663040,
-             "Staff": 840464223602737192,
-             "Legendary": 840464223632752670,
-             "Bug Hunter": 840464223251333150,
-             "Bug Hunter Level 2": 840464223251333150,
-             "Early Supporter": 840464223770771496,
-             "Hypesquad": 840464223326437386,
-             "Bot": 840464223804325909,
-             "VerifiedBot": 840464223975768095}.get(squad)
-    return await get_emoji(bot=bot, emoji=emoji)
+    return disnake.utils.find(lambda e: emoji.lower().replace(' ', '') in e.name.lower(),
+                                bot.emojis) if isinstance(emoji, str) else bot.get_emoji(emoji)
 
 
 def timeto(time_str: str) -> Union[str, datetime, datetime]:
@@ -170,7 +152,7 @@ def timeto(time_str: str) -> Union[str, datetime, datetime]:
     return time_, now, till
 
 
-def calculate_position(channel: Union[nextcord.TextChannel, nextcord.VoiceChannel], pos: int) -> int:
+def calculate_position(channel: Union[disnake.TextChannel, disnake.VoiceChannel], pos: int) -> int:
     """Calculates the heirarchy position of channels and categories in a discord server."""
     ctgry_pos = channel.category.position
     index_start = 0
@@ -212,11 +194,11 @@ def number_system(num: int) -> str:
     return new_num[::-1]
 
 
-def find_nth_occurrence(string: str, substring: str, n: int) -> Optional[int]:
+def find_nth_occurrence(_string: str, substring: str, n: int) -> Optional[int]:
     """Return index of `n`th occurrence of `substring` in `string`, or None if not found."""
     index = 0
     for _ in range(n):
-        index = string.find(substring, index+1)
+        index = _string.find(substring, index+1)
         if index == -1:
             return None
     return index
@@ -262,7 +244,7 @@ def comm_log_local(command_: Callable):
         lines.extend([
             f"+{'='*51}LOG-ENTRY-{sl_no}{'='*52}+",
             f"|    Name   : {com_name:<45}Command Number: {com_num:<45}|",
-            f"|Timestamp  : {time + ' on ' + date:<106}|",
+            f"|Timestamp  : {time + ' on ' + date + '({})'.format(unixtim()):<106}|",
             f"+{'-'*49}USAGE CONTEXT DETAILS{'-'*49}+",
             f"|Used by: {ctx.author.id:<55}Server  : {ctx.guild.id:<45}|",
             f"|Channel: {ctx.channel.id:<53}Message ID: {ctx.message.id:<45}|",
@@ -353,4 +335,35 @@ def stopwatch(coro: Coroutine):
         diff = round((later-now).total_seconds()*1000, 3)
         print(str(diff)+' ms') if diff > 0 else None
     return wrapper
+
+load = False
+if re.search(r"y(e[sa]h?)", input("Load model? ")):
+    import nltk
+    from nltk.stem import WordNetLemmatizer
+    from tensorflow.keras.models import load_model as lm
+    import string
+    load = True
+
+    def load_model(lemmatizer: WordNetLemmatizer):
+        with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/patterns.json", "r") as f:
+            data: dict = json.load(f)
+
+        words = []
+        classes = []
+        doc_X = []
+        doc_y = []
+        for intent in data["intents"]:
+            for pattern in intent["patterns"]:
+                tokens = nltk.word_tokenize(pattern)
+                words.extend(tokens)
+                doc_X.append(pattern)
+                doc_y.append(intent["tag"])
+            if intent["tag"] not in classes:
+                classes.append(intent["tag"])
+        words = [lemmatizer.lemmatize(word.lower()) for word in words if word not in string.punctuation]
+        words = sorted(set(words))
+        classes = sorted(set(classes))
+
+        model = lm('C:/Users/Shlok/Desktop/chatbot-model1.h5')
+        return model, words, classes, data
 

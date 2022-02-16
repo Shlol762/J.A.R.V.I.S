@@ -2,11 +2,11 @@ import datetime
 import json
 import re
 
-import nextcord
-from nextcord.ext import commands
+import disnake
+from disnake.ext import commands
 from typing import Optional, Union
-from MyCogs import VERSION, command_log_and_err,\
-    set_timestamp, time_set, hypesquad_emoji, Cog,\
+from JayCogs import command_log_and_err,\
+    set_timestamp, time_set, get_emoji, Cog,\
     Bot, command, guild_only, cooldown, Context, BucketType,\
     Embed, Colour, Member, Forbidden, CustomActivity, Spotify,\
     Game, Activity, ActivityType, Status, HTTPException, User,\
@@ -14,7 +14,8 @@ from MyCogs import VERSION, command_log_and_err,\
     ConversionView, Guild, Role
 
 
-bot_ver = VERSION
+with open("C:/Users/Shlok/bot_stuff/version.txt", 'r') as f1:
+    bot_ver = f1.read()
 
 
 class Utilities(Cog):
@@ -181,11 +182,11 @@ class Utilities(Cog):
             activities = ', '.join(activities) if None not in activities else 'None'
             public_flags = ', '.join(
                 [str(house).replace("UserFlags.", "").replace("_", " ").title() for house in member.public_flags.all()])
-            flag_logos = ''.join([str(await hypesquad_emoji(bot, emoji)) for emoji in public_flags.split(", ")])
+            flag_logos = ''.join([str(await get_emoji(bot, emoji)) for emoji in public_flags.split(", ")])
             if member.bot and member.public_flags.verified_bot:
-                flag_logos += str(await hypesquad_emoji(bot, "VerifiedBot"))
+                flag_logos += str(await get_emoji(bot, "VerifiedBot"))
             elif member.bot and not member.public_flags.verified_bot:
-                flag_logos += str(await hypesquad_emoji(bot, "Bot"))
+                flag_logos += str(await get_emoji(bot, "Bot"))
             joined_at = time_set(member.joined_at, "%d %b %Y at %I:%M %p")
             created_at = time_set(member.created_at, "%d %b %Y at %I:%M %p")
             emb1 = Embed(title=f'Member Statistics - {name}  {flag_logos}', description='',
@@ -256,7 +257,7 @@ Categories    : 1 = Roles(rs)
                 P = Python(py)
 
 Type of Errors: 24  = Missing Permissions
-                48  = Missing Arguments
+                48  = Missing Arguments - Deprecated
                 12  = Operation Failed
                 404 = Not found
                   
@@ -506,10 +507,10 @@ For Example:- 1)Err_10124 means command '1' under category
         ch_id = str((channel or ctx.channel).id)
         embed = None
         with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/pings.json", 'r') as f:
-            pings = json.load(f)
+            pings: dict[str, dict[str, str]] = json.load(f)
         if pings.get(ch_id):
             embed = Embed(title=f'Last {len(pings[ch_id])} {"people" if len(pings[ch_id]) > 1 else "person"} who pinged in `{(channel or ctx.channel).name}`',
-                          description="\n".join([f"• <@{_id}> - `{timstmp}`" for _id, timstmp in list(pings[ch_id].items())[::-1]]), colour=Colour.random()).set_footer(
+                          description="\n".join([f"• <@{_id}> - [`{timstmp.split('/', 1)[0]}`]({timstmp.split('/', 1)[1]})" for _id, timstmp in list(pings[ch_id].items())[::-1]]), colour=Colour.random()).set_footer(
                 text="Top most recent."
             )
         await ctx.reply(f'No one pinged in <#{ch_id}>' if not pings.get(ch_id) else None, embed=embed)

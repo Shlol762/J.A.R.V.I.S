@@ -1,8 +1,8 @@
-import nextcord
-from MyCogs import command, Cog, Bot, datetime,\
+import disnake
+from JayCogs import command, Cog, Bot, datetime,\
     Colour, Embed, find_nth_occurrence, send_to_paste_service,\
     command_log_and_err, cooldown, Context, comm_log_local
-from nextcord.utils import escape_markdown
+from disnake.utils import escape_markdown
 import datetime, re, itertools, aiohttp
 from typing import Tuple, Any, Optional
 from io import StringIO
@@ -45,7 +45,7 @@ class Python(Cog):
         self.ln = 0
         self.stdout = StringIO()
 
-    def _format(self, inp: str, out: Any) -> Tuple[str, Optional[nextcord.Embed]]:
+    def _format(self, inp: str, out: Any) -> Tuple[str, Optional[disnake.Embed]]:
         """Format the eval output into a string & attempt to format it into an Embed."""
         self._ = out
 
@@ -102,16 +102,16 @@ class Python(Cog):
 
         if out is None:
             # No output, return the input statement
-            return (res, None)
+            return res, None
 
 
-        if isinstance(out, nextcord.Embed):
+        if isinstance(out, disnake.Embed):
             # We made an embed? Send that as embed
             res += "<Embed>"
             res = (res, out)
 
         else:
-            if (isinstance(out, str) and out.startswith("Traceback (most recent call last):\n")):
+            if isinstance(out, str) and out.startswith("Traceback (most recent call last):\n"):
                 # Leave out the traceback message
                 out = "\n" + "\n".join(out.split("\n")[:])
 
@@ -138,7 +138,7 @@ class Python(Cog):
 
         return res  # Return (text, embed)
 
-    async def _eval(self, ctx: Context, code: str) -> Optional[nextcord.Message]:
+    async def _eval(self, ctx: Context, code: str) -> Optional[disnake.Message]:
         """Eval the input code string & send an embed to the invoking context."""
         self.ln += 1
 
@@ -146,7 +146,6 @@ class Python(Cog):
             self.ln = 0
             self.env = {}
             return await ctx.reply("```Reset history!```")
-
         env = {
             "message": ctx.message,
             "author": ctx.message.author,
@@ -156,9 +155,17 @@ class Python(Cog):
             "self": self,
             "bot": self.bot,
             "inspect": inspect,
-            "discord": discord,
+            "disnake": disnake,
             "contextlib": contextlib
         }
+        if 'math' in code.lower():
+            import math
+            env['math'] = math
+
+        if 'guild' in code and ctx.author.id != 613044385910620190:
+            return await ctx.reply(embed=Embed(title="Python 3.9 Evaluation",
+                                        description=f"```{'py' if 'Traceback' not in out else 'nim'}\nLISTEN BUD YOU'RE NOT SHLOL I DON'T TRUST YOU BYE!```",
+                                        colour=Colour.random() if 'Traceback' not in out else Colour.dark_red()))
 
         self.env.update(env)
 
@@ -196,7 +203,8 @@ async def func():  # (None,) -> Any
             truncate_index = newline_truncate_index
 
         if len(out) > truncate_index:
-            paste_link = await send_to_paste_service(out)
+            try: paste_link = await send_to_paste_service(out)
+            except aiohttp.ClientConnectorCertificateError: paste_link = None
             if paste_link is not None:
                 paste_text = f"full contents at {paste_link}"
             else:

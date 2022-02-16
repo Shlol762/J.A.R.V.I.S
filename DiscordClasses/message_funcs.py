@@ -2,8 +2,8 @@ import asyncio
 import datetime
 import json
 import re, random
-from nextcord import Forbidden, Invite, Message, Member
-from nextcord.ext.commands import Context, Bot
+from disnake import Forbidden, Invite, Message, Member
+from disnake.ext.commands import Context, Bot
 from typing import Optional, Union, Any
 
 
@@ -217,9 +217,9 @@ async def who_pinged(ctx: Context):
             pings[ch_id] = {}
         if au_id in pings[ch_id].keys():
             pings[ch_id].pop(au_id)
-        pings[ch_id][au_id] = datetime.datetime.now().strftime('%d %B %Y at %X:%f')
+        pings[ch_id][au_id] = datetime.datetime.now().strftime('%d %B %Y at %X:%f') + f'/{ctx.message.jump_url}'
         if len(pings[ch_id]) >= 10:
-            pings[ch_id].pop(pings[ch_id].keys()[0])
+            pings[ch_id].pop(list(pings[ch_id].keys())[0])
         with open(fp, 'w') as f:
             json.dump(pings, f, indent=3)
 

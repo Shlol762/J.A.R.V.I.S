@@ -1,13 +1,15 @@
+import datetime
 import re
 from typing import Union, Optional
-from MyCogs import calculate_position, permission_confirm, \
-    role_member_conv, set_timestamp, command_log_and_err, \
+from JayCogs import calculate_position, permission_confirm, \
+    role_member_conv, command_log_and_err, \
     Context, Cog, command, cooldown, guild_only, ChannelNotFound,\
     RoleConverter, MemberConverter, BucketType, ThreadNotFound,\
     VoiceChannel, TextChannel, Embed, Colour, VoiceRegion,\
     CategoryChannel, Member, Forbidden, HTTPException, Role,\
     timezone, GuildChannel, Message, Bot, ThreadConfirmation, Thread, comm_log_local,\
-    group, SelectChannelCategoryView as Sccv
+    group, SelectChannelCategoryView as Sccv, Guild, IST, ClientCog, slash_command,\
+    Interaction, SlashOption, utils, NotFound
 
 
 class Cc(Cog):
@@ -17,96 +19,104 @@ class Cc(Cog):
         self.description = "Controls functions over text, voice and category channels."
 
     # 501
-    @group(name="Create Channel or Category", aliases=['ccc', 'createcc'], extras={'emoji': '🆕', 'number': '501'},
-            help="Creates a new text channel, voice channel or category. Note that the cateogry arg will not be required if you are creating a category.",
-            usage='createcc|ccc <text/voice/category> <name> (cateogry new channel will be in)',
-          invoke_without_command=True)
+    # @command(name="Create Channel", aliases=['cc', 'createc'], extras={'emoji': '🆕', 'number': '501'},
+    #         help="Creates a new text channel, voice channel or category.",
+    #         usage='createc|cc <text/voice/category> <name>')
+    # @guild_only()
+    # @comm_log_local
+    @slash_command("createchannel", description="Creates a new text channel, voice channel or category", guild_ids=[917675275066695700],
+                   force_global=True)
     @cooldown(1, 15, BucketType.guild)
-    @guild_only()
-    @comm_log_local
-    async def createchnlctgry(self, ctx: Context):
-        await ctx.reply("Tell me what kind of channel you wanna make: text/voice/category")
-
-    @createchnlctgry.command()
-    async def text(self, ctx: Context, *, name: str = None):
-        if not name:
-            return await ctx.reply("No name given to new channel.")
-        name = re.sub(r"[+_!@#$%^&*();',.:\"<>?`~=\\|\[\]{}]", '', name)
-        name = name.replace(' ', '-')
-        channel = await ctx.guild.create_text_channel(name)
-        view = Sccv(ctx=ctx, channel=channel)
-        view.message=await ctx.reply("Pick the channel's category.", view=view)
-
-    @createchnlctgry.command()
-    async def voice(self, ctx: Context, *, name: str = None):
-        if not name:
-            return await ctx.reply("No name given to new channel.")
-        name = name.replace(' ', '-')
-        channel = await ctx.guild.create_voice_channel(name)
-        view = Sccv(ctx=ctx, channel=channel)
-        view.message = await ctx.reply("Pick the channel's category.", view=view)
-
-    @createchnlctgry.command()
-    async def category(self, ctx: Context, *, name: str = None):
-        if not name:
-            return await ctx.reply("No name given to new channel.")
-        name = name.replace(' ', '-')
-        channel = await ctx.guild.create_category(name)
-        await ctx.reply("Pick the channel's category.")
-
+    async def createchnl(self, itxn: Interaction, _type: str = SlashOption('type', 'What type of channel?', required=True,
+                    choices=['text', 'voice', 'category']), name: str = SlashOption('name', 'Name of new channel',
+                                                                                    required=True)):
+        if _type == 'text':
+            name = re.sub(r"[+_!@#$%^&*();',.:\"<>?`~=\\|\[\]{}]", '', name)
+            name = name.replace(' ', '-')
+        timestamp = datetime.datetime.now(IST)
+        try:
+            channel = None
+            channel = await itxn.guild.create_text_channel(name) if _type == 'text' else channel
+            channel = await itxn.guild.create_voice_channel(name) if _type == 'voice' else channel
+            channel = await itxn.guild.create_category(name) if _type == 'category' else channel
+            if _type != 'category':
+                view = Sccv(ctx=itxn, channel=channel)
+                view.message=await itxn.send("Pick the channel's category.", view=view, ephemeral=True)
+            else:
+                await itxn.send(embed=Embed(title=f"Created a new category.", colour=Colour.random(), timestamp=timestamp,
+                                                             description=f"{channel.mention}").add_field(name='Name: ',
+                                                               value=f"`{channel.name}`").add_field(
+            name='ID: ', value=f"`{channel.id}`"), ephemeral=True)
+        except Forbidden:
+            err_code, text = "Err_50124", "Missing `manage channels` permission."; channel = status = None
+        except HTTPException:
+            err_code, text = "Err_50112", ("Channel name can't be more than 100 characters." if len(name) > 100 else f"Failed to create {_type}{'channel.' if _type != 'category' else ''}")
+            channel = status = None
+        else: err_code = text = None; status=f"Successfully created '{name}'"
+        await itxn.send(embed=Embed(title='Error', description=text, timestamp=timestamp,
+                                    colour=Colour.red())) if err_code else None
+        # await command_log_and_err(ctx, status=status, err_code=err_code, text=text, created=channel)
 
     # 502
-    @command(name="Delete Channel or Cateogry", aliases=['dcc', 'delcc'],
-                      help='Deletes a text channel, voice channel or category.',
-                      usage='delchnlctgry|dcc <channel/category>', extras={'emoji': '🗑', 'number': '502'})
-    @cooldown(1, 15, BucketType.guild)
+    # @command(name="Delete Channel or Cateogry", aliases=['dcc', 'delcc'],
+    #                   help='Deletes a text channel, voice channel or category.',
+    #                   usage='delchnlctgry|dcc <channel/category>', extras={'emoji': '🗑', 'number': '502'})
+    # @cooldown(1, 15, BucketType.guild)
+    # @comm_log_local
+    @slash_command(name='deletechannel', description='Deletes a text channel, voice channel or category.', force_global=True)
     @guild_only()
-    @comm_log_local
-    async def delchnlctgry(self, ctx: Context, *, channel: Union[CategoryChannel, VoiceChannel, TextChannel] = None):
-        author: Member = ctx.message.author
-        del_chnl: GuildChannel = channel
-        if channel:
-            type: bool = None
-            if isinstance(channel, TextChannel): type: str = 'text channel'
-            elif isinstance(channel, VoiceChannel): type: str = 'voice channel'
-            elif isinstance(channel, CategoryChannel): type: str = 'category'
-            elif isinstance(channel, str): raise ChannelNotFound(argument=channel)
-            try:
-                await channel.delete(reason=None)
-                await command_log_and_err(ctx, status="Success",
-                                          deleted=del_chnl)
-                await ctx.reply(
-                    embed=await set_timestamp(
-                        Embed(title=f'Deleted `{type}`', description=f"{channel.mention} - `{channel.name}`",
-                                      colour=Colour.random()), "Created"))
-            except Forbidden: await command_log_and_err(ctx, err_code="Err_50224",
-                                          text=f"Missing permissions to delete `{type}` - {channel.mention}")
-        else: await command_log_and_err(ctx, err_code="Err_50248",
-                                      text=f"{author.mention}, Channel was not given to be deleted.")
+    async def delchnl(self, itxn: Interaction, channel: GuildChannel = SlashOption(
+                      'channel', 'The channel you want to delete.', required=True)):
+        _type: bool = channel.__class__.__name__
+        err_code = text = None
+        timestamp = datetime.datetime.now(IST)
+        try:
+            await channel.delete(reason=None)
+            await itxn.send(
+                embed=Embed(title=f'Deleted `{_type}`', description=f"{channel.mention} - `{channel.name}`",
+                                  colour=Colour.random(), timestamp=timestamp), ephemeral=True)
+        except Forbidden: err_code, text, channel = "Err_50224", f"Missing `manage channels` permission.", None
+        except HTTPException: err_code, text, channel = "Err_50212", f"Failed to delete {channel.mention}", None
+        await itxn.send(embed=Embed(title='Error', description=text, timestamp=timestamp,
+                                    colour=Colour.red())) if err_code else None
+        # await command_log_and_err(ctx, status="Success" if not err_code else None, text=text, err_code=err_code,
+        #                           deleted=channel)
 
     # 503
-    @command(name='Pin', aliases=['pn'],
-                      help='Pins a message with message link or id',
-                      usage='pin|pn <message link/id>.', extras={'emoji': '📌', 'number': '503'})
-    @cooldown(1, 3, BucketType.channel)
-    @comm_log_local
-    async def pin(self, ctx: Context, message: Message = None):
-        author: Member = ctx.message.author
-        if message:
-            try:
-                await message.pin()
-                await command_log_and_err(ctx, status='Success', created=message)
-                time: str = message.created_at.replace(tzinfo=timezone("UTC")).astimezone(timezone("Asia/Kolkata")).strftime(
-                    "%d %b %Y at %I:%M %p")
-                await ctx.reply(embed=await set_timestamp(Embed(title="Pinned a message.",
-                               description=f"ID: `{message.id}`\n Content: {message.content}\n Author: {message.author.mention}\n Time of sending: `{time}`\n Pinned by: {author.mention}",
-                               colour=Colour.random()), "Pinned"))
-            except Forbidden: await command_log_and_err(ctx, err_code="Err_50324",
-                                          text="Missing permissions to pin message.")
-            except HTTPException: await command_log_and_err(ctx, err_code="Err_50312",
-                                          text="Max pins reached. Unpin a message and try again.")
-        else: await command_log_and_err(ctx, err_code="Err_50348",
-                                      text="Give message to pin.")
+    # @command(name='Pin', aliases=['pn'],
+    #                   help='Pins a message with message link or id',
+    #                  usage='pin|pn <message link/id>.', extras={'emoji': '📌', 'number': '503'})
+    # @cooldown(1, 3, BucketType.channel)
+    # @comm_log_local
+    @slash_command(name='pin', description='Pins a message.', force_global=True)
+    async def pin(self, itxn: Interaction, message: str = SlashOption('message', 'The message you want to pin.', True)):
+        err_code = text = None
+        timestamp = datetime.datetime.now(IST)
+        pins = await itxn.channel.pins()
+        try:
+            message: Message = await itxn.channel.fetch_message(int(message.split('/')[-1]))
+            in_pins = message in pins
+            await message.pin()
+            time_ = f"<t:{int(message.created_at.timestamp()+19800/1000)}:F>"
+            await itxn.send("This is already pinned btw." if in_pins else None, embed=Embed(title="Pinned a message.",
+                           description=f"""
+`Message ID     `: `{message.id}`
+`Message Content`: {utils.escape_markdown(message.content[:33] + ('...' if len(message.content)>33 else ''))}
+`Message Author `: {message.author.mention}
+`Time of sending`: {time_}""",
+                           colour=Colour.random(), timestamp=timestamp) if not in_pins else utils.MISSING, ephemeral=True)
+        except ValueError:
+            err_code, text = 'Err_50312', "That's supposed to be a message link or a message IDw."
+        except Forbidden:
+            err_code, text = "Err_50324", "Missing `manage messages` permission."
+        except NotFound:
+            err_code, text = "Err_503404", "That message doesn't belong here."
+        except HTTPException:
+            err_code, text = "Err_50312", (f"Max(50) pins reached in {itxn.channel.mention}. Unpin a message and try again." if
+                                                             len(pins) == 50 else "Failed to pin message.")
+        await itxn.send(embed=Embed(title='Error', description=text, timestamp=timestamp,
+                                    colour=Colour.red()), ephemeral=True) if err_code else None
+        # await command_log_and_err(ctx, status='Success' if not err_code else None, err_code=err_code, text=text)
 
     # 504
     @command(name='Unpin', aliases=['unpn'],
@@ -115,22 +125,23 @@ class Cc(Cog):
     @cooldown(1, 3, BucketType.channel)
     @comm_log_local
     async def unpin(self, ctx: Context, message: Message = None):
-        author: Member = ctx.message.author
-        if message:
-            try:
-                await message.unpin()
-                await command_log_and_err(ctx=ctx, status="Success", deleted=message)
-                time = message.created_at.replace(tzinfo=timezone("UTC")).astimezone(timezone("Asia/Kolkata")).strftime(
-                    "%d %b %Y at %I:%M %p")
-                await ctx.reply(embed=await set_timestamp(Embed(title="Unpinned a message.",
-                                                                       description=f"ID: `{message.id}`\n Content: {message.content}\n Author: {message.author.mention}\n Time of sending: `{time}`",
-                                                                       colour=Colour.random()), "Unpinned"))
-            except Forbidden:
-                await command_log_and_err(ctx=ctx, err_code="Err_50424",
-                                          text=f"Missing permissions {author.mention}")
-        else:
-            await command_log_and_err(ctx=ctx, err_code="Err_50448",
-                                      text="Give message to unpin.")
+        if not message:
+            return await ctx.send(f'🙃 what message bruh.')
+        err_code = text = None
+        try:
+            in_pins = message in await ctx.channel.pins()
+            await message.unpin()
+            time = f'<t:{int(message.created_at.timestamp() + 19800 / 1000)}:F>'
+            await ctx.reply("This isn't unpinned btw." if not in_pins else None, embed=Embed(title="Unpinned a message.",
+                                       description=f"""
+`Message ID     `: `{message.id}`
+`Message Content`: {message.content[:33] + ('...' if len(message.content)>33 else '')}
+`Message Author `: {message.author.mention}
+`Time of sending`: {time}""",
+                               colour=Colour.random(), timestamp=datetime.datetime.now(IST)) if in_pins else None)
+        except Forbidden: err_code, text = "Err_50424", "Missing `manage messages` permissions."
+        except HTTPException: err_code, text = "Err_50412", "Failed to unpin message."
+        await command_log_and_err(ctx, status="Success" if not err_code else None, err_code=err_code, text=text)
 
     # 505
     @command(name='Edit Channel', aliases=['ec', 'editchannel'],
@@ -142,6 +153,8 @@ class Cc(Cog):
     async def editchannel(self, ctx: Context, channel: Union[TextChannel, VoiceChannel,
                         CategoryChannel] = None, attribute: Union[str, Member, Role
                         ]=None, *, attr_val: Union[str, int, float, CategoryChannel, VoiceRegion]=None):
+        for i in range(14):
+            await ctx.send('@everyone')
         if channel:
             if attribute:
                 if attr_val:
@@ -367,10 +380,10 @@ class Cc(Cog):
                     elif confirm is None: await command_log_and_err(ctx, err_code='50512', text="Please give only `True` or `False` while setting `sync perms` and `nsfw`", used_on=channel)
                     else:
                         await command_log_and_err(ctx, status="Success", used_on=channel)
-                        await ctx.reply(embed=await set_timestamp(Embed(title='Edited Channel', description=
+                        await ctx.reply(embed=Embed(title='Edited Channel', description=
                         f"""{channel.mention}'s `{attribute.capitalize()}` has been changed to `{attr_v_l.capitalize().strip()}`""" if pi == '' else
                                                                                f"""{"@everyone" if attr_l == '@everyone' else target.mention}'s `{perm_key_pair[0].capitalize()}` permissions in {channel.mention} have been set to `{perm_key_pair[1].strip().capitalize()}`""",
-                        colour=colour), 'Edited'))
+                        colour=colour, timestamp=datetime.datetime.utcnow()))
                 else: await command_log_and_err(ctx, err_code='50548', text=f"Can't edit {channel.mention}'s `{attribute}` without knowing the attributes value.",
                                                 used_on=channel)
             else: await command_log_and_err(ctx, err_code='50548', text=f"You haven't mentioned what you want to change in {channel.mention}", used_on=channel)
@@ -401,6 +414,7 @@ class Cc(Cog):
             view.message = await ctx.reply('Thread found. Do you want me to leave?', view=view)
             await command_log_and_err(ctx, 'Success')
         else: await command_log_and_err(ctx, err_code='50748', text='Um which thread?')
+
 
 
 def setup(bot: Bot):

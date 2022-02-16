@@ -1,8 +1,8 @@
 import datetime
 from typing import Optional
-import nextcord
-from nextcord.ext import commands
-from MyCogs import Bot, Cog, Context, command_log_and_err, Cricket,\
+import disnake
+from disnake.ext import commands
+from JayCogs import Bot, Cog, Context, command_log_and_err, Cricket,\
     logo_maker, set_timestamp, comm_log_local
 
 
@@ -20,8 +20,8 @@ class Sports(Cog):
         if tournament:
             async with ctx.typing():
                 match = await Cricket(tournament).get_match_data()
-                embed = nextcord.Embed(title=f'{match.series}\n`{match.teams["team1"]["name"].title()}` vs `{match.teams["team2"]["name"].title()}`', description='',
-                                      colour=nextcord.Colour.random(), url=match.link['tournament']).set_footer(
+                embed = disnake.Embed(title=f'{match.series}\n`{match.teams["team1"]["name"].title()}` vs `{match.teams["team2"]["name"].title()}`', description='',
+                                      colour=disnake.Colour.random(), url=match.link['tournament']).set_footer(
                                       text=match.progress)
                 embed.description += str(match)
                 await command_log_and_err(ctx, 'Success')
@@ -39,8 +39,8 @@ class Sports(Cog):
         #     if not team:
         #         ipl_table = cricket.pt_table
         #         time = datetime.datetime.now().strftime("%Y")
-        #         embed = nextcord.Embed(title=f'Indian Premier League - `{time}`', description='',
-        #                               colour=nextcord.Colour.random())
+        #         embed = disnake.Embed(title=f'Indian Premier League - `{time}`', description='',
+        #                               colour=disnake.Colour.random())
         #         embed.description += f'**`{"Team":^28}{"Matches":^9}{"Win":^5}{"Loss":^6}{"Tie":^5}{"NR":^4}{"Pts":^5}{"NRR":^6}`**\n'
         #         for team in ipl_table:
         #             embed.description += f'`{team[0]:<28}{team[1]:^9}{team[2]:^5}{team[3]:^6}{team[4]:^5}{team[5]:^4}{team[6]:^5}{team[7]:<6}`\n'
@@ -66,7 +66,7 @@ class Sports(Cog):
         #                 break
         #         for team in cricket.pt_table:
         #             if team[0] == value:
-        #                 embed = nextcord.Embed(title=team[0], description='', colour=nextcord.Colour.random())
+        #                 embed = disnake.Embed(title=team[0], description='', colour=disnake.Colour.random())
         #                 team_attr_names = ['Matches', 'Wins', 'Losses', 'Ties', 'No Result', 'Points', 'Net Run Rate']
         #                 team_attr_names_index = 0
         #                 for attr in team[1:]:

@@ -3,7 +3,7 @@ import datetime
 import json
 import re
 from typing import Optional, Union
-from MyCogs import command_log_and_err, set_timestamp, Context,\
+from JayCogs import command_log_and_err, set_timestamp, Context,\
     Cog, Client, command, cooldown, guild_only, User, Member,\
     BucketType, UserNotFound, Embed, Colour, HTTPException,\
     Forbidden, commands, has_guild_permissions, Message, TextChannel,\
