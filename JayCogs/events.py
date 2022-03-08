@@ -375,6 +375,7 @@ class Events(Cog):
             "ban": True,
             "kick": True,
             "clear": True,
+            "impersonate": True,
             "message": True,
             "msghai": True,
             "noswear": True,

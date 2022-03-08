@@ -315,6 +315,11 @@ Password: {hack_pass}
         if member.id == ctx.bot.user.id:
             await ctx.reply("Go away don't twist my opinions you idiot.")
         else:
+            with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json", "r") as f:
+                settings: dict = json.load(f)
+            id: str = channel_id if settings.get(channel_id) else guild_id
+            if not settings[id]["impersonate"]:
+                await ctx.reply(f"`Impersonate` has been `disabled` for {ctx.channel.mention}")
             await ctx.message.delete()
             if ctx.bot.user not in [webhook.user for webhook in await ctx.channel.webhooks()]:
                 webhook: disnake.Webhook = await ctx.channel.create_webhook(name=ctx.bot.user.name, avatar=None)
