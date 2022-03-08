@@ -224,8 +224,8 @@ class Utilities(Cog):
             server_info.description += f'`{"Emoji Limit":^17}: {server.emoji_limit:^32}`\n`{"Bitrate Limit":^17}: {f"{server.bitrate_limit / 1000} kbps":^32}`\n'
             server_info.description += f'`{"File Size Limit":^17}: {f"{round(server.filesize_limit / 1000000)} mb":^32}`\n`{"Boosters":^17}: {boosters or "No boosters":^32}`\n'
             server_info.description += f'`{"Created on":^17}: {created_at:^32}`\n'
-            server_info.description += f'`{"Member Count":^17}: {f"Humans: {len(server.humans)}, Bots: {len(server.bots)}, Total: {len(server.members)}":^32}`'
-            server_info.set_thumbnail(url=server.icon.url)
+            server_info.description += f'`{"Member Count":^17}: {f"Humans: {len([h for h in server.members if not h.bot])}, Bots: {len([h for h in server.members if h.bot])}, Total: {server.member_count}":^32}`'
+            server_info.set_thumbnail(url=server.icon.url) if server.icon else None
             server_info = await set_timestamp(server_info)
             await command_log_and_err(ctx, 'Success')
             await ctx.reply(embed=server_info)

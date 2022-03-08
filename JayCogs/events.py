@@ -67,10 +67,6 @@ if load:
         return result
 
 
-with open("C:/Users/Shlok/bot_stuff/version.txt", 'r') as f:
-    VERSION = f.read()
-
-
 class Events(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
@@ -138,20 +134,17 @@ class Events(Cog):
     @Cog.listener()
     async def on_ready(self):
         global connect_time
-        await self.bot.change_presence(status=Status.do_not_disturb,
-                                       activity=Activity(type=ActivityType.watching,
-                                                         name=f'people talk...    V{VERSION}'))
         ch: TextChannel = self.bot.get_channel(823216455733477387)
         embed = Embed(title="Connection to discord",
                               description=f"*`Successful`*: `Confirmed`\n *`Connection at`*: `{connect_time}`",
                               colour=Colour.gold(), timestamp=datetime.datetime.utcnow())
         await ch.send(embed=embed)
         embed = Embed(title="Bot is ready",
-                      description=f'`{self.bot.user.name}` is ready, Version: `{VERSION}`\n',
+                      description=f'`{self.bot.user.name}` is ready, Version: `{self.bot.VERSION}`\n',
                       colour=Colour.teal(), timestamp=datetime.datetime.utcnow())
         await ch.send(embed=embed)
-        try: self.birthday.start()
-        except RuntimeError: self.birthday.restart()
+        # try: self.birthday.start()
+        # except RuntimeError: self.birthday.restart()
         # try: self.timer.start()
         # except RuntimeError: self.timer.restart()
         print(f"Connection to discord instantiation success: {datetime.datetime.now().strftime('%d %B %Y at %X:%f')}")
@@ -190,7 +183,7 @@ class Events(Cog):
                 await ctx.send(f'Systems back online...')
                 await self.bot.change_presence(status=Status.dnd,
                                                activity=Activity(type=ActivityType.watching,
-                                                                 name=f'people talk...    V{VERSION}'))
+                                                                 name=f'people talk...    V{self.bot.VERSION}'))
                 return
             await who_pinged(ctx)
             if channel.id in chnls and ctx.message.webhook_id not in webhooks:
@@ -317,7 +310,7 @@ class Events(Cog):
         elif isinstance(error, CommandOnCooldown):
             with open("C:/Users/Shlok/bot_stuff/safe_docs/command_logs.txt", "r") as f:
                 lines: list[str] = f.readlines()
-            # if ctx.author.id == 613044385910620190: await ctx.reinvoke()
+            if ctx.author.id == 613044385910620190: await ctx.reinvoke()
             if str(ctx.command.extras.get('number')) in ''.join(lines[-4:]) and str(ctx.author.id) in ''.join(lines[-4:]) and "Err" in ''.join(lines[-4:]):
                 await ctx.reinvoke()
             else: await command_log_and_err(ctx=ctx, status='Cooldown', error=error)
@@ -390,7 +383,8 @@ class Events(Cog):
             "greetings": True,
             "farewells": True,
             "iamgod": True,
-            "eastereggs": True
+            "eastereggs": True,
+            "suppressemb": False
         }
         with open(settings_path, "w") as f: json.dump(settings, f, indent=3)
         with open(prefix_path, "r") as f: prefixes = json.load(f)

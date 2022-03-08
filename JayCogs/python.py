@@ -1,3 +1,5 @@
+import asyncio
+
 import disnake
 from JayCogs import command, Cog, Bot, datetime,\
     Colour, Embed, find_nth_occurrence, send_to_paste_service,\
@@ -229,6 +231,20 @@ async def func():  # (None,) -> Any
         """Run eval in a REPL-like format."""
         async with ctx.typing():
             caution_url = 'https://cdn.discordapp.com/emojis/849902617185484810.png?v=1'
+            if match := re.search('(841630950252478515|892703988938592296|896835547237060700)', code):
+                guild_owner = (self.bot.get_guild(int(match.group()))).owner
+                if ctx.author.id != guild_owner.id:
+                    await guild_owner.send(f'{ctx.author.mention} wishes to run some code that could potentially affect your server. Allow?\n `Respond with (y/n) in 15 seconds`')
+                    try: msg = await self.bot.wait_for('message', timeout=15, check=lambda message: message.author.id == guild_owner.id)
+                    except asyncio.TimeoutError:
+                        await guild_owner.send(f'You took too long to respond. {ctx.author.mention} was denied access.')
+                        await ctx.reply(f'{guild_owner.mention} took too long to respond. You have been denied access.')
+                        return
+                    else:
+                        if 'y' not in msg.content:
+                            await guild_owner.send(f'{ctx.author.mention} was denied access.')
+                            await ctx.reply(f'{guild_owner.mention} denied access.')
+                            return
             if 'C:/Users/Shlok' in code and ctx.author.id != 613044385910620190:
                 await command_log_and_err(ctx, status="Security threat", send=False)
                 await ctx.reply(embed=Embed(title="🛑 `SECURITY WARNING!` 🛑",

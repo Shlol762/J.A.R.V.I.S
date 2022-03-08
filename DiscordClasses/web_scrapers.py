@@ -159,7 +159,7 @@ class WorldoMeter:
         return self.get_worldwide_covid_statistics()
 
     async def compile_by_country(self, country: str) -> dict[str: int]:
-        """Get's covid info of specified country."""
+        """Gets covid info of specified country."""
         await self.compile_data()
         countries = self.get_by_country()
         for _country, link in countries.items():

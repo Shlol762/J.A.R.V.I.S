@@ -33,7 +33,7 @@ class BaseView(View):
         await self.disable_all()
 
     async def interaction_check(self, interaction: Interaction) -> bool:
-        return self.ctx.user == interaction.user
+        return (self.ctx.user == interaction.user) if not isinstance(self.ctx, Context) else (self.ctx.author == interaction.user)
 
     async def kill(self):
         for item in self.children:

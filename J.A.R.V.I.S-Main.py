@@ -1,18 +1,30 @@
 import datetime
 import json
-import os
+import os, sys, subprocess
 import random, re
 import disnake, aiohttp, asyncio
 from disnake.ext import commands
-from disnake import Thread, TextChannel
+from disnake import Thread, TextChannel, Activity, ActivityType
 from urllib.parse import quote_plus
 from typing import Union
 from DiscordClasses import BOT_TOKEN, get_prefix, Confirmation, JoinHomeServer, Version
 
+
+with open("C:/Users/Shlok/bot_stuff/version.txt", 'r') as f:
+    ver = Version(f.read())
+
+VERSION = ver.increment().version if not re.search("(no?(ah)?|deny)", input("Version increment? ")) else ver.version
+
+with open("C:/Users/Shlok/bot_stuff/version.txt", 'w') as f:
+    f.write(VERSION)
+
+
 intents = disnake.Intents.all()
 bot = commands.AutoShardedBot(command_prefix=get_prefix, case_insensitive=True, intents=intents,
                    allowed_mentions=disnake.AllowedMentions(),
-                   strip_after_prefix=True, status=disnake.Status.dnd)
+                   strip_after_prefix=True, status=disnake.Status.dnd, activity=Activity(type=ActivityType.watching,
+                                                         name=f'people talk...    V{VERSION}'))
+setattr(bot, 'VERSION', VERSION)
 bot.remove_command('help')
 
 
@@ -272,15 +284,17 @@ async def destroy(ctx: commands.Context):
         await guild.leave()
 
 
-with open("C:/Users/Shlok/bot_stuff/version.txt", 'r') as f:
-    ver = Version(f.read())
-
-VERSION = ver.increment().version if not re.search("(no?(ah)?|deny)", input("Version increment? ")) else ver.version
-
-with open("C:/Users/Shlok/bot_stuff/version.txt", 'w') as f:
-    f.write(VERSION)
+@bot.slash_command(guild_ids=[944065363228913736])
+async def hello(itxn):
+    await itxn.response.send_modal(modal=disnake.ui.Modal(title='Hello there', components=[disnake.ui.TextInput(
+        label='no', custom_id='ok'
+    )]))
 
 
 try: bot.run(BOT_TOKEN)
 except (KeyboardInterrupt, RuntimeError): pass
 finally: print(f"\nConnection to internet termniated willingly: {datetime.datetime.now().strftime('%d %B %Y at %X:%f')}")
+
+if re.search(r'y(es)?', input("Exception. Restart program? ").lower()):
+    subprocess.call([sys.executable, os.path.realpath(__file__)] +
+                    sys.argv[1:])

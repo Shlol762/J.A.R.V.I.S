@@ -228,8 +228,9 @@ f"""
         for user, birthday in birthdays.items():
             if days > (birthday - now).days > 0:
                 user = await UserConverter().convert(ctx, user)
-                if not upcominbdays.get(birthday): upcominbdays[birthday] = [user,]
-                else: upcominbdays[birthday].append(user)
+                if 'unknown' not in user.name.lower():
+                    if not upcominbdays.get(birthday): upcominbdays[birthday] = [user,]
+                    else: upcominbdays[birthday].append(user)
         upcominbdays = sorted(upcominbdays.items(), key=lambda p: p[0])
         upcominbdays = {key:val for key, val in upcominbdays}
         embed = Embed(title=f"Birthdays coming up in the next {days} days!",
@@ -239,7 +240,7 @@ f"""
             to_be_posted_users = ''
             for user in users:
                 to_be_posted_users += f"• {user.mention}\n"
-            embed.add_field(name=date.strftime("%d, %b %Y"), value=to_be_posted_users)
+            embed.add_field(name=date.strftime("%d %b, %Y"), value=to_be_posted_users)
         await ctx.reply(embed=await set_timestamp(embed, random.choice(("Credit: Moiz Delhve", "", "", ""))))
 
 
