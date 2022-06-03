@@ -1,7 +1,11 @@
 import asyncio
-import random, datetime, json, re
+import random
+import datetime
+import json
+import re
 import sys
-import string, nltk
+import string
+import nltk
 import disnake
 import numpy as np
 from . import command_log_and_err,\
@@ -14,10 +18,13 @@ from . import command_log_and_err,\
     ThreadNotFound, train, CheckFailure, eastereggs, who_pinged, ErrorView, HTTPException,\
     stopwatch, time_set, AllowedMentions, load, IST
 
+
 severed_time = 0
 connect_time = 0
-chnls = [833995745690517524, 817299815900643348, 817300015176744971, 859801379996696576]
-webhooks = [861660340617084968, 861660166193807430, 861660711037960243, 938268473623212053]
+chnls = [833995745690517524, 817299815900643348,
+         817300015176744971, 859801379996696576]
+webhooks = [861660340617084968, 861660166193807430,
+            861660711037960243, 938268473623212053]
 
 model = None
 if load:
@@ -32,7 +39,6 @@ if load:
         _tokens = [lemmatizer.lemmatize(word) for word in _tokens]
         return _tokens
 
-
     def bag_of_words(_text, vocab):
         _tokens = clean_text(_text)
         bow = [0] * len(vocab)
@@ -41,7 +47,6 @@ if load:
                 if word == w:
                     bow[idx] = 1
         return np.array(bow)
-
 
     def pred_class(_text, vocab, labels):
         bow = bag_of_words(_text, vocab)
@@ -54,7 +59,6 @@ if load:
         for r in y_pred:
             return_list.append(labels[r[0]])
         return return_list
-
 
     def get_response(intents_list, intents_json):
         tag = intents_list[0]
@@ -71,7 +75,6 @@ class Events(Cog):
         self.bot = bot
         self.name = 'events'
 
-
     @loop(time=datetime.time(hour=18, minute=30))
     @stopwatch
     async def birthday(self):
@@ -83,13 +86,16 @@ class Events(Cog):
         guild = self.bot.get_guild(766356666273890314)
         birthday_role = guild.get_role(874909501617238048)
         general: TextChannel = await self.bot.fetch_channel(821278528108494878)
-        topic = topic=re.sub(f"((, )?Happy birthday .+(!)$)+", '', general.topic)
+        topic = topic = re.sub(
+            f"((, )?Happy birthday .+(!)$)+", '', general.topic)
 
         if len(birthday_role.members) != 0:
             if [str(m.id) for m in birthday_role.members] != current_birthdays:
                 for member in birthday_role.members:
-                    try: await member.remove_roles(birthday_role)
-                    except HTTPException: pass
+                    try:
+                        await member.remove_roles(birthday_role)
+                    except HTTPException:
+                        pass
             else:
                 return
 
@@ -99,25 +105,29 @@ class Events(Cog):
             if m.name not in topic:
                 topic += f"Happy birthday {m.name}!"
             else:
-                topic = topic.replace('!', f" {m.name}!", 1)[::-1] if '!' in topic else topic + f" {m.name}!"
+                topic = topic.replace('!', f" {m.name}!", 1)[
+                    ::-1] if '!' in topic else topic + f" {m.name}!"
 
-        await general.edit(topic = topic)
+        await general.edit(topic=topic)
 
     @Cog.listener()
     async def on_ready(self):
         global connect_time
         ch: TextChannel = self.bot.get_channel(823216455733477387)
         embed = Embed(title="Connection to discord",
-                              description=f"*`Successful`*: `Confirmed`\n *`Connection at`*: `{connect_time}`",
-                              colour=Colour.gold(), timestamp=datetime.datetime.utcnow())
+                      description=f"*`Successful`*: `Confirmed`\n *`Connection at`*: `{connect_time}`",
+                      colour=Colour.gold(), timestamp=datetime.datetime.utcnow())
         await ch.send(embed=embed)
         embed = Embed(title="Bot is ready",
                       description=f'`{self.bot.user.name}` is ready, Version: `{self.bot.VERSION}`\n',
                       colour=Colour.teal(), timestamp=datetime.datetime.utcnow())
         await ch.send(embed=embed)
-        try: self.birthday.start()
-        except RuntimeError: self.birthday.restart()
-        print(f"Connection to discord instantiation success: {datetime.datetime.now().strftime('%d %B %Y at %X:%f')}")
+        try:
+            self.birthday.start()
+        except RuntimeError:
+            self.birthday.restart()
+        print(
+            f"Connection to discord instantiation success: {datetime.datetime.now().strftime('%d %B %Y at %X:%f')}")
 
     @Cog.listener()
     async def on_message(self, message: Message):
@@ -130,19 +140,22 @@ class Events(Cog):
 
         if re.search(r"[a-zA-Z0-9]{24}\.[a-zA-Z0-9]{6}\.[a-zA-Z0-9\-_]{27}", message.content):
             mg = await message.author.send(embed=Embed(title='Delta Security Warning!',
-                                                                  description='**Security Warning! Discord Authentication token detected.'+(' Message will be deleted to prevent'
-                           ' malicous attacks. To cancel deletion type: `Abort Delta security` or `ADS` within 10 seconds.**' if ctx.guild else ' *Deletion advised*.**'),
-                                                                        colour=Colour.red()).set_thumbnail('https://cdn.discordapp.com/emojis/849902617185484810.png?v=1')
-                           )
+                                                       description='**Security Warning! Discord Authentication token detected.'+(' Message will be deleted to prevent'
+                                                                                                                                 ' malicous attacks. To cancel deletion type: `Abort Delta security` or `ADS` within 10 seconds.**' if ctx.guild else ' *Deletion advised*.**'),
+                                                       colour=Colour.red()).set_thumbnail('https://cdn.discordapp.com/emojis/849902617185484810.png?v=1')
+                                           )
             await ctx.send(embed=mg.embeds[0], delete_after=10.0) if ctx.guild else None
             try:
                 _message = await bot.wait_for('message', timeout=10, check=lambda msg: msg.author == message.author)
                 if not re.search(r'a(bort )?d(elta )?s(ecurity)?', _message.content.lower()):
                     await message.delete()
             except asyncio.TimeoutError:
-                try: await message.delete()
-                except Forbidden: pass
-            except Forbidden: pass
+                try:
+                    await message.delete()
+                except Forbidden:
+                    pass
+            except Forbidden:
+                pass
         if ctx.guild:
             if author == ctx.guild.owner and message.content.lower().startswith("jarvis disengage alpha lock"):
                 [await channel.edit(overwrites={ctx.guild.default_role: disnake.PermissionOverwrite(send_messages=True)}) for channel in ctx.guild.text_channels]
@@ -184,18 +197,22 @@ class Events(Cog):
                 # await ch5.send(content=text, username=ctx.author.name, avatar_url=ctx.author.avatar.url) if channel.id != chnls[4] else None
             else:
                 try:
-                    if bot.user == author: return
+                    if bot.user == author:
+                        return
                     channel_id: str = str(channel.id)
                     guild_id: str = str(ctx.guild.id)
                     channel_config = vals.get(channel_id)
                     server_config = vals.get(guild_id)
-                    if channel_config: options = channel_config
-                    else: options = server_config
+                    if channel_config:
+                        options = channel_config
+                    else:
+                        options = server_config
                     if options["suppressemb"]:
                         await message.edit(suppress=True)
                     if options["message"]:
                         if model:
-                            intents = pred_class(message.content.lower(), words, classes)
+                            intents = pred_class(
+                                message.content.lower(), words, classes)
                             _result = get_response(intents, data)
                             await ctx.send(_result)
                         if options["msghai"]:
@@ -217,25 +234,32 @@ class Events(Cog):
                         "birthday", "bday").replace("i", author.mention)
                     if re.search(r"\b(when (is )?(the next occurrance of |will)?((.)+ (next )?bday)| the day (.)+ was born)", message_text.lower()):
                         try:
-                            person = re.search(r"<@(!)?[0-9]+>", message_text.replace("'s", ''))
+                            person = re.search(
+                                r"<@(!)?[0-9]+>", message_text.replace("'s", ''))
                             person: Member = await MemberConverter().convert(ctx=ctx, argument=person.group())
                             path: str = "C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/birthdays.json"
                             f = open(path, 'r')
                             birthdays: dict[str: str] = json.load(f)
                             f.close()
                             if birthdays.get(str(person.id)):
-                                time: datetime.datetime = datetime.datetime.strptime(birthdays[str(person.id)]+datetime.datetime.now().strftime("/%Y"), "%d/%m/%Y")
-                                datending = (lambda t: {'1': 'st', '2': 'nd', '3': 'rd'}.get(str(t)[-1]) or 'th')(time.day)
+                                time: datetime.datetime = datetime.datetime.strptime(
+                                    birthdays[str(person.id)]+datetime.datetime.now().strftime("/%Y"), "%d/%m/%Y")
+                                datending = (lambda t: {'1': 'st', '2': 'nd', '3': 'rd'}.get(
+                                    str(t)[-1]) or 'th')(time.day)
                                 if time < datetime.datetime.now():
-                                    time: str = re.sub(" to `00:00 [0-9]{2}/[0-9]{2}/[0-9]{4}`", "", time.strftime(f"""The next occurrance of . birthday is in {timeto(f'{time.day}/{time.month}/{time.year + 1}')[0]} on the `%d{datending} of %B in {time.year + 1}`"""))
+                                    time: str = re.sub(" to `00:00 [0-9]{2}/[0-9]{2}/[0-9]{4}`", "", time.strftime(
+                                        f"""The next occurrance of . birthday is in {timeto(f'{time.day}/{time.month}/{time.year + 1}')[0]} on the `%d{datending} of %B in {time.year + 1}`"""))
                                 else:
-                                    time: str = re.sub(" to `00:00 [0-9]{2}/[0-9]{2}/[0-9]{4}`", "", time.strftime(f"""The next occurrance of . birthday is in {timeto(f'{time.day}/{time.month}/{time.year}')[0]} on the `%d{datending} of %B in %Y`"""))
+                                    time: str = re.sub(" to `00:00 [0-9]{2}/[0-9]{2}/[0-9]{4}`", "", time.strftime(
+                                        f"""The next occurrance of . birthday is in {timeto(f'{time.day}/{time.month}/{time.year}')[0]} on the `%d{datending} of %B in %Y`"""))
                                 await ctx.reply(time.replace(".", 'your' if person.id == author.id else person.name+"'s"))
                             else:
                                 await ctx.reply(f"I'm sorry but I don't think I have that birthday stored anywhere. Contact Shlol#2501 to add the birthday")
-                        except AttributeError: pass
+                        except AttributeError:
+                            pass
                     await train(ctx)
-                except TypeError: print(ctx.message.content)
+                except TypeError:
+                    print(ctx.message.content)
             if random.randint(1, 1000) == 0:
                 await ctx.send(f"<@")
 
@@ -255,8 +279,8 @@ class Events(Cog):
         time: datetime.datetime = datetime.datetime.now().strftime("%d %b %Y at %I:%M %p")
         ch: TextChannel = self.bot.get_channel(823216455733477387)
         embed = Embed(title="Re-connection to discord",
-                              description=f"*`Successful`*: `Confirmed`\n *`Last disconnect`*: `{severed_time}`\n*`Re-connection at`*: `{time}`",
-                              colour=Colour.gold(), timestamp=datetime.datetime.utcnow())
+                      description=f"*`Successful`*: `Confirmed`\n *`Last disconnect`*: `{severed_time}`\n*`Re-connection at`*: `{time}`",
+                      colour=Colour.gold(), timestamp=datetime.datetime.utcnow())
         await ch.send(embed=embed)
 
     @Cog.listener()
@@ -264,7 +288,8 @@ class Events(Cog):
         if member.guild.id == 819515740490825771:
             if self.bot.MAINFRAME_MEMBERS.get(str(member.id)):
                 return
-            self.bot.MAINFRAME_MEMBERS[str(member.id)] = time_set(member.joined_at, '%d %b %Y at %X')
+            self.bot.MAINFRAME_MEMBERS[str(member.id)] = time_set(
+                member.joined_at, '%d %b %Y at %X')
             with open('C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/mainframe_members.json', 'w') as f:
                 json.dump(self.bot.MAINFRAME_MEMBERS, f, indent=3)
         channels: list[GuildChannel] = await member.guild.fetch_channels()
@@ -295,10 +320,12 @@ class Events(Cog):
         elif isinstance(error, CommandOnCooldown):
             with open("C:/Users/Shlok/bot_stuff/safe_docs/command_logs.txt", "r") as f:
                 lines: list[str] = f.readlines()
-            if ctx.author.id == 613044385910620190: await ctx.reinvoke()
+            if ctx.author.id == 613044385910620190:
+                await ctx.reinvoke()
             if str(ctx.command.extras.get('number')) in ''.join(lines[-4:]) and str(ctx.author.id) in ''.join(lines[-4:]) and "Err" in ''.join(lines[-4:]):
                 await ctx.reinvoke()
-            else: await command_log_and_err(ctx=ctx, status='Cooldown', error=error)
+            else:
+                await command_log_and_err(ctx=ctx, status='Cooldown', error=error)
         elif isinstance(error, MemberNotFound):
             await command_log_and_err(ctx=ctx, err_code="Err_a11404",
                                       text=f"The Member *`'{error.argument}'`* doesn't exist. I don't know what you're looking for.")
@@ -323,10 +350,12 @@ class Events(Cog):
         elif isinstance(error, BadUnionArgument):
             if 'dcc' in ctx.command.aliases:
                 await command_log_and_err(ctx, err_code="Err_000b12",
-                                      text=f"That's not a channel bub.")
+                                          text=f"That's not a channel bub.")
         else:
-            import traceback, sys
-            err_embed = Embed(title=f"Error! - `{ctx.command.name}`", description="", colour=Colour.red(), timestamp=datetime.datetime.utcnow()).set_footer(text="Unhandled Excpetion")
+            import traceback
+            import sys
+            err_embed = Embed(title=f"Error! - `{ctx.command.name}`", description="", colour=Colour.red(
+            ), timestamp=datetime.datetime.utcnow()).set_footer(text="Unhandled Excpetion")
             lines = f'\nIgnoring exception in on_command_error:\n' + ''.join(
                 traceback.format_exception(error.__class__, error, error.__traceback__))
 
@@ -341,9 +370,12 @@ class Events(Cog):
 **Check Command Prompt**
 """
             view = ErrorView(ctx, 20, embed=err_embed)
-            try: view.message = await ctx.reply("Whoops! Something went wrong...", view=view)
-            except HTTPException: pass
-            error_channel: TextChannel = ctx.bot.get_channel(868640456328744960)
+            try:
+                view.message = await ctx.reply("Whoops! Something went wrong...", view=view)
+            except HTTPException:
+                pass
+            error_channel: TextChannel = ctx.bot.get_channel(
+                868640456328744960)
             await error_channel.send(embed=err_embed)
             print(lines, file=sys.stderr)
 
@@ -355,7 +387,8 @@ class Events(Cog):
     async def on_guild_join(self, guild: Guild):
         settings_path = "C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json"
         prefix_path = "C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/prefixes.json"
-        with open(settings_path, "r") as f: settings = json.load(f)
+        with open(settings_path, "r") as f:
+            settings = json.load(f)
         settings[str(guild.id)] = {
             "ban": True,
             "kick": True,
@@ -372,10 +405,13 @@ class Events(Cog):
             "eastereggs": True,
             "suppressemb": False
         }
-        with open(settings_path, "w") as f: json.dump(settings, f, indent=3)
-        with open(prefix_path, "r") as f: prefixes = json.load(f)
+        with open(settings_path, "w") as f:
+            json.dump(settings, f, indent=3)
+        with open(prefix_path, "r") as f:
+            prefixes = json.load(f)
         prefixes[str(guild.id)] = "$"
-        with open(prefix_path, "w") as f: json.dump(prefixes, f, indent=3)
+        with open(prefix_path, "w") as f:
+            json.dump(prefixes, f, indent=3)
         await guild.text_channels[0].send("Hello. I am J.A.R.V.I.S!")
 
 
