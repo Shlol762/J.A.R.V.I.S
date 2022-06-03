@@ -12,13 +12,12 @@ from . import command_log_and_err,\
     ChannelNotFound, NoPrivateMessage, Message, MessageConverter, BadUnionArgument,\
     trim, forbidden_word, noswear, greetings, farewells, nou, urnotgod, timeto, Bot,\
     ThreadNotFound, train, CheckFailure, eastereggs, who_pinged, ErrorView, HTTPException,\
-    stopwatch, time_set, AllowedMentions, load
+    stopwatch, time_set, AllowedMentions, load, IST
 
 severed_time = 0
 connect_time = 0
 chnls = [833995745690517524, 817299815900643348, 817300015176744971, 859801379996696576]
 webhooks = [861660340617084968, 861660166193807430, 861660711037960243, 938268473623212053]
-prev_members = []
 
 model = None
 if load:
@@ -72,64 +71,37 @@ class Events(Cog):
         self.bot = bot
         self.name = 'events'
 
-    @loop(seconds=30.0)
+
+    @loop(time=datetime.time(hour=18, minute=30))
     @stopwatch
     async def birthday(self):
-        global prev_members
-        now_ = datetime.datetime.now()
-        nxt_day = now_.day + 1
-
-        if (datetime.datetime(now_.year, now_.month, nxt_day) - now_).total_seconds() > 30:
-            del nxt_day
-            return
-
-        del nxt_day
-        date = now_.strftime("%d/%m")
-        del now_
-
+        date = datetime.date.today().strftime("%d/%m")
         with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/birthdays_.json") as f:
             birthdays: dict = json.load(f)
 
-        current_birthdays = birthdays.get(date)
+        current_birthdays = birthdays.get(date, [])
         guild = self.bot.get_guild(766356666273890314)
         birthday_role = guild.get_role(874909501617238048)
-        general: TextChannel = await guild.fetch_channel(821278528108494878)
+        general: TextChannel = await self.bot.fetch_channel(821278528108494878)
+        topic = topic=re.sub(f"((, )?Happy birthday .+(!)$)+", '', general.topic)
 
         if len(birthday_role.members) != 0:
             if [str(m.id) for m in birthday_role.members] != current_birthdays:
                 for member in birthday_role.members:
                     try: await member.remove_roles(birthday_role)
                     except HTTPException: pass
-                await general.edit(topic=None)
             else:
                 return
 
-        if date not in birthdays.keys():
-            del date, birthdays
-            return
-
-        topic = ''
         for user_id in current_birthdays:
             m = await guild.fetch_member(user_id)
             await m.add_roles(birthday_role)
-            if 'Happy' not in topic:
+            if m.name not in topic:
                 topic += f"Happy birthday {m.name}!"
             else:
-                topic = topic.replace('!', f", {m.name}!")
+                topic = topic.replace('!', f" {m.name}!", 1)[::-1] if '!' in topic else topic + f" {m.name}!"
 
         await general.edit(topic = topic)
-
-    @loop(minutes=5)
-    async def timer(self):
-        timchnl: TextChannel = await self.bot.fetch_channel(821278528108494878)
-        tstr, now, till = timeto("00:00 1/1/2022")
-        if now > till:
-            print(tstr)
-            try: time_ = re.search(r"(([0-9]+ days? )?([0-9]+ hrs? )?[0-9]+ mins?)", tstr).group(0)
-            except AttributeError: time_ = timchnl.topic
-            await asyncio.sleep(10)
-            time_ = "T-Minus " + time_ + " and counting"
-            await timchnl.edit(topic=time_)
 
     @Cog.listener()
     async def on_ready(self):
@@ -143,10 +115,8 @@ class Events(Cog):
                       description=f'`{self.bot.user.name}` is ready, Version: `{self.bot.VERSION}`\n',
                       colour=Colour.teal(), timestamp=datetime.datetime.utcnow())
         await ch.send(embed=embed)
-        # try: self.birthday.start()
-        # except RuntimeError: self.birthday.restart()
-        # try: self.timer.start()
-        # except RuntimeError: self.timer.restart()
+        try: self.birthday.start()
+        except RuntimeError: self.birthday.restart()
         print(f"Connection to discord instantiation success: {datetime.datetime.now().strftime('%d %B %Y at %X:%f')}")
 
     @Cog.listener()
@@ -155,11 +125,24 @@ class Events(Cog):
         ctx: Context = await self.bot.get_context(message)
         channel: TextChannel = ctx.channel
         author: Member = ctx.author
-        bot: Bot = ctx.bot
-        with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json", 'r') as f:
-            vals: dict = json.load(f)
+        bot: Bot = self.bot
+        vals: dict = bot.SETTINGS
+
         if re.search(r"[a-zA-Z0-9]{24}\.[a-zA-Z0-9]{6}\.[a-zA-Z0-9\-_]{27}", message.content):
-            await ctx.send('none')
+            mg = await message.author.send(embed=Embed(title='Delta Security Warning!',
+                                                                  description='**Security Warning! Discord Authentication token detected.'+(' Message will be deleted to prevent'
+                           ' malicous attacks. To cancel deletion type: `Abort Delta security` or `ADS` within 10 seconds.**' if ctx.guild else ' *Deletion advised*.**'),
+                                                                        colour=Colour.red()).set_thumbnail('https://cdn.discordapp.com/emojis/849902617185484810.png?v=1')
+                           )
+            await ctx.send(embed=mg.embeds[0], delete_after=10.0) if ctx.guild else None
+            try:
+                _message = await bot.wait_for('message', timeout=10, check=lambda msg: msg.author == message.author)
+                if not re.search(r'a(bort )?d(elta )?s(ecurity)?', _message.content.lower()):
+                    await message.delete()
+            except asyncio.TimeoutError:
+                try: await message.delete()
+                except Forbidden: pass
+            except Forbidden: pass
         if ctx.guild:
             if author == ctx.guild.owner and message.content.lower().startswith("jarvis disengage alpha lock"):
                 [await channel.edit(overwrites={ctx.guild.default_role: disnake.PermissionOverwrite(send_messages=True)}) for channel in ctx.guild.text_channels]
@@ -253,6 +236,8 @@ class Events(Cog):
                         except AttributeError: pass
                     await train(ctx)
                 except TypeError: print(ctx.message.content)
+            if random.randint(1, 1000) == 0:
+                await ctx.send(f"<@")
 
     @Cog.listener()
     async def on_disconnect(self):
