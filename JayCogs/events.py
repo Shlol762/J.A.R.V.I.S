@@ -19,8 +19,6 @@ from . import command_log_and_err,\
     stopwatch, time_set, AllowedMentions, load, IST
 
 
-severed_time = 0
-connect_time = 0
 chnls = [833995745690517524, 817299815900643348,
          817300015176744971, 859801379996696576]
 webhooks = [861660340617084968, 861660166193807430,
@@ -71,6 +69,9 @@ if load:
 
 
 class Events(Cog):
+    connect_time = None
+    severed_time = None
+
     def __init__(self, bot: Bot):
         self.bot = bot
         self.name = 'events'
@@ -111,22 +112,21 @@ class Events(Cog):
 
     @Cog.listener()
     async def on_ready(self):
-        global connect_time
+        now = datetime.datetime.now()
         ch: TextChannel = self.bot.get_channel(823216455733477387)
         embed = Embed(title="Connection to discord",
-                      description=f"*`Successful`*: `Confirmed`\n *`Connection at`*: `{connect_time}`",
-                      colour=Colour.gold(), timestamp=datetime.datetime.utcnow())
-        await ch.send(embed=embed)
-        embed = Embed(title="Bot is ready",
+                      description=f"*`Successful`*: `Confirmed`\n *`Connection at`*: `{self.connect_time}`",
+                      colour=Colour.gold(), timestamp=now)
+        embed2 = Embed(title="Bot is ready",
                       description=f'`{self.bot.user.name}` is ready, Version: `{self.bot.VERSION}`\n',
-                      colour=Colour.teal(), timestamp=datetime.datetime.utcnow())
-        await ch.send(embed=embed)
+                      colour=Colour.teal(), timestamp=now)
+        await ch.send(embeds=[embed, embed2])
         try:
             self.birthday.start()
         except RuntimeError:
             self.birthday.restart()
         print(
-            f"Connection to discord instantiation success: {datetime.datetime.now().strftime('%d %B %Y at %X:%f')}")
+            f"Connection to discord instantiation success: {now.strftime('%d %B %Y at %X:%f')}")
 
     @Cog.listener()
     async def on_message(self, message: Message):
@@ -155,6 +155,7 @@ class Events(Cog):
                     pass
             except Forbidden:
                 pass
+
         if ctx.guild:
             if author == ctx.guild.owner and message.content.lower().startswith("jarvis disengage alpha lock"):
                 [await channel.edit(overwrites={ctx.guild.default_role: discord.PermissionOverwrite(send_messages=True)}) for channel in ctx.guild.text_channels]
@@ -264,22 +265,19 @@ class Events(Cog):
 
     @Cog.listener()
     async def on_disconnect(self):
-        global severed_time
-        severed_time = datetime.datetime.now().strftime("%d %b %Y at %I:%M %p")
+        self.severed_time = datetime.datetime.now().strftime("%d %b %Y at %I:%M %p")
 
     @Cog.listener()
     async def on_connect(self):
-        global connect_time
-        connect_time = datetime.datetime.now().strftime("%d %b %Y at %I:%M %p")
+        self.connect_time = datetime.datetime.now().strftime("%d %b %Y at %I:%M %p")
 
     @Cog.listener()
     async def on_resumed(self):
-        global severed_time
-        time: datetime.datetime = datetime.datetime.now().strftime("%d %b %Y at %I:%M %p")
+        now: datetime.datetime = datetime.datetime.now()
         ch: TextChannel = self.bot.get_channel(823216455733477387)
         embed = Embed(title="Re-connection to discord",
-                      description=f"*`Successful`*: `Confirmed`\n *`Last disconnect`*: `{severed_time}`\n*`Re-connection at`*: `{time}`",
-                      colour=Colour.gold(), timestamp=datetime.datetime.utcnow())
+                      description=f"*`Successful`*: `Confirmed`\n *`Last disconnect`*: `{self.severed_time}`\n*`Re-connection at`*: `{now.strftime('%d %b %Y at %I:%M %p')}`",
+                      colour=Colour.gold(), timestamp=now)
         await ch.send(embed=embed)
 
     @Cog.listener()
