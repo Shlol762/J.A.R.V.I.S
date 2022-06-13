@@ -1,8 +1,8 @@
 import json
 import random
 
-from disnake.ext import commands
-import disnake
+from discord.ext import commands
+import discord
 import wikipedia
 from PyDictionary import PyDictionary
 from typing import Any, Tuple, Optional
@@ -31,7 +31,7 @@ class Misc(Cog):
         await command_log_and_err(ctx, 'Success')
         await ctx.reply(embed=await set_timestamp(
             Embed(title='Ping', description=f'`{round(ctx.bot.latency * 1000)}` ms',
-                  colour=disnake.Colour.random())))
+                  colour=discord.Colour.random())))
 
     @command(name='Leap', aliases=['le'], usage='leap <year>',
                       help='Checks whether or not a given year is a leap one.',
@@ -96,7 +96,7 @@ class Misc(Cog):
                     await ctx.reply(embed=await set_timestamp(
                         Embed(title=f'Result for "`{query[0].upper() + query[1:]}`"\n\n{results}',
                                       description=msg,
-                                      colour=disnake.Colour.random())))
+                                      colour=discord.Colour.random())))
                 except wikipedia.DisambiguationError:
                     await command_log_and_err(ctx, err_code="Err_90412",
                                               text=f"Too many results found for '`{query}`'. Check spelling or try adding more keywords.")
@@ -106,19 +106,19 @@ class Misc(Cog):
                 except wikipedia.PageError:
                     await command_log_and_err(ctx, err_code="Err_90412",
                                               text=f"No results found for '`{query}`'. Check spelling or try adding more keywords.")
-                except disnake.HTTPException:
+                except discord.HTTPException:
                     msg = msg.split()
                     await command_log_and_err(ctx, 'Success: split info')
-                    embeds = [Embed(title=f'Result for "`{query[0].upper() + query[1:]}`"\n\n{results}', description=' '.join(msg[:]), colour=disnake.Colour.random())]
+                    embeds = [Embed(title=f'Result for "`{query[0].upper() + query[1:]}`"\n\n{results}', description=' '.join(msg[:]), colour=discord.Colour.random())]
                     if len(''.join(msg)) >= 4096:
                         embeds[0].description = ''.join(msg[:300])
-                        embeds.append(Embed(description=' '.join(msg[300:]), colour=disnake.Colour.random()))
+                        embeds.append(Embed(description=' '.join(msg[300:]), colour=discord.Colour.random()))
                     message = await ctx.author.send(
                         embeds=embeds)
                     await ctx.reply(
                         embed=Embed(title=f'Result for "`{query[0].upper() + query[1:]}`"\n\n{results}',
                                             description=f'Since the results for this search exceeds the character limit of 2048, the info will be sent to you through DMs. Click [here]({message.jump_url}) to jump.',
-                                            colour=disnake.Colour.random())) if ctx.guild else None
+                                            colour=discord.Colour.random())) if ctx.guild else None
                 except requests.exceptions.ProxyError:
                     await command_log_and_err(ctx, err_code="Err90412",
                                               text=f'N/A: `Internet Connection Failure\\: Unable to retrieve information for "{query}" `{author.mention}')
@@ -137,7 +137,7 @@ class Misc(Cog):
                 try:
                     dcnry = PyDictionary()
                     word = word[0].upper() + word[1:]
-                    embed = Embed(title=word, description='', colour=disnake.Colour.random())
+                    embed = Embed(title=word, description='', colour=discord.Colour.random())
                     if (await dcnry.meaning(word)) is None:
                         embed.description += f"Sorry either `{word}` isn't a word in the dictionary or there's a problem with the internet."
                         await command_log_and_err(ctx, 'Internet Problems/Non-Existent Word')
@@ -244,5 +244,5 @@ f"""
         await ctx.reply(embed=await set_timestamp(embed, random.choice(("Credit: Moiz Delhve", "", "", ""))))
 
 
-def setup(bot: Bot):
-    bot.add_cog(Misc(bot))
+async def setup(bot: Bot):
+    await bot.add_cog(Misc(bot))

@@ -2,9 +2,9 @@ from datetime import datetime as dt
 from time import time as unixtim
 import os
 from typing import Optional, Union
-import disnake
-from disnake.abc import GuildChannel
-from disnake import (
+import discord
+from discord.abc import GuildChannel
+from discord import (
     Message,
     Embed,
     User,
@@ -17,8 +17,8 @@ from disnake import (
     File,
     Forbidden
         )
-from disnake.ext import commands
-from disnake.ext.commands import (
+from discord.ext import commands
+from discord.ext.commands import (
     Context,
     CommandOnCooldown,
     NoPrivateMessage,

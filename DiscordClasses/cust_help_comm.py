@@ -1,5 +1,5 @@
-from disnake import Embed
-from disnake.ext import commands
+from discord import Embed
+from discord.ext import commands
 
 class CustomHelpCommand(commands.HelpCommand):
     def __init__(self):

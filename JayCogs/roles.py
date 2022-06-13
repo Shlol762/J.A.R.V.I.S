@@ -1,10 +1,10 @@
 from typing import Optional, Union
-import disnake
-from disnake.ext import commands
+import discord
+from discord.ext import commands
 from JayCogs import command_log_and_err, set_timestamp, command,\
     Cog, cooldown, guild_only, BucketType, Context, has_permissions,\
     Client, Forbidden, Role, Member, Colour, Embed, HTTPException,\
-    InvalidArgument, Bot, comm_log_local
+    Bot, comm_log_local
 
 #commands.
 
@@ -519,5 +519,5 @@ class Roles(Cog):
             await ctx.reply("I've done all I can")
 
 
-def setup(bot: Bot):
-    bot.add_cog(Roles(bot))
+async def setup(bot: Bot):
+    await bot.add_cog(Roles(bot))

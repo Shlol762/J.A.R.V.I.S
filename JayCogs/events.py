@@ -6,7 +6,7 @@ import re
 import sys
 import string
 import nltk
-import disnake
+import discord
 import numpy as np
 from . import command_log_and_err,\
     loop, Cog, Context, command, Client, Guild, Role, TextChannel,\
@@ -76,7 +76,6 @@ class Events(Cog):
         self.name = 'events'
 
     @loop(time=datetime.time(hour=18, minute=30))
-    @stopwatch
     async def birthday(self):
         date = datetime.date.today().strftime("%d/%m")
         with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/birthdays_.json") as f:
@@ -85,12 +84,13 @@ class Events(Cog):
         current_birthdays = birthdays.get(date, [])
         guild = self.bot.get_guild(766356666273890314)
         birthday_role = guild.get_role(874909501617238048)
+        birthday_members = [str(m.id) for m in birthday_role.members]
         general: TextChannel = await self.bot.fetch_channel(821278528108494878)
-        topic = topic = re.sub(
-            f"((, )?Happy birthday .+(!)$)+", '', general.topic)
+        topic = re.sub(
+            f"((, )?Happy birthday .+(!)$)+", '', general.topic) if general.topic else ''
 
         if len(birthday_role.members) != 0:
-            if [str(m.id) for m in birthday_role.members] != current_birthdays:
+            if not all([item in current_birthdays for item in birthday_members]):
                 for member in birthday_role.members:
                     try:
                         await member.remove_roles(birthday_role)
@@ -103,10 +103,9 @@ class Events(Cog):
             m = await guild.fetch_member(user_id)
             await m.add_roles(birthday_role)
             if m.name not in topic:
-                topic += f"Happy birthday {m.name}!"
+                topic += f"Happy birthday {m.name}! "
             else:
-                topic = topic.replace('!', f" {m.name}!", 1)[
-                    ::-1] if '!' in topic else topic + f" {m.name}!"
+                topic = topic.replace('!', f" {m.name}!", 1)[::-1] if '!' in topic else topic + f" {m.name}!"
 
         await general.edit(topic=topic)
 
@@ -138,11 +137,11 @@ class Events(Cog):
         bot: Bot = self.bot
         vals: dict = bot.SETTINGS
 
-        if re.search(r"[a-zA-Z0-9]{24}\.[a-zA-Z0-9]{6}\.[a-zA-Z0-9\-_]{27}", message.content):
+        if re.search(r"[a-zA-Z\d]{24}\.[a-zA-Z\d]{6}\.[a-zA-Z\d\-_]{27}", message.content):
             mg = await message.author.send(embed=Embed(title='Delta Security Warning!',
                                                        description='**Security Warning! Discord Authentication token detected.'+(' Message will be deleted to prevent'
                                                                                                                                  ' malicous attacks. To cancel deletion type: `Abort Delta security` or `ADS` within 10 seconds.**' if ctx.guild else ' *Deletion advised*.**'),
-                                                       colour=Colour.red()).set_thumbnail('https://cdn.discordapp.com/emojis/849902617185484810.png?v=1')
+                                                       colour=Colour.red()).set_thumbnail(url='https://cdn.discordapp.com/emojis/849902617185484810.png?v=1')
                                            )
             await ctx.send(embed=mg.embeds[0], delete_after=10.0) if ctx.guild else None
             try:
@@ -158,7 +157,7 @@ class Events(Cog):
                 pass
         if ctx.guild:
             if author == ctx.guild.owner and message.content.lower().startswith("jarvis disengage alpha lock"):
-                [await channel.edit(overwrites={ctx.guild.default_role: disnake.PermissionOverwrite(send_messages=True)}) for channel in ctx.guild.text_channels]
+                [await channel.edit(overwrites={ctx.guild.default_role: discord.PermissionOverwrite(send_messages=True)}) for channel in ctx.guild.text_channels]
                 await ctx.send("Alpha lock disengaged")
             if re.search(r'ultron kill (<@!?749830638982529065>|j.?a.?r.?v.?i.?s.?)', message.content.lower()):
                 await self.bot.wait_for('message', check=lambda m: m.author.id == 933591106950684712, timeout=2)
@@ -235,7 +234,7 @@ class Events(Cog):
                     if re.search(r"\b(when (is )?(the next occurrance of |will)?((.)+ (next )?bday)| the day (.)+ was born)", message_text.lower()):
                         try:
                             person = re.search(
-                                r"<@(!)?[0-9]+>", message_text.replace("'s", ''))
+                                r"<@(!)?\d+>", message_text.replace("'s", ''))
                             person: Member = await MemberConverter().convert(ctx=ctx, argument=person.group())
                             path: str = "C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/birthdays.json"
                             f = open(path, 'r')
@@ -247,10 +246,10 @@ class Events(Cog):
                                 datending = (lambda t: {'1': 'st', '2': 'nd', '3': 'rd'}.get(
                                     str(t)[-1]) or 'th')(time.day)
                                 if time < datetime.datetime.now():
-                                    time: str = re.sub(" to `00:00 [0-9]{2}/[0-9]{2}/[0-9]{4}`", "", time.strftime(
+                                    time: str = re.sub(" to `00:00 \d{2}/\d{2}/\d{4}`", "", time.strftime(
                                         f"""The next occurrance of . birthday is in {timeto(f'{time.day}/{time.month}/{time.year + 1}')[0]} on the `%d{datending} of %B in {time.year + 1}`"""))
                                 else:
-                                    time: str = re.sub(" to `00:00 [0-9]{2}/[0-9]{2}/[0-9]{4}`", "", time.strftime(
+                                    time: str = re.sub(" to `00:00 \d{2}/\d{2}/\d{4}`", "", time.strftime(
                                         f"""The next occurrance of . birthday is in {timeto(f'{time.day}/{time.month}/{time.year}')[0]} on the `%d{datending} of %B in %Y`"""))
                                 await ctx.reply(time.replace(".", 'your' if person.id == author.id else person.name+"'s"))
                             else:
@@ -415,5 +414,5 @@ class Events(Cog):
         await guild.text_channels[0].send("Hello. I am J.A.R.V.I.S!")
 
 
-def setup(bot: Bot):
-    bot.add_cog(Events(bot))
+async def setup(bot: Bot):
+    await bot.add_cog(Events(bot))

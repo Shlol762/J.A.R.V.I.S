@@ -14,18 +14,18 @@ Dependencies
 ------------
 .. image:: https://discord.com/api/guilds/336642139381301249/embed.png
    :target: https://discord.gg/r3sSKJJ
-   :alt: disnake server invite
-.. image:: https://img.shields.io/pypi/v/disnake.svg
-   :target: https://pypi.python.org/pypi/disnake
+   :alt: discord server invite
+.. image:: https://img.shields.io/pypi/v/discord.svg
+   :target: https://pypi.python.org/pypi/discord
    :alt: PyPI version info
-.. image:: https://img.shields.io/pypi/pyversions/disnake.py.svg
-   :target: https://pypi.python.org/pypi/disnake
+.. image:: https://img.shields.io/pypi/pyversions/discord.py.svg
+   :target: https://pypi.python.org/pypi/discord
    :alt: PyPI supported Python versions
 
-- disnake - The new fork of discord.py
+- discord - The new fork of discord.py
 
-  - `Documentation <https://disnake.readthedocs.io/en/latest/>`_
-  - `Installation <https://pypi.org/project/disnake>`_
+  - `Documentation <https://discord.readthedocs.io/en/latest/>`_
+  - `Installation <https://pypi.org/project/discord>`_
 - discord.py (formerly)
 
   - `Documentation <https://discordpy.readthedocs.io/en/stable/>`_

@@ -1,5 +1,5 @@
-from disnake.errors import *
-from disnake.ext.commands import *
+from discord.errors import *
+from discord.ext.commands import *
 
 class ThreadNotSpecified(BadArgument):
     pass

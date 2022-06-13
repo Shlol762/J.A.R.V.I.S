@@ -1,6 +1,6 @@
 import asyncio
 from typing import Optional
-import disnake
+import discord
 from JayCogs import encrypt, decrypt, command_log_and_err,\
     commands, Cog, command, cooldown, BucketType, Context,\
     Member, guild_only, Client, Embed, Colour, Message,\
@@ -322,7 +322,7 @@ Password: {hack_pass}
                 return await ctx.reply(f"`Impersonate` has been `disabled` for {ctx.channel.mention}")
             await ctx.message.delete()
             if ctx.bot.user not in [webhook.user for webhook in await ctx.channel.webhooks()]:
-                webhook: disnake.Webhook = await ctx.channel.create_webhook(name=ctx.bot.user.name, avatar=None)
+                webhook: discord.Webhook = await ctx.channel.create_webhook(name=ctx.bot.user.name, avatar=None)
                 await webhook.send(text or f"I have no idea who to impersonate so I'll just impersonate you.",
                                    username=member.display_name,
                                    avatar_url=member.avatar.url)
@@ -334,11 +334,11 @@ Password: {hack_pass}
             else:
                 with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/webhooks.json", "r") as f:
                     webhooks: dict = json.load(f)
-                webhook: disnake.Webhook = await ctx.bot.fetch_webhook(int(webhooks.get(str(ctx.channel.id))))
+                webhook: discord.Webhook = await ctx.bot.fetch_webhook(int(webhooks.get(str(ctx.channel.id))))
                 await webhook.send(text or f"I have no idea who to impersonate so I'll just impersonate you.",
                                    username=member.display_name,
                                    avatar_url=member.avatar.url)
 
 
-def setup(bot: Bot):
-    bot.add_cog(Games(bot))
+async def setup(bot: Bot):
+    await bot.add_cog(Games(bot))

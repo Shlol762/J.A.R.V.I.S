@@ -5,39 +5,11 @@ from JayCogs import calculate_position, permission_confirm, \
     role_member_conv, command_log_and_err, \
     Context, Cog, command, cooldown, guild_only, ChannelNotFound,\
     RoleConverter, MemberConverter, BucketType, ThreadNotFound,\
-    VoiceChannel, TextChannel, Embed, Colour, VoiceRegion,\
+    VoiceChannel, TextChannel, Embed, Colour,\
     CategoryChannel, Member, Forbidden, HTTPException, Role,\
     timezone, GuildChannel, Message, Bot, ThreadConfirmation, Thread, comm_log_local,\
-    group, SelectChannelCategoryView as Sccv, Guild, IST, slash_command,\
-    Param, utils, NotFound, AppCmdInter, Permissions
-
-
-permissions = Param(None, name='permissions', desc='The permissions you want to change for the person.',
-                    choices=['add reactions',
- 'administrator',
- 'attach files',
- 'ban members',
- 'change nickname',
- 'create public threads',
- 'deafen members',
- 'embed links',
- 'external emojis',
- 'external stickers',
- 'kick members',
- 'manage channels',
- 'manage emojis',
- 'manage guild',
- 'manage messages',
- 'manage nicknames',
- 'manage roles',
- 'manage threads',
- 'mention everyone',
- 'move members',
- 'mute members',
- 'send messages',
- 'send messages in threads',
- 'send tts messages',
- 'view audit log'])
+    group, SelectChannelCategoryView as Sccv, Guild, IST,\
+    utils, NotFound
 
 
 class Cc(Cog):
@@ -46,11 +18,9 @@ class Cc(Cog):
         self.name: str = 'Channel Control(cc)'
         self.description = "Controls functions over text, voice and category channels."
 
-    @slash_command(name="createchannel", description="Creates a new text channel, voice channel or category")
+    @command(name="createchannel", description="Creates a new text channel, voice channel or category")
     @cooldown(1, 15, BucketType.guild)
-    async def createchnl(self, itxn: AppCmdInter,
-            _type: str = Param(name='type', desc='What type of channel?', choices=['text', 'voice', 'category']),
-            name: str = Param(name='name', desc='Name of new channel')):
+    async def createchnl(self, ctx: Context, _type: str = None, name: str = None):
         if _type == 'text':
             name = re.sub(r"[+_!@#$%^&*();',.:\"<>?`~=\\|\[\]{}]", '', name)
             name = name.replace(' ', '-')
@@ -77,10 +47,9 @@ class Cc(Cog):
         await itxn.send(embed=Embed(title='Error', description=text, timestamp=timestamp,
                                     colour=Colour.red()), ephemeral=True) if err_code else None
 
-    @slash_command(name='deletechannel', description='Deletes a text channel, voice channel or category.')
+    @command(name='deletechannel', description='Deletes a text channel, voice channel or category.')
     @guild_only()
-    async def delchnl(self, itxn: AppCmdInter, channel: GuildChannel = Param(
-                      name='channel', desc='The channel you want to delete')):
+    async def delchnl(self, ctx: Context, channel: GuildChannel = None):
         _type: bool = channel.__class__.__name__
         err_code = text = None
         timestamp = datetime.datetime.now(IST)
@@ -94,9 +63,8 @@ class Cc(Cog):
         await itxn.send(embed=Embed(title='Error', description=text, timestamp=timestamp,
                                     colour=Colour.red()), ephemeral=True) if err_code else None
 
-    @slash_command(name='pin', description='Pins a message.')
-    async def pin(self, itxn: AppCmdInter, message: str = Param(name='message', desc='The message you want to pin [ID or link]',
-                                                                     )):
+    @command(name='pin', description='Pins a message.')
+    async def pin(self, ctx: Context, message: str = None):
         err_code = text = None
         timestamp = datetime.datetime.now(IST)
         pins = await itxn.channel.pins()
@@ -124,9 +92,8 @@ class Cc(Cog):
         await itxn.send(embed=Embed(title='Error', description=text, timestamp=timestamp,
                                     colour=Colour.red()), ephemeral=True) if err_code else None
 
-    @slash_command(name='unpin', description='Unpin a message.')
-    async def unpin(self, itxn: AppCmdInter, message: str = Param(name='message',
-                                                             desc='The message you want to unpin [ID or link]')):
+    @command(name='unpin', description='Unpin a message.')
+    async def unpin(self, ctx: Context, message: str = None):
         err_code = text = None
         timestamp = datetime.datetime.now(IST)
         pins = await itxn.channel.pins()
@@ -148,14 +115,10 @@ class Cc(Cog):
         await itxn.send(embed=Embed(title='Error', description=text, timestamp=timestamp,
                                     colour=Colour.red()), ephemeral=True) if err_code else None
 
-    @slash_command(description="Edits a chosen channel")
-    async def editchannel(self, itxn: AppCmdInter, channel: GuildChannel = Param(
-                      name='channel', desc='The channel you want to edit'),
-                          attribute: str = Param(name='property', desc='The property of channel you want to edit.',
-                                                 choices=['name', 'topic', 'category',
-                                                          'nsfw', 'sync perms', 'slowmo delay',
-                                                          'bitrate', 'user limit', 'voice region']),
-                          attr_val: str = Param(name='value')):
+    @command(description="Edits a chosen channel")
+    async def editchannel(self, ctx: Context, channel: GuildChannel = None,
+                          attribute: str = None,
+                          attr_val: str = None):
         f_error = None
         u_error = None
         attr_l = attribute.lower()
@@ -269,5 +232,5 @@ class Cc(Cog):
 
 
 
-def setup(bot: Bot):
-    bot.add_cog(Cc(bot))
+async def setup(bot: Bot):
+    await bot.add_cog(Cc(bot))

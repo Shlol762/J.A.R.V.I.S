@@ -260,5 +260,5 @@ class Moderation(Cog):
             else: await command_log_and_err(ctx, err_code="20548", text="You've not given me who to timeout by the way.")
 
 
-def setup(bot: Bot):
-    bot.add_cog(Moderation(bot))
+async def setup(bot: Bot):
+    await bot.add_cog(Moderation(bot))

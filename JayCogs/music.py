@@ -6,7 +6,7 @@ import random
 from typing import Optional
 import youtube_dl
 from async_timeout import timeout
-from disnake.ext import commands
+from discord.ext import commands
 from JayCogs import command_log_and_err, Context, Bot,\
     Cog, NoPrivateMessage, CommandError, command,\
     guild_only, PCMVolumeTransformer, FFmpegPCMAudio,\
@@ -499,5 +499,5 @@ class Music(Cog):
                 raise CommandError('Bot is already in a voice channel.')
 
 
-def setup(bot: Bot):
-    bot.add_cog(Music(bot))
+async def setup(bot: Bot):
+    await bot.add_cog(Music(bot))

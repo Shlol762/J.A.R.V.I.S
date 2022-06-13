@@ -2,8 +2,8 @@ import asyncio
 import datetime
 import json
 import re, random
-from disnake import Forbidden, Invite, Message, Member
-from disnake.ext.commands import Context, Bot
+from discord import Forbidden, Invite, Message, Member
+from discord.ext.commands import Context, Bot
 from typing import Optional, Union, Any
 
 

@@ -1,10 +1,10 @@
 import re, traceback, sys
-from disnake.ui import View, Button, Item, button, Select, select
-from disnake import SelectOption,\
+from discord.ui import View, Button, Item, button, Select, select
+from discord import SelectOption,\
     CategoryChannel, TextChannel,\
     VoiceChannel, Thread, Interaction,\
     ButtonStyle, Message, InteractionMessage
-from disnake.ext.commands import Context
+from discord.ext.commands import Context
 from .errors import *
 from .components import *
 

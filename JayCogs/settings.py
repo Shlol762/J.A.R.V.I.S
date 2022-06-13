@@ -1,14 +1,14 @@
 from typing import Union
-import disnake, json
-from disnake.ext import commands
-from disnake import Embed, Colour
+import discord, json
+from discord.ext import commands
+from discord import Embed, Colour
 from JayCogs import command_log_and_err, Cog, command,\
     guild_only, Context, Client, set_timestamp, Bot,\
-    comm_log_local
+    comm_log_local, Jarvis
 
 #commands.
 class Settings(Cog):
-    def __init__(self, bot: Bot):
+    def __init__(self, bot: Jarvis):
         self.bot = bot
         self.description = "The commands that control the bot's settings in the server."
         self.name = 'Settings(stgs)'
@@ -30,7 +30,6 @@ class Settings(Cog):
                     await command_log_and_err(ctx, err_code="Err_70148",
                                               text="Choose what you want to change please.")
                 else:
-                    json_file = "C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json"
                     template = {
                         "ban": True,
                         "kick": True,
@@ -48,7 +47,7 @@ class Settings(Cog):
                         "suppressemb": False
                     }
 
-                    with open(json_file, "r") as f: bot_comm_config: dict = json.load(f)
+                    bot_comm_config: dict = self.bot.SETTINGS
 
                     if bot_comm_config.get(channel_id) and server_or_channel == 'channel':
                         channel_config: Union[dict, None] = bot_comm_config.get(channel_id)
@@ -123,7 +122,7 @@ class Settings(Cog):
                                 await ctx.reply(f"`{_command}` has been enabled in this `Server`")
                             else: await ctx.reply(f"There isn't any setting called `{_command}`")
 
-                    with open(json_file, "w") as f: json.dump(bot_comm_config, f, indent=3)
+                    self.bot.SETTINGS = bot_comm_config
                     await command_log_and_err(ctx, 'Success')
             else:
                 await command_log_and_err(ctx, 'Not owner')
@@ -149,7 +148,6 @@ class Settings(Cog):
                     await command_log_and_err(ctx, err_code="Err_70248",
                                               text="Choose what you want to change please.")
                 else:
-                    json_file = "C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json"
                     template = {
                         "ban": True,
                         "kick": True,
@@ -167,7 +165,7 @@ class Settings(Cog):
                         "suppressemb": False
                     }
 
-                    with open(json_file, "r") as f: bot_comm_config: dict = json.load(f)
+                    bot_comm_config: dict = self.bot.SETTINGS
 
                     if bot_comm_config.get(channel_id) and server_or_channel == 'channel':
                         channel_config: Union[dict, None] = bot_comm_config.get(channel_id)
@@ -239,7 +237,7 @@ class Settings(Cog):
                             elif func is False: await ctx.reply(f"`{_command}` was already disabled in this `Server`")
                             else: await ctx.reply(f"There isn't any setting called `{_command}`")
 
-                    with open(json_file, "w") as f: json.dump(bot_comm_config, f, indent=3)
+                    self.bot.SETTINGS = bot_comm_config
                     await command_log_and_err(ctx, 'Success')
             else:
                 await command_log_and_err(ctx, 'Not owner')
@@ -275,8 +273,7 @@ class Settings(Cog):
     @guild_only()
     @comm_log_local
     async def settings(self, ctx: Context):
-        with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json", "r") as f:
-            settings: dict[str:dict[str:bool]] = json.load(f)
+        settings = self.bot.SETTINGS
         embed = await set_timestamp(Embed(title=f"`J.A.R.V.I.S` configuration settings in `{ctx.channel.name}`",
                       description="", colour=Colour.random()))
 
@@ -292,5 +289,5 @@ class Settings(Cog):
         await ctx.reply(embed=embed)
 
 
-def setup(bot: Bot):
-    bot.add_cog(Settings(bot))
+async def setup(bot: Bot):
+    await bot.add_cog(Settings(bot))

@@ -2,8 +2,8 @@ import datetime
 import json
 import re
 
-import disnake
-from disnake.ext import commands
+import discord
+from discord.ext import commands
 from typing import Optional, Union
 from JayCogs import command_log_and_err,\
     set_timestamp, time_set, get_emoji, Cog,\
@@ -562,6 +562,5 @@ For Example:- 1)Err_10124 means command '1' under category
                 ) for vc in server.voice_channels if re.search(r'v(oice|c)|all|channels', components)]
 
 
-
-def setup(bot: Bot):
-    bot.add_cog(Utilities(bot))
+async def setup(bot: Bot):
+    await bot.add_cog(Utilities(bot))

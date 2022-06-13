@@ -1,12 +1,12 @@
 import json
 import os
 from datetime import datetime
-import disnake
+import discord
 from PIL import Image
-from disnake.ext import commands
-from disnake.ext.commands import RoleNotFound, RoleConverter, MemberConverter, Bot, Context, when_mentioned_or,\
+from discord.ext import commands
+from discord.ext.commands import RoleNotFound, RoleConverter, MemberConverter, Bot, Context, when_mentioned_or,\
     MessageConverter
-from disnake import Role, Member, Message, Emoji, Forbidden
+from discord import Role, Member, Message, Emoji, Forbidden
 from pytz import timezone
 from typing import Union, Optional, List, Coroutine, Tuple, Dict, Callable
 import aiohttp, aiofiles
@@ -52,7 +52,7 @@ async def reaction(ctx: Context = None, success=None):
             emoji: Emoji = ctx.bot.get_emoji(int(emoji)) if emoji.isnumeric() else emoji
             try:
                 await ctx.message.add_reaction(emoji)
-            except disnake.HTTPException:
+            except discord.HTTPException:
                 await ctx.message.add_reaction('✅')
     except Forbidden:
         pass
@@ -99,7 +99,7 @@ def time_set(time: datetime = None, time_format: str = None) -> Optional[datetim
 
 async def get_emoji(bot: Bot, emoji: Union[int, str]) -> Optional[Emoji]:
     """Getting the emoji from inside a Bot instance."""
-    return disnake.utils.find(lambda e: emoji.lower().replace(' ', '') in e.name.lower(),
+    return discord.utils.find(lambda e: emoji.lower().replace(' ', '') in e.name.lower(),
                                 bot.emojis) if isinstance(emoji, str) else bot.get_emoji(emoji)
 
 
@@ -152,7 +152,7 @@ def timeto(time_str: str) -> Union[str, datetime, datetime]:
     return time_, now, till
 
 
-def calculate_position(channel: Union[disnake.TextChannel, disnake.VoiceChannel], pos: int) -> int:
+def calculate_position(channel: Union[discord.TextChannel, discord.VoiceChannel], pos: int) -> int:
     """Calculates the heirarchy position of channels and categories in a discord server."""
     ctgry_pos = channel.category.position
     index_start = 0

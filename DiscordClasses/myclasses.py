@@ -1,8 +1,8 @@
-from disnake.ext import commands
-import disnake, re
-from .errors import BadArgument
+from discord.ext import commands
+import discord, re
+from typing import Optional
 from .version import Version
-from typing import Union, Optional
+from .custom_funcs import get_prefix
 
 
 class Jarvis(commands.AutoShardedBot):
@@ -18,10 +18,12 @@ class Jarvis(commands.AutoShardedBot):
                 self.VERSION = ver.increment().version
                 f.write(self.VERSION)
 
-        super().__init__(*args, **kwargs, intents=disnake.Intents.all(),
-                         activity=disnake.Activity(type=disnake.ActivityType.watching,
+        super().__init__(*args, **kwargs, intents=discord.Intents.all(),
+                         activity=discord.Activity(type=discord.ActivityType.watching,
                                                    name=f'people talk...    V{self.VERSION}'),
-                         status=disnake.Status.dnd
+                         status=discord.Status.dnd, command_prefix=get_prefix, case_insensitive=True,
+                         allowed_mentions=discord.AllowedMentions(),
+                         strip_after_prefix=True
                          )
 
         self.remove_command('help')

@@ -1,6 +1,6 @@
 from .errors import *
-from disnake.ui import Select
-from disnake import SelectOption, TextChannel, VoiceChannel,\
+from discord.ui import Select
+from discord import SelectOption, TextChannel, VoiceChannel,\
     Interaction, CategoryChannel, Embed, Colour
 from typing import Union
 import re

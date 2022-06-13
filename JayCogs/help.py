@@ -74,5 +74,5 @@ Note: You do not need to actually put <> and () around the inputs they are for u
             pass
 
 
-def setup(bot: Bot):
-    bot.add_cog(Help(bot))
+async def setup(bot: Bot):
+    await bot.add_cog(Help(bot))

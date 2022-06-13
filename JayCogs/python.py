@@ -1,10 +1,10 @@
 import asyncio
 
-import disnake
+import discord
 from JayCogs import command, Cog, Bot, datetime,\
     Colour, Embed, find_nth_occurrence, send_to_paste_service,\
     command_log_and_err, cooldown, Context, comm_log_local
-from disnake.utils import escape_markdown
+from discord.utils import escape_markdown
 import datetime, re, itertools, aiohttp
 from typing import Tuple, Any, Optional
 from io import StringIO
@@ -47,7 +47,7 @@ class Python(Cog):
         self.ln = 0
         self.stdout = StringIO()
 
-    def _format(self, inp: str, out: Any) -> Tuple[str, Optional[disnake.Embed]]:
+    def _format(self, inp: str, out: Any) -> Tuple[str, Optional[discord.Embed]]:
         """Format the eval output into a string & attempt to format it into an Embed."""
         self._ = out
 
@@ -107,7 +107,7 @@ class Python(Cog):
             return res, None
 
 
-        if isinstance(out, disnake.Embed):
+        if isinstance(out, discord.Embed):
             # We made an embed? Send that as embed
             res += "<Embed>"
             res = (res, out)
@@ -140,7 +140,7 @@ class Python(Cog):
 
         return res  # Return (text, embed)
 
-    async def _eval(self, ctx: Context, code: str) -> Optional[disnake.Message]:
+    async def _eval(self, ctx: Context, code: str) -> Optional[discord.Message]:
         """Eval the input code string & send an embed to the invoking context."""
         self.ln += 1
 
@@ -157,7 +157,7 @@ class Python(Cog):
             "self": self,
             "bot": self.bot,
             "inspect": inspect,
-            "disnake": disnake,
+            "discord": discord,
             "contextlib": contextlib
         }
         if 'math' in code.lower():
@@ -308,5 +308,5 @@ async def func():  # (None,) -> Any
             else: await command_log_and_err(ctx, err_code='P0248', text="You haven't given a package to search for...")
 
 
-def setup(bot: Bot):
-    bot.add_cog(Python(bot))
+async def setup(bot: Bot):
+    await bot.add_cog(Python(bot))

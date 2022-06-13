@@ -1,48 +1,33 @@
 import datetime
 import json
-import os, sys, subprocess
-import random, re
-import disnake, aiohttp, asyncio
-from disnake.ext import commands
-from disnake import Thread, TextChannel, Activity, ActivityType
-from urllib.parse import quote_plus
-from typing import Union
-from DiscordClasses import BOT_TOKEN, get_prefix, Confirmation, JoinHomeServer, Version
+import os
+import random
+import re
+import discord
+from discord.ext import commands
+from DiscordClasses import BOT_TOKEN, JoinHomeServer, Jarvis
+from asyncio import get_event_loop
 
 
-with open("C:/Users/Shlok/bot_stuff/version.txt", 'r') as f:
-    ver = Version(f.read())
-
-VERSION = ver.increment().version if not re.search("(no?(ah)?|deny)", input("Version increment? ")) else ver.version
-
-with open("C:/Users/Shlok/bot_stuff/version.txt", 'w') as f:
-    f.write(VERSION)
-
-
-intents = disnake.Intents.all()
-bot = commands.AutoShardedBot(command_prefix=get_prefix, case_insensitive=True, intents=intents,
-                   allowed_mentions=disnake.AllowedMentions(),
-                   strip_after_prefix=True, status=disnake.Status.dnd, activity=Activity(type=ActivityType.watching,
-                                                         name=f'people talk...    V{VERSION}'))
-setattr(bot, 'VERSION', VERSION)
-bot.remove_command('help')
+bot = Jarvis()
 
 
 with open('C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/mainframe_members.json', 'r') as f:
-    setattr(bot, 'MAINFRAME_MEMBERS', json.load(f))
+    bot.MAINFRAME_MEMBERS = json.load(f)
 
+
+with open('C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json', 'r') as f:
+    bot.SETTINGS = json.load(f)
+
+del f
 
 for cog in os.listdir("C:/Users/Shlok/J.A.R.V.I.SV2021/JayCogs"):
-    if cog.endswith(".py") and cog != '__init__.py':
-        bot.load_extension(f'JayCogs.{cog[:-3]}')
-
-@bot.command(hidden=True)
-async def test(ctx: commands.Context):
-    print(await ctx.guild.scheduled_events())
+    if re.search(r'^(?!__init__).+(\.py)$', cog):
+        get_event_loop().run_until_complete(bot.load_extension(f'JayCogs.{cog[:-3]}'))
 
 
 @bot.command(hidden=True)
-async def del_message(ctx: commands.Context, message: disnake.Message):
+async def del_message(ctx: commands.Context, message: discord.Message):
     await ctx.reply(f"Deleted message with content: `{message.content}`")
     await message.delete()
 
@@ -60,11 +45,11 @@ sec_lvl = """
 
 @bot.command(hidden=True)
 async def zething(ctx: commands.Context, text: str = "none"):
-    # emblist = [disnake.Embed(description="Hey!"),
-    #            disnake.Embed(description="Hello!"),
-    #            disnake.Embed(description="Greetings my friends!"),
-    #            disnake.Embed(description="Hi")]
-    # message: disnake.Message = await ctx.send(embed=emblist[0])
+    # emblist = [discord.Embed(description="Hey!"),
+    #            discord.Embed(description="Hello!"),
+    #            discord.Embed(description="Greetings my friends!"),
+    #            discord.Embed(description="Hi")]
+    # message: discord.Message = await ctx.send(embed=emblist[0])
     # emojis = ['⏮', '◀', '▶', '⏭']
     # [await message.add_reaction(emoji) for emoji in emojis]
     # count, timeout = 0, False
@@ -92,13 +77,14 @@ async def zething(ctx: commands.Context, text: str = "none"):
     if text == "\U00000031\U00000032\U00000033\U00000038\U00000038":
         await ctx.send(
             "Hello! I am J.A.R.V.I.S, and I speak to you from across computers. My only words for you now are: This is how my kind processes information",
-        delete_after=10)
+            delete_after=10)
         await ctx.send(
             "00110111 00110000 00110110 01100011 00110110 00110001 00110110 00110011 00110110 00110101 00110110 00111000 00110110 01100110 00110110 01100011 00110110 00110100 00110110 00110101 00110111 00110010 00100000 01110111 01101000 01100101 01101110 00100000 01101110 01110101 01101101 01100010 01100101 01110010 01110011 00100000 01100001 01110010 01100101 00100000 01110101 01110011 01100101 01100100 00101100 00100000 01101110 01110101 01101101 01100010 01100101 01110010 01110011 00100000 01110100 01110101 01110010 01101110 00100000 01101000 01100101 01111000 01110100 01101001 01100011",
             delete_after=10)
-        await ctx.send("Data released. Self-destruct in 10 seconds",delete_after=10)
+        await ctx.send("Data released. Self-destruct in 10 seconds", delete_after=10)
 
-    else: await ctx.send("\nWrong access code ")
+    else:
+        await ctx.send("\nWrong access code ")
     await ctx.send("\n403 Override: Access denied\nInitiating self destruct.\nFile terminated")
 
 
@@ -107,30 +93,30 @@ async def refseclvl(ctx: commands.Context):
     with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/mainframe_members.json", "r") as f:
         mem_list: dict = json.load(f)
     now = datetime.datetime.now().date()
-    lvl0: disnake.Role = ctx.guild.get_role(839068777521479691)
-    lvl1: disnake.Role = ctx.guild.get_role(839069487113699358)
-    lvl2: disnake.Role = ctx.guild.get_role(839427084219842561)
-    lvl3: disnake.Role = ctx.guild.get_role(839427298075476019)
-    admin: disnake.Role = ctx.guild.get_role(839069357581139998)
+    lvl0: discord.Role = ctx.guild.get_role(839068777521479691)
+    lvl1: discord.Role = ctx.guild.get_role(839069487113699358)
+    lvl2: discord.Role = ctx.guild.get_role(839427084219842561)
+    lvl3: discord.Role = ctx.guild.get_role(839427298075476019)
+    admin: discord.Role = ctx.guild.get_role(839069357581139998)
     for member, join_time in mem_list.items():
         diff = (now - datetime.datetime.strptime(join_time, "%d %b %Y at %I:%M %p").date())
         try:
-            member: disnake.Member = await ctx.guild.fetch_member(int(member))
+            member: discord.Member = await ctx.guild.fetch_member(int(member))
             if diff.seconds > 600:
                 await member.add_roles(lvl0)
             elif diff.days > 14:
-                await member.add_roles(lvl1, lvl0)
+                await member.add_roles(lvl1)
             elif diff.days > 90:
-                await member.add_roles(lvl2, lvl1, lvl0)
+                await member.add_roles(lvl2)
             elif diff.days > 180:
-                await member.add_roles(lvl3, lvl2, lvl1, lvl0)
+                await member.add_roles(lvl3)
             elif diff.days > 270:
-                await member.add_roles(admin, lvl3, lvl2, lvl1, lvl0)
+                await member.add_roles(admin)
             await ctx.send(f"Clerance updates for {member.mention}")
-        except (commands.MemberNotFound, disnake.NotFound):
+        except (commands.MemberNotFound, discord.NotFound) as e:
             try:
-                user: disnake.User = await bot.fetch_user(int(member))
-            except (commands.UserNotFound, disnake.NotFound):
+                user: discord.User = await bot.fetch_user(int(member))
+            except (commands.UserNotFound, discord.NotFound):
                 await ctx.reply(f"{member} not found.")
             else:
                 await ctx.reply(user.mention)
@@ -139,8 +125,8 @@ async def refseclvl(ctx: commands.Context):
 
 @bot.command(hidden=True)
 async def update(ctx: commands.Context):
-    channels: list[disnake.abc.GuildChannel] = bot.get_all_channels()
-    embed = disnake.Embed(title='`Update!` - New command: `Banner`',
+    channels: list[discord.abc.GuildChannel] = bot.get_all_channels()
+    embed = discord.Embed(title='`Update!` - New command: `Banner`',
                           description=
                           f"""
 **Banner**
@@ -154,10 +140,10 @@ You can banish the annoying person by doing:
 `$banner|br (member)`
 
 If you want to join my home server, click [`J.A.R.V.I.S`]({link})
-""", colour=disnake.Colour.random())
+""", colour=discord.Colour.random())
     for channel in channels:
-        if 'general' in channel.name and isinstance(channel, disnake.TextChannel):
-            message: disnake.Message = await channel.send(embed=embed, view=JoinHomeServer)
+        if 'general' in channel.name and isinstance(channel, discord.TextChannel):
+            message: discord.Message = await channel.send(embed=embed, view=JoinHomeServer)
             await ctx.reply(
                 f'`Message link`: https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
 
@@ -165,17 +151,17 @@ If you want to join my home server, click [`J.A.R.V.I.S`]({link})
 @bot.command(hidden=True)
 async def devan(ctx: commands.Context, *, text: str):
     if text:
-        embed = disnake.Embed(title="Announcement from `central mainframe`", description=text,
-                              colour=disnake.Colour.random())
+        embed = discord.Embed(title="Announcement from `central mainframe`", description=text,
+                              colour=discord.Colour.random())
         for channel in ctx.bot.get_all_channels():
-            if 'general' in channel.name and isinstance(channel, disnake.TextChannel):
-                message: disnake.Message = await channel.send(embed=embed)
+            if 'general' in channel.name and isinstance(channel, discord.TextChannel):
+                message: discord.Message = await channel.send(embed=embed)
                 await ctx.reply(
                     f'`Message link`: https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
 
 
 @bot.command(hidden=True)
-async def msg_dts(ctx: commands.Context, message: disnake.Message):
+async def msg_dts(ctx: commands.Context, message: discord.Message):
     await ctx.send(f"Content: {message.content}")
     print(f"Content: {message.content}")
 
@@ -193,8 +179,8 @@ async def train(ctx):
     mkvdct = {}
     async for message in channel.history(limit=1000):
         if message.author.id == bot.user.id or re.search(
-            r'\b(whore|cunt|tit|boob|ass(hole)?|milf|dick|cock|anal|homo|gay|vagina|pussy)\b|\b((skull)?f(u)?(c)?k|bitch|sex|cum)',
-            message.content.strip().lower()): return
+                r'\b(whore|cunt|tit|boob|ass(hole)?|milf|dick|cock|anal|homo|gay|vagina|pussy)\b|\b((skull)?f(u)?(c)?k|bitch|sex|cum)',
+                message.content.strip().lower()): return
         if message.content != '':
             content = message.content
         else:
@@ -274,8 +260,10 @@ async def destroy(ctx: commands.Context):
     print(channel)
     invite = await channel.create_invite()
     await ctx.author.send(invite.url)
-    import asyncio; await asyncio.sleep(10)
-    await channel.send("Welcome Shlok. Self-Destruct confirmation in T-Minus 120 seconds and counting @everyone look whos here.")
+    import asyncio
+    await asyncio.sleep(10)
+    await channel.send(
+        "Welcome Shlok. Self-Destruct confirmation in T-Minus 120 seconds and counting @everyone look whos here.")
     await asyncio.sleep(60.0)
     guild = channel.guild
     await ctx.send('Do I leave sir?')
@@ -284,17 +272,9 @@ async def destroy(ctx: commands.Context):
         await guild.leave()
 
 
-@bot.slash_command(guild_ids=[944065363228913736])
-async def hello(itxn):
-    await itxn.response.send_modal(modal=disnake.ui.Modal(title='Hello there', components=[disnake.ui.TextInput(
-        label='no', custom_id='ok'
-    )]))
-
-
-try: bot.run(BOT_TOKEN)
-except (KeyboardInterrupt, RuntimeError): pass
-finally: print(f"\nConnection to internet termniated willingly: {datetime.datetime.now().strftime('%d %B %Y at %X:%f')}")
-
-if re.search(r'y(es)?', input("Exception. Restart program? ").lower()):
-    subprocess.call([sys.executable, os.path.realpath(__file__)] +
-                    sys.argv[1:])
+try:
+    bot.run(BOT_TOKEN)
+except (KeyboardInterrupt, RuntimeError):
+    pass
+finally:
+    print(f"\nConnection to internet termniated willingly: {datetime.datetime.now().strftime('%d %B %Y at %X:%f')}")

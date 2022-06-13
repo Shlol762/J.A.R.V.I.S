@@ -12,8 +12,8 @@ speedtest_cli
 aiofiles>=0.8.0
 typing>=3.7.4.3
 DateTime>=4.3
-disnake>=2.0.0a6
+discord>=2.0.0a6
 nltk>=3.6.3
 numpy>=1.21.1
 tensorflow>=2.7.0
-disnake
+discord
