@@ -26,7 +26,7 @@ Dependencies
 
   - `Documentation <https://discord.readthedocs.io/en/latest/>`_
   - `Installation <https://pypi.org/project/discord>`_
-- discord.py (formerly)
+- discord.py
 
   - `Documentation <https://discordpy.readthedocs.io/en/stable/>`_
   - `Installation <https://pypi.org/project/discord.py/>`_
