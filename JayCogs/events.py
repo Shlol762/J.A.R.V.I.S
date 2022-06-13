@@ -18,7 +18,6 @@ from . import command_log_and_err,\
     ThreadNotFound, train, CheckFailure, eastereggs, who_pinged, ErrorView, HTTPException,\
     stopwatch, time_set, AllowedMentions, load, IST
 
-
 chnls = [833995745690517524, 817299815900643348,
          817300015176744971, 859801379996696576]
 webhooks = [861660340617084968, 861660166193807430,
@@ -75,6 +74,23 @@ class Events(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
         self.name = 'events'
+
+    async def alphalock(self, ctx: Context, mode: str = 'ENGAGE', override: str = None):
+        await ctx.send("Beginning alpha lock procedure.")
+        if not override:
+            await ctx.send("Are you sure? This will make the permissions in all channels very messy.")
+            try:
+                message = await self.bot.wait_for('message', timeout=10, check=lambda msg: msg.author == ctx.author)
+            except asyncio.TimeoutError:
+                return await ctx.send("Request timed out. Cancelling alpha lock procedure.")
+            else:
+                if not re.search(r'y(e[sa]h)?', message.content.lower()):
+                    return await ctx.send("Cancelling alpha lock procedure.")
+
+        overwrites = {ctx.guild.default_role: discord.PermissionOverwrite(
+            send_messages={'ENGAGE': False, 'DISENGAGE': True}.get(mode))}
+        [await channel.edit(overwrites=overwrites) for channel in ctx.guild.text_channels]
+        await ctx.send(f"Alpha lock {mode.lower()}d")
 
     @loop(time=datetime.time(hour=18, minute=30))
     async def birthday(self):
@@ -157,12 +173,14 @@ class Events(Cog):
                 pass
 
         if ctx.guild:
-            if author == ctx.guild.owner and message.content.lower().startswith("jarvis disengage alpha lock"):
-                [await channel.edit(overwrites={ctx.guild.default_role: discord.PermissionOverwrite(send_messages=True)}) for channel in ctx.guild.text_channels]
-                await ctx.send("Alpha lock disengaged")
+            if (match := re.search(r"jarvis ((dis)?engage) alpha lock( --override)?",
+                                   ctx.message.content.lower())) and author == ctx.guild.owner:
+                await self.alphalock(ctx, match.group(1).upper(), match.group(3))
+                return
             if re.search(r'ultron kill (<@!?749830638982529065>|j.?a.?r.?v.?i.?s.?)', message.content.lower()):
                 await self.bot.wait_for('message', check=lambda m: m.author.id == 933591106950684712, timeout=2)
-                await ctx.send(f'@everyone Secuirity warning! Ultron has breeched the network take cover.', allowed_mentions=AllowedMentions(everyone=False))
+                await ctx.send(f'@everyone Secuirity warning! Ultron has breeched the network take cover.',
+                               allowed_mentions=AllowedMentions(everyone=False))
                 await self.bot.change_presence(status=Status.idle,
                                                activity=Activity(type=ActivityType.watching,
                                                                  name=f"Ultron's movements"))
