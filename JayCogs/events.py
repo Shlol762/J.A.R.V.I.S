@@ -161,7 +161,7 @@ class Events(Cog):
                                            )
             await ctx.send(embed=mg.embeds[0], delete_after=10.0) if ctx.guild else None
             try:
-                _message = await bot.wait_for('message', timeout=10, check=lambda msg: msg.author == message.author)
+                _message: Message = await bot.wait_for('message', timeout=10, check=lambda msg: msg.author == message.author)
                 if not re.search(r'a(bort )?d(elta )?s(ecurity)?', _message.content.lower()):
                     await message.delete()
             except asyncio.TimeoutError:
@@ -173,37 +173,16 @@ class Events(Cog):
                 pass
 
         if ctx.guild:
+            await who_pinged(ctx)
             if (match := re.search(r"jarvis ((dis)?engage) alpha lock( --override)?",
                                    ctx.message.content.lower())) and author == ctx.guild.owner:
                 await self.alphalock(ctx, match.group(1).upper(), match.group(3))
                 return
-            if re.search(r'ultron kill (<@!?749830638982529065>|j.?a.?r.?v.?i.?s.?)', message.content.lower()):
-                await self.bot.wait_for('message', check=lambda m: m.author.id == 933591106950684712, timeout=2)
-                await ctx.send(f'@everyone Secuirity warning! Ultron has breeched the network take cover.',
-                               allowed_mentions=AllowedMentions(everyone=False))
-                await self.bot.change_presence(status=Status.idle,
-                                               activity=Activity(type=ActivityType.watching,
-                                                                 name=f"Ultron's movements"))
-                await asyncio.sleep(1)
-                await self.bot.change_presence(status=Status.online,
-                                               activity=Activity(type=ActivityType.watching,
-                                                                 name=f"Ultron's movements"))
-                await asyncio.sleep(1)
-                await self.bot.change_presence(status=Status.do_not_disturb,
-                                               activity=Activity(name="Warning! Going offline"))
-                await asyncio.sleep(1)
-                await self.bot.change_presence(status=Status.invisible)
-                await asyncio.sleep(10)
-                await ctx.send(f'Systems back online...')
-                await self.bot.change_presence(status=Status.dnd,
-                                               activity=Activity(type=ActivityType.watching,
-                                                                 name=f'people talk...    V{self.bot.VERSION}'))
-                return
-            await who_pinged(ctx)
+
             if channel.id in chnls and ctx.message.webhook_id not in webhooks:
                 text: str = f"{message.content}"
                 if message.reference:
-                    ref: Message = await MessageConverter().convert(await bot.get_context(message),
+                    ref: Message = await MessageConverter().convert(ctx,
                                                                     message.reference.jump_url)
                     text: str = f"`╔═`***`{ref.author.name}`***: {ref.content[:50]}\n{message.content}"
                 ch1, ch2, ch3, ch4 = await bot.fetch_webhook(webhooks[0]), await bot.fetch_webhook(webhooks[1]), await bot.fetch_webhook(webhooks[2]), await bot.fetch_webhook(webhooks[3])
@@ -217,16 +196,15 @@ class Events(Cog):
                 try:
                     if bot.user == author:
                         return
-                    channel_id: str = str(channel.id)
-                    guild_id: str = str(ctx.guild.id)
+                    channel_id = str(channel.id)
+                    guild_id = str(ctx.guild.id)
                     channel_config = vals.get(channel_id)
                     server_config = vals.get(guild_id)
-                    if channel_config:
-                        options = channel_config
-                    else:
-                        options = server_config
+                    options = channel_config if channel_config else server_config
+
                     if options["suppressemb"]:
                         await message.edit(suppress=True)
+
                     if options["message"]:
                         if model:
                             intents = pred_class(
@@ -256,9 +234,9 @@ class Events(Cog):
                                 r"<@(!)?\d+>", message_text.replace("'s", ''))
                             person: Member = await MemberConverter().convert(ctx=ctx, argument=person.group())
                             path: str = "C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/birthdays.json"
-                            f = open(path, 'r')
-                            birthdays: dict[str: str] = json.load(f)
-                            f.close()
+                            with open(path, 'r') as f:
+                                birthdays: dict[str: str] = json.load(f)
+
                             if birthdays.get(str(person.id)):
                                 time: datetime.datetime = datetime.datetime.strptime(
                                     birthdays[str(person.id)]+datetime.datetime.now().strftime("/%Y"), "%d/%m/%Y")
