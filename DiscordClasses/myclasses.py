@@ -35,6 +35,8 @@ class Jarvis(commands.AutoShardedBot):
 
     @MAINFRAME_MEMBERS.setter
     def MAINFRAME_MEMBERS(self, value):
+        if not isinstance(value, dict):
+            raise TypeError(f"Object 'value' must be of type 'dict'")
         self._mainframe_members = value
 
     @property
@@ -43,4 +45,6 @@ class Jarvis(commands.AutoShardedBot):
 
     @SETTINGS.setter
     def SETTINGS(self, value):
+        if not isinstance(value, dict):
+            raise TypeError(f"Object 'value' must be of type 'dict'")
         self._settings = value
