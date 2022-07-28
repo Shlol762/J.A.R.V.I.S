@@ -485,7 +485,7 @@ For Example:- 1)Err_10124 means command '1' under category
             t2 = datetime.datetime.strptime(f"00:00 {datetime.date.today().strftime('%d/%m/%Y')}", _format)
             t1 = t2 - datetime.timedelta(days=1)
             message_count = {}
-            messages = await channel.history(limit=None, before=t2, after=t1).flatten()
+            messages = [msg async for msg in channel.history(limit=None, before=t2, after=t1)]
             for message in messages:
                 key = message.author.mention
                 if not message_count.get(key):
