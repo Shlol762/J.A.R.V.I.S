@@ -180,9 +180,11 @@ class Utilities(Cog):
                     elif activity.type == ActivityType.streaming:
                         activities.append(f'Streaming "{activity.name}"')
             activities = ', '.join(activities) if None not in activities else 'None'
-            public_flags = ', '.join(
-                [str(house).replace("UserFlags.", "").replace("_", " ").title() for house in member.public_flags.all()])
-            flag_logos = ''.join([str(await get_emoji(bot, emoji)) for emoji in public_flags.split(", ")])
+            flag_logos = ''
+            if not member.bot:
+                public_flags = ', '.join(
+                    [str(house).replace("UserFlags.", "").replace("_", " ").title() for house in member.public_flags.all()])
+                flag_logos = ''.join([str(await get_emoji(bot, emoji)) for emoji in public_flags.split(", ")])
             if member.bot and member.public_flags.verified_bot:
                 flag_logos += str(await get_emoji(bot, "VerifiedBot"))
             elif member.bot and not member.public_flags.verified_bot:
