@@ -14,7 +14,7 @@ HOME_SERVER_INVITE = 'https://discord.gg/zt6j4h7ep3'
 
 
 class BaseView(View):
-    def __init__(self, ctx: Interaction, timeout: float = 180.0, **kwargs):
+    def __init__(self, ctx: Context, timeout: float = 180.0, **kwargs):
         super().__init__(timeout=timeout)
         self.ctx = ctx
         self.extras = kwargs
@@ -61,12 +61,12 @@ class Confirmation(BaseView):
             self.extras['confirm'] = None
 
     @button(label="Yes", custom_id="YesButton", style=ButtonStyle.green, emoji='👍')
-    async def yes(self, _button: Button, interaction: Interaction):
+    async def yes(self, interaction: Interaction, _button: Button):
         await interaction.message.edit(content="Yes")
         await self.disable_all()
 
     @button(label="No", custom_id="NoButton", style=ButtonStyle.red, emoji='👎')
-    async def no(self, _button: Button, interaction: Interaction):
+    async def no(self, interaction: Interaction, _button: Button):
         await interaction.message.edit(content="No")
         await self.disable_all()
 
@@ -80,24 +80,28 @@ class ThreadConfirmation(BaseView):
             raise ThreadNotSpecified(f'Argument {missing_arg} was not given.')
         if not isinstance(self.extras['thread'], Thread):
             raise TypeError('Argument "thread" is not of type Thread.')
+
+        self.thread = self.extras['thread']
+
+        self.joined = self.ctx.bot.user.id in [thread_member.id for thread_member in self.thread._members.values()]
         if self.extras['method'].lower() not in ('leave', 'join'):
-            raise ValueError('Incorrect values passed to argument "method"')
+            raise ValueError("'method' must be either 'leave' or 'join'")
 
     @button(label="Yes", custom_id="JoinThreadYes", style=ButtonStyle.green)
-    async def yes(self, _button: Button, interaction: Interaction):
+    async def yes(self, interaction: Interaction, _button: Button):
         if self.extras['method'].lower() == 'join':
-            await self.extras['thread'].join()
+            await self.thread.join()
             verb = 'Joined'
         else:
-            await self.extras['thread'].leave()
+            await self.thread.leave()
             verb = 'Left'
-        await interaction.response.send_message(content=f'{verb} {self.extras["thread"].mention}', ephemeral=True)
+        await interaction.response.send_message(content=f'{verb} {self.thread.mention}', ephemeral=True)
         await self.disable_all()
 
     @button(label="No", custom_id="JoinThreadNo", style=ButtonStyle.red)
-    async def no(self, _button: Button, interaction: Interaction):
+    async def no(self, interaction: Interaction, _button: Button):
         verb = 'join' if self.extras['method'].lower() == 'join' else 'leav'
-        await interaction.response.send_message(content=f"Okay, not {verb}ing {self.extras['thread'].mention}", ephemeral=True)
+        await interaction.response.send_message(content=f"Okay, not {verb}ing {self.thread.mention}", ephemeral=True)
         await self.disable_all()
 
 
@@ -108,7 +112,7 @@ class JoinHomeServer(BaseView):
 
 
 class SelectChannelCategoryView(BaseView):
-    def __init__(self, ctx: Interaction,  **kwargs):
+    def __init__(self, ctx: Context,  **kwargs):
         self.extras = kwargs
         self.args_check()
         self.ctx = ctx
@@ -116,7 +120,7 @@ class SelectChannelCategoryView(BaseView):
         options = [
             SelectOption(label=cat.name, value=str(cat.id)) for cat in ctx.guild.categories
         ]
-        select_ = CategorySelect(self.extras['channel'])
+        select_ = CategorySelect(self.channel)
         [select_.append_option(option) for option in options]
         self.add_item(select_)
 
@@ -126,7 +130,7 @@ class SelectChannelCategoryView(BaseView):
             raise MissingArgument('Argument "channel" is missing.')
         if not isinstance(self.extras['channel'], (TextChannel, VoiceChannel)):
             raise TypeError("Arg 'channel' is not of type TextChannel or VoiceChannel")
-
+        self.channel = self.extras['channel']
 
 class ConfirmDeletion(BaseView):
     def args_check(self):
@@ -134,6 +138,7 @@ class ConfirmDeletion(BaseView):
             raise MissingArgument('Argument "channel" is missing.')
         if not isinstance(self.extras['channel'], (TextChannel, VoiceChannel, CategoryChannel, Thread)):
             raise TypeError("Argument 'channel' must be of type TextChannel, VoiceChannel, CategoryChannel or Thread.")
+        self.channel = self.extras['channel']
 
 
 class HelpView(BaseView):
@@ -153,7 +158,7 @@ class ConversionView(BaseView):
             raise TypeError(f"Object must be of type(s) str, int or float and not {self.extras['text'].__class__.__name__}")
 
     @button(label="ASCII", custom_id='asciibutton', style=ButtonStyle.grey)
-    async def _ascii(self, _button: Button, interaction: Interaction):
+    async def _ascii(self, interaction: Interaction, _button: Button):
         text: str = self.extras['text']
         if text.startswith('0x'):
             type_ = 'Hex'
@@ -173,7 +178,7 @@ class ConversionView(BaseView):
         await interaction.response.send_message(f'Converted from {type_} to ASCII: `{translated}`', ephemeral=True)
 
     @button(label="Hex", custom_id='hexbutton', style=ButtonStyle.grey)
-    async def _hex(self, _button: Button, interaction: Interaction):
+    async def _hex(self, interaction: Interaction, _button: Button):
         text: str = self.extras['text']
         if text.startswith('0b'):
             type_ = 'Binary'
@@ -190,7 +195,7 @@ class ConversionView(BaseView):
         await interaction.response.send_message(f'Converted from {type_} to Hex: `{translated}`', ephemeral=True)
 
     @button(label="Decimal", custom_id='decbutton', style=ButtonStyle.grey)
-    async def _dec(self, _button: Button, interaction: Interaction):
+    async def _dec(self, interaction: Interaction, _button: Button):
         text: str = self.extras['text']
         if text.startswith('0b') and not text.isalpha():
             type_ = 'Binary'
@@ -202,7 +207,7 @@ class ConversionView(BaseView):
         await interaction.response.send_message(f'Converted from {type_} to Hex: `{translated}`', ephemeral=True)
 
     @button(label="Binary", custom_id='binbutton', style=ButtonStyle.grey)
-    async def _bin(self, _button: Button, interaction: Interaction):
+    async def _bin(self, interaction: Interaction, _button: Button):
         text: str = self.extras['text']
         if text.startswith('0b') and not text.isalpha():
             await interaction.response.send_message(f"Um. Why convert binary to binary??", ephemeral=True)
@@ -227,6 +232,6 @@ class ErrorView(BaseView):
             raise MissingArgument("Argument 'error' is required.")
 
     @button(label="View Error", custom_id='errorbutton', style=ButtonStyle.danger)
-    async def error(self, _button: Button, interaction: Interaction):
+    async def error(self, interaction: Interaction, _button: Button):
         self.extras['embed'].description = self.extras['embed'].description.replace("**Check Command Prompt**", "")
         await interaction.response.send_message("Contact <@613044385910620190>.", embed=self.extras['embed'], ephemeral=True)
