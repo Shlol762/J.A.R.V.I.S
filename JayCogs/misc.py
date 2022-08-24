@@ -9,7 +9,7 @@ from typing import Any, Tuple, Optional
 from JayCogs import timeto as tt, command_log_and_err, set_timestamp,\
     WorldoMeter, Embed, Colour, Context, find_nth_occurrence,\
     send_to_paste_service, Bot, Cog, command, cooldown, comm_log_local,\
-    UserConverter
+    UserConverter, TextChannel, TextChannelConverter
 import datetime, re, requests
 from datetime import datetime
 from io import StringIO
@@ -242,6 +242,18 @@ f"""
                 to_be_posted_users += f"• {user.mention}\n"
             embed.add_field(name=date.strftime("%d %b, %Y"), value=to_be_posted_users)
         await ctx.reply(embed=await set_timestamp(embed, random.choice(("Credit: Moiz Delhve", "", "", ""))))
+
+    @command(aliases=['fwd'], name='forward', help='Forwards messages to a channel of your choosing.',
+             usage='$forward|fwd <channel id/link/mention> <message>')
+    async def forward(self, ctx: Context, channel: str, *, message: str):
+        try: chnl_id = int(re.sub('[>/]', '', re.search(r'(\d{18}[/>]?)$', channel).group()))
+        except (ValueError, AttributeError): return await ctx.reply('couldnt find that channel L')
+        try: channel = await self.bot.fetch_channel(chnl_id)
+        except discord.NotFound:
+            try: channel = await self.bot.fetch_user(chnl_id)
+            except discord.NotFound:
+                return await ctx.reply('couldnt find that channel L')
+        await channel.send(message)
 
 
 async def setup(bot: Bot):

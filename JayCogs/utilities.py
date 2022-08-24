@@ -11,11 +11,17 @@ from JayCogs import command_log_and_err,\
     Embed, Colour, Member, Forbidden, CustomActivity, Spotify,\
     Game, Activity, ActivityType, Status, HTTPException, User,\
     comm_log_local, UserConverter, Thread, TextChannel, group,\
-    ConversionView, Guild, Role
+    ConversionView, Guild, Role, check
 
 
 with open("C:/Users/Shlok/bot_stuff/version.txt", 'r') as f1:
     bot_ver = f1.read()
+
+
+async def kill_eligible(ctx: Context):
+    eligible = ctx.message.author.id == (ctx.guild.owner_id if ctx.guild else ctx.bot.owner_id)
+    await ctx.send('no shut up you dont get to kill me.') if not eligible else None
+    return eligible
 
 
 class Utilities(Cog):
@@ -562,6 +568,11 @@ For Example:- 1)Err_10124 means command '1' under category
                     category=categories[vc.category.id] if vc.category else None, bitrate=vc.bitrate, rtc_region=vc.rtc_region,
                     user_limit=vc.user_limit, video_quality_mode=vc.video_quality_mode
                 ) for vc in server.voice_channels if re.search(r'v(oice|c)|all|channels', components)]
+
+    @command()
+    @check(kill_eligible)
+    async def kill(self, ctx: Context):
+        raise KeyboardInterrupt()
 
 
 async def setup(bot: Bot):
