@@ -173,6 +173,27 @@ class Events(Cog):
                 pass
 
         if ctx.guild:
+            if channel.id in [874672889255821352]:
+                if match := re.search(r'^\d{5}', message.content):
+                    retry = True
+                    limit = 2
+                    while retry:
+                        last_message = [message async for message in channel.history(limit=limit)][limit-1]
+                        try:
+                            last_message_cntnt = int(re.search(r'^\d{5}', last_message.content).group())
+                            retry = False
+                        except AttributeError:
+                            limit += 1
+                            if limit > 7:
+                                retry = False
+                                last_message_cntnt = 0
+                    if int(match.group()) - 1 == last_message_cntnt and author != last_message.author:
+                        pass
+                    else:
+                        await message.delete()
+                else:
+                    await message.delete(delay=15.0)
+                return
             await who_pinged(ctx)
             if (match := re.search(r"jarvis ((dis)?engage) alpha lock( --override)?",
                                    ctx.message.content.lower())) and author == ctx.guild.owner:
