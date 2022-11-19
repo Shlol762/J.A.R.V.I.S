@@ -202,6 +202,7 @@ async def train(ctx: Context):
         # print('\n')
         counter += 1
     m_type = 0
+    if ctx.guild.id in [841630950252478515]: return
     with open('C:/Users/Shlok/bot_stuff/mkvdb.json', 'w', encoding="utf-8") as mkvdb:
         json.dump(mkvdct, mkvdb, indent=3)
 
