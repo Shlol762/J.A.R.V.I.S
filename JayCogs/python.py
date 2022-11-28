@@ -8,7 +8,7 @@ from discord.utils import escape_markdown
 import datetime, re, itertools, aiohttp
 from typing import Tuple, Any, Optional
 from io import StringIO
-import inspect, contextlib, textwrap, traceback, random
+import inspect, contextlib, textwrap, traceback, random, pprint
 
 
 URL = "https://pypi.org/pypi/{package}/json"
