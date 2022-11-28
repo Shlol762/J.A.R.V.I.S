@@ -45,9 +45,13 @@ class Utilities(Cog):
         channel_id = str(ctx.message.channel.id)
         with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json", "r") as f:
             settings: dict = json.load(f)
+
+        def clear_beyond_20():
+            return author == ctx.guild.owner if amount > 20 else True
+
         id: str = channel_id if settings.get(channel_id) else guild_id
         if settings[id]["clear"]:
-            if amount > 20:
+            if not clear_beyond_20():
                 await command_log_and_err(ctx, 'Amt exceeded limit'.format(amount))
                 await ctx.reply(f"Sorry {author.mention}, can't clear more than 20 messages")
             else:
