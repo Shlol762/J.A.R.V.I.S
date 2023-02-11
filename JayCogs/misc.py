@@ -228,7 +228,7 @@ f"""
         for user, birthday in birthdays.items():
             if days > (birthday - now).days > 0:
                 user = await UserConverter().convert(ctx, user)
-                if 'unknown' not in user.name.lower():
+                if 'unknown@@a11356' not in user.name.lower():
                     if not upcominbdays.get(birthday): upcominbdays[birthday] = [user,]
                     else: upcominbdays[birthday].append(user)
         upcominbdays = sorted(upcominbdays.items(), key=lambda p: p[0])
@@ -254,6 +254,45 @@ f"""
             except discord.NotFound:
                 return await ctx.reply('couldnt find that channel L')
         await channel.send(message)
+
+
+    # @loop(time=datetime.time(hour=18, minute=30))
+    @command()
+    async def birthdaytimers(self, ctx: Context):
+        with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/birthdays_.json", 'r') as f:
+            birthdays = json.load(f)
+
+        now = datetime.now()
+        format = '%d/%m/%Y'
+        year = int(now.strftime("%Y"))
+
+        birthdays = {'<t:{}:R>'.format(round(datetime.strptime(date + f'/{year + 1 if datetime.strptime(date + f"/{now.year}", format) < now else year}', format).timestamp())): users
+                     for date, users in birthdays.items()}
+
+        for date, users in birthdays.items():
+            birthdays[date] = [await UserConverter().convert(ctx, user) for user in users]
+        channels = [await self.bot.fetch_channel(chnl) for chnl in [1049663175227883620]]
+        for channel in channels:
+            prefinal_str = []
+            for date, users in birthdays.items():
+                users_str = (('\'s, '.join([user.mention for user in users])+"'s")[::-1]).replace(' ,', ' dna ', 1)[::-1]
+                prefinal_str.append(f'{users_str} birthday is {date}\n')
+            final_str = ''
+            final_str2 = ''
+            while len(final_str) < 1800:
+                final_str += prefinal_str[0]
+                prefinal_str.remove(prefinal_str[0])
+
+            if len(final_str) > 1800:
+                prefinal_str.insert(0, (final_str.split('\n')[-1])+'\n')
+                final_str = '\n'.join(final_str.split('\n')[:-1])
+
+            final_str2 = ''.join(prefinal_str)
+
+            await channel.send(final_str)
+            await channel.send(final_str2)
+
+
 
 
 async def setup(bot: Bot):
