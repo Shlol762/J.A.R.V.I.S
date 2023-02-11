@@ -73,6 +73,8 @@ if load:
 class Events(Cog):
     connect_time = None
     severed_time = None
+    status_time = None
+    statuses = ['online', 'online']
 
     def __init__(self, bot: Bot):
         self.bot = bot
@@ -432,6 +434,32 @@ class Events(Cog):
         with open(prefix_path, "w") as f:
             json.dump(prefixes, f, indent=3)
         await guild.text_channels[0].send("Hello. I am J.A.R.V.I.S!")
+
+    @Cog.listener()
+    async def on_presence_update(self, before, after):
+        watch_ids = [613044385910620190,
+                     728917592160469022, 809295130213089320]
+
+        t = self.status_time
+        n = datetime.datetime.now()
+        if (t.second if t else None) == n.second:
+            return
+
+        self.status_time = n
+
+        if before.status == after.status or before.id not in watch_ids:
+            return
+
+        current_status = 'online' if str(after.status) in [
+            'dnd', 'online', 'idle'] else 'offline'
+
+       # if before.id == watch_ids[2] and current_status != self.statuses[1]:
+       #    await (await self.bot.fetch_user(watch_ids[1])).send(f"{before.mention} is now {after.status}.")
+       #    self.statuses[1] = current_status
+
+       # if before.id == watch_ids[1] and current_status != self.statuses[0]:
+       #     await (await self.bot.fetch_user(watch_ids[2])).send(f"{before.mention} is now {after.status}.")
+       #     self.statuses[0] = current_status
 
 
 async def setup(bot: Bot):
