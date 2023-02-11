@@ -7,6 +7,7 @@ import sys
 import string
 import nltk
 import discord
+import logging
 import numpy as np
 from . import command_log_and_err,\
     loop, Cog, Context, command, Client, Guild, Role, TextChannel,\
@@ -16,7 +17,9 @@ from . import command_log_and_err,\
     ChannelNotFound, NoPrivateMessage, Message, MessageConverter, BadUnionArgument,\
     trim, forbidden_word, noswear, greetings, farewells, nou, urnotgod, timeto, Bot,\
     ThreadNotFound, train, CheckFailure, eastereggs, who_pinged, ErrorView, HTTPException,\
-    stopwatch, time_set, AllowedMentions, load, IST
+    stopwatch, time_set, AllowedMentions, load, IST, Member
+
+log = logging.getLogger(__name__)
 
 chnls = [833995745690517524, 817299815900643348,
          817300015176744971, 859801379996696576]
@@ -141,8 +144,8 @@ class Events(Cog):
             self.birthday.start()
         except RuntimeError:
             self.birthday.restart()
-        print(
-            f"Connection to discord instantiation success: {now.strftime('%d %B %Y at %X:%f')}")
+        log.info(
+            f"Connection to discord instantiation success")
 
     @Cog.listener()
     async def on_message(self, message: Message):
@@ -391,7 +394,7 @@ class Events(Cog):
             error_channel: TextChannel = ctx.bot.get_channel(
                 868640456328744960)
             await error_channel.send(embed=err_embed)
-            print(lines, file=sys.stderr)
+            log.error(f"\x1b[31;1m{lines}")
 
     @Cog.listener()
     async def on_command_completion(self, ctx: Context):

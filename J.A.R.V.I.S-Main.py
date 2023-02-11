@@ -3,11 +3,15 @@ import json
 import os
 import random
 import re
+import demoji
 import discord
+import logging
 from discord.ext import commands
 from DiscordClasses import BOT_TOKEN, JoinHomeServer, Jarvis
 from asyncio import get_event_loop
 
+
+log = logging.getLogger(__name__)
 
 bot = Jarvis()
 
@@ -277,4 +281,5 @@ try:
 except (KeyboardInterrupt, RuntimeError):
     pass
 finally:
-    print(f"\nConnection to internet termniated willingly: {datetime.datetime.now().strftime('%d %B %Y at %X:%f')}")
+    log.info(
+        f"Connection to internet termniated willingly.")
