@@ -1,130 +1,60 @@
-import random
-import string
 import json
-import nltk
-import numpy as np
-from nltk.stem import WordNetLemmatizer
-from tensorflow.keras.models import load_model, Sequential
-from tensorflow.keras.layers import Dense, Dropout
-import tensorflow as tf
-
-# nltk.download("punkt")
-# nltk.download("wordnet")
+import re
+import demoji
 
 
-with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/patterns.json", "r") as f:
-    data: dict = json.load(f)
+def progress_bar(progress, total, replaced, bar_len=50, title='Please wait'):
+    percent = 100 * (progress/float(total))
+    bounds_colour = "33;2m" if progress != total else "32;1m"
+    done = round(percent*bar_len/100)
+    if progress == total:
+        _percent = 100 * (replaced/float(total))
+        if _percent <= 33:
+            bounds_colour = "31;1m"
+        elif 34 < _percent <= 66:
+            bounds_colour = "33;1m"
+        done = round(_percent*bar_len/100)
+    togo = bar_len-done
+    bar = '\x1b[0;92;1m' + ('█' * int(done)) + f'\x1b[0;{"31;2m" if progress == total else "33;2m"}' + ('█' if progress == total else '-') * int(togo)
+    print('\n' if progress ==0 else '\r'+f'\t{title}: \x1b[{bounds_colour}|{bar}\x1b[0;{bounds_colour}| \x1b[0;35m{round(percent,1):.2f}\x1b[0m% '
+          f'\x1b[32;1m{progress: >5}\x1b[0m/\x1b[{bounds_colour}{total: <5}\x1b[0m | Replaced \x1b[92;1m{replaced: >4}\x1b[0m | '
+          f'Not found \x1b[31m{progress-replaced:>4}\x1b[0m', end='\r' if progress != total else '\n')
 
-lemmatizer = WordNetLemmatizer()
+if __name__ == '__main__':
 
-words = []
-classes = []
-doc_X = []
-doc_y = []
-# Loop through all the intents
-# tokenize each pattern and append tokens to words, the patterns and
-# the associated tag to their associated list
-for intent in data["intents"]:
-    for pattern in intent["patterns"]:
-        tokens = nltk.word_tokenize(pattern)
-        words.extend(tokens)
-        doc_X.append(pattern)
-        doc_y.append(intent["tag"])
+    path = "C:/Users/Shlok/Downloads/messages.json"
 
-    # add the tag to the classes if it's not there already
-    if intent["tag"] not in classes:
-        classes.append(intent["tag"])
-# lemmatize all the words in the vocab and convert them to lowercase
-# if the words don't appear in punctuation
-words = [lemmatizer.lemmatize(word.lower()) for word in words if word not in string.punctuation]
-# sorting the vocab and classes in alphabetical order and taking the # set to ensure no duplicates occur
-words = sorted(set(words))
-classes = sorted(set(classes))
-#
-#
-training = []
-out_empty = [0] * len(classes)
-# creating the bag of words model
-for _idx, doc in enumerate(doc_X):
-    _bow = []
-    text = lemmatizer.lemmatize(doc.lower())
-    for word in words:
-        _bow.append(1) if word in text else _bow.append(0)
-    # mark the index of class that the current pattern is associated
-    # to
-    output_row = list(out_empty)
-    output_row[classes.index(doc_y[_idx])] = 1
-    # add the one hot encoded BoW and associated classes to training
-    training.append([_bow, output_row])
-# shuffle the data and convert it to an array
-random.shuffle(training)
-training = np.array(training, dtype=object)
-# split the features and target labels
-train_X = np.array(list(training[:, 0]))
-train_y = np.array(list(training[:, 1]))
+    with open(path, 'r') as f:
+        messages = json.load(f)
 
-input_shape = (len(train_X[0]),)
-output_shape = len(train_y[0])
-epochs = 200
-# the deep learning model
-model = Sequential()
-model.add(Dense(128, input_shape=input_shape, activation="relu"))
-model.add(Dropout(0.5))
-model.add(Dense(64, activation="relu"))
-model.add(Dropout(0.3))
-model.add(Dense(output_shape, activation = "softmax"))
-adam = tf.keras.optimizers.Adam(learning_rate=0.01, decay=1e-6)
-model.compile(loss='categorical_crossentropy',
-              optimizer=adam,
-              metrics=["accuracy"])
-print(model.summary())
-model.fit(x=train_X, y=train_y, epochs=20000, verbose=1)
-model.save('C:/Users/Shlok/Desktop/chatbot-model1.h5')
+    with open("C:/Users/Shlok/Downloads/dump - Copy.txt", encoding='utf8') as f:
+        dump = f.read()
 
-# model = load_model('C:/Users/Shlok/Desktop/chatbot-model1.h5')
-#
-#
-# def clean_text(_text):
-#     _tokens = nltk.word_tokenize(_text)
-#     _tokens = [lemmatizer.lemmatize(word) for word in _tokens]
-#     return _tokens
-#
-#
-# def bag_of_words(_text, vocab):
-#     _tokens = clean_text(_text)
-#     bow = [0] * len(vocab)
-#     for w in _tokens:
-#         for idx, word in enumerate(vocab):
-#             if word == w:
-#                 bow[idx] = 1
-#     return np.array(bow)
-#
-#
-# def pred_class(_text, vocab, labels):
-#     bow = bag_of_words(_text, vocab)
-#     result = model.predict(np.array([bow]))[0]
-#     thresh = 0.2
-#     y_pred = [[idx, res] for idx, res in enumerate(result) if res > thresh]
-#
-#     y_pred.sort(key=lambda x: x[1], reverse=True)
-#     return_list = []
-#     for r in y_pred:
-#         return_list.append(labels[r[0]])
-#     return return_list
-#
-#
-# def get_response(intents_list, intents_json):
-#     tag = intents_list[0]
-#     list_of_intents = intents_json["intents"]
-#     for i in list_of_intents:
-#         if i["tag"] == tag:
-#             result = random.choice(i["responses"])
-#             break
-#     return result
-#
-#
-# while True:
-#     message = input("").lower()
-#     intents = pred_class(message, words, classes)
-#     _result = get_response(intents, data)
-#     print(_result, intents)
+
+    not_found = ''
+
+    total_replaced = 0
+    for channel, msgs in messages.items():
+        print(channel + ':', end='')
+        total_ = len(msgs)
+        i = 0
+        ir = 0
+        progress_bar(i, total_, ir)
+        for msg in msgs:
+            # if len(msgs) > 100: break
+            if match := re.search(rf'([0-9]\) {msg.lower()}\n)', dump):
+                dump = dump.replace(match.group(), '', 1)
+                ir += 1
+            else: not_found += f'0) {msg.lower()}\n'
+            i += 1
+            total_replaced += 1
+            progress_bar(i, total_, ir)
+
+        print(total_replaced)
+
+
+    with open("C:/Users/Shlok/Downloads/new_dump.txt", 'w', encoding='utf8') as f:
+        f.write(dump)
+
+    with open("C:/Users/Shlok/Downloads/not_found.txt", 'w', encoding='utf8') as f:
+        f.write(not_found)
