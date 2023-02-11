@@ -125,7 +125,8 @@ class Events(Cog):
             if m.name not in topic:
                 topic += f"Happy birthday {m.name}! "
             else:
-                topic = topic.replace('!', f" {m.name}!", 1)[::-1] if '!' in topic else topic + f" {m.name}!"
+                topic = topic.replace('!', f" {m.name}!", 1)[
+                    ::-1] if '!' in topic else topic + f" {m.name}!"
 
         await general.edit(topic=topic)
 
@@ -137,8 +138,8 @@ class Events(Cog):
                       description=f"*`Successful`*: `Confirmed`\n *`Connection at`*: `{self.connect_time}`",
                       colour=Colour.gold(), timestamp=now)
         embed2 = Embed(title="Bot is ready",
-                      description=f'`{self.bot.user.name}` is ready, Version: `{self.bot.VERSION}`\n',
-                      colour=Colour.teal(), timestamp=now)
+                       description=f'`{self.bot.user.name}` is ready, Version: `{self.bot.VERSION}`\n',
+                       colour=Colour.teal(), timestamp=now)
         await ch.send(embeds=[embed, embed2])
         try:
             self.birthday.start()
@@ -183,7 +184,8 @@ class Events(Cog):
                     while retry:
                         last_message = [message async for message in channel.history(limit=limit)][limit-1]
                         try:
-                            last_message_cntnt = int(re.search(r'^\d{5}', last_message.content).group())
+                            last_message_cntnt = int(
+                                re.search(r'^\d{5}', last_message.content).group())
                             retry = False
                         except AttributeError:
                             limit += 1
@@ -379,7 +381,7 @@ class Events(Cog):
             err_embed.description = f"""
 
 `Author`: {ctx.author.mention}
-`Channel`: {ctx.channel.mention}
+`Channel`: {ctx.channel.mention if isinstance(ctx.channel, TextChannel) else 'DM'}
 
 [```nim
 {lines[:3900]}

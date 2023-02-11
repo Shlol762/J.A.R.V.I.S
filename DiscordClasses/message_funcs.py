@@ -140,8 +140,9 @@ async def eastereggs(ctx: Context) -> Union[Message, str]:
         await ctx.reply(response)
         try:
             message = await ctx.bot.wait_for('message', timeout=5.0, check=lambda msg: msg.author == ctx.author)
-            final_response: Message = await greetings(await ctx.bot.get_context(message), False) if not re.search(
-                r"\b(y[eu][sap]?h?)\b", message.content) else await message.reply("Um I don't know how to converse any further :D")
+            await greetings(await ctx.bot.get_context(message), False) if not re.search(
+                r"\b(y[eu][sap]?h?)\b", message.content) else await message.reply(
+                "Um I don't know how to converse any further :D")
         except asyncio.TimeoutError: pass
 
 

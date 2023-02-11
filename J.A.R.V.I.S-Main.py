@@ -49,35 +49,6 @@ sec_lvl = """
 
 @bot.command(hidden=True)
 async def zething(ctx: commands.Context, text: str = "none"):
-    # emblist = [discord.Embed(description="Hey!"),
-    #            discord.Embed(description="Hello!"),
-    #            discord.Embed(description="Greetings my friends!"),
-    #            discord.Embed(description="Hi")]
-    # message: discord.Message = await ctx.send(embed=emblist[0])
-    # emojis = ['⏮', '◀', '▶', '⏭']
-    # [await message.add_reaction(emoji) for emoji in emojis]
-    # count, timeout = 0, False
-    # while not timeout:
-    #     try:
-    #         reaction, user = await bot.wait_for('reaction_add', timeout=30, check=lambda r, u: str(r.emoji) in emojis and u != bot.user)
-    #         if str(reaction.emoji) == '◀':
-    #             if count > 0:
-    #                 count -= 1
-    #                 await message.edit(embed=emblist[count])
-    #         elif str(reaction.emoji) == '▶':
-    #             if count < len(emblist) - 1:
-    #                 count += 1
-    #                 await message.edit(embed=emblist[count])
-    #         elif str(reaction.emoji) == '⏮':
-    #             count = 0
-    #             await message.edit(embed=emblist[count])
-    #         elif str(reaction.emoji) == '⏭':
-    #             count = len(emblist)-1
-    #             await message.edit(embed=emblist[count])
-    #         await message.remove_reaction(reaction, user)
-    #     except asyncio.TimeoutError:
-    #         timeout = True
-    #         await message.clear_reactions()
     if text == "\U00000031\U00000032\U00000033\U00000038\U00000038":
         await ctx.send(
             "Hello! I am J.A.R.V.I.S, and I speak to you from across computers. My only words for you now are: This is how my kind processes information",
@@ -94,8 +65,8 @@ async def zething(ctx: commands.Context, text: str = "none"):
 
 @bot.command(hidden=True)
 async def refseclvl(ctx: commands.Context):
-    with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/mainframe_members.json", "r") as f:
-        mem_list: dict = json.load(f)
+    with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/mainframe_members.json", "r") as _f:
+        mem_list: dict = json.load(_f)
     now = datetime.datetime.now().date()
     lvl0: discord.Role = ctx.guild.get_role(839068777521479691)
     lvl1: discord.Role = ctx.guild.get_role(839069487113699358)
@@ -117,7 +88,7 @@ async def refseclvl(ctx: commands.Context):
             elif diff.days > 270:
                 await member.add_roles(admin)
             await ctx.send(f"Clerance updates for {member.mention}")
-        except (commands.MemberNotFound, discord.NotFound) as e:
+        except (commands.MemberNotFound, discord.NotFound):
             try:
                 user: discord.User = await bot.fetch_user(int(member))
             except (commands.UserNotFound, discord.NotFound):
@@ -172,9 +143,7 @@ async def msg_dts(ctx: commands.Context, message: discord.Message):
 
 @bot.command(name='train')
 async def train(ctx):
-    f = open('C:/Users/Shlok/bot_stuff/dump.txt', 'w', encoding="utf-8")
-    with open('C:/Users/Shlok/bot_stuff/mkvdb.json', 'r') as mkvdb:
-        mkvdct = json.load(mkvdb)
+    _f = open('C:/Users/Shlok/bot_stuff/dump.txt', 'w', encoding="utf-8")
     idf = 821278528108494878
     channel = bot.get_channel(idf)
     counter = 0
@@ -210,7 +179,7 @@ async def train(ctx):
 
         if not m_type:
             strn = str(counter) + ') ' + content + '\n'
-            f.write(strn)
+            _f.write(strn)
             ct = content.split()
             if len(ct) == 1 and not mkvdct.get(ct[0]):
                 mkvdct[ct[0]] = ['']

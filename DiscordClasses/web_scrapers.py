@@ -122,7 +122,7 @@ class WorldoMeter:
                 self.__setattr__('soup', soup)
 
     def get_wrldomtr_urls(self):
-        """Get's href links to be processed"""
+        """Gets href links to be processed"""
         confirm_url =[possible_url.get('href')
                       for possible_url in
                       self.soup.select('.container .navbar-collapse .nav a')]
@@ -131,7 +131,7 @@ class WorldoMeter:
         # return covid_weblink
 
     def get_worldwide_covid_statistics(self) -> dict[str: int]:
-        """Get's worldwide covid-19 data in the form of a dictionary."""
+        """Gets worldwide covid-19 data in the form of a dictionary."""
         get_event_loop().run_until_complete(self.load_data(self.covid_source))
         raw_data = self.soup.select(".container .row .content-inner .maincounter-number span")
         total, deaths, recovered = int(raw_data[0].text.replace(',', '')), int(raw_data[1].text.replace(',', '')), int(raw_data[2].text.replace(',', ''))
@@ -142,7 +142,7 @@ class WorldoMeter:
         return data
 
     def get_by_country(self) -> dict[str: str]:
-        """Get's each individual country's href link for countryvise data."""
+        """Gets each individual country's href link for countryvise data."""
         raw_data = self.soup.find_all('a', {'class': 'mt_a'})
         new_data: dict[str] = {}
         for data in raw_data:
