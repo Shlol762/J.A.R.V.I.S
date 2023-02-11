@@ -177,7 +177,7 @@ Password: {hack_pass}
                 if member.id == bot.user.id:
                     await ctx.reply("Oooh you wish to challenge me eh? It's on like donkey kong! What do you choose?")
                     try:
-                        msg: Message = await bot.wait_for(event="message", timeout=7, check=lambda
+                        msg: Message = await bot.wait_for('message', timeout=7, check=lambda
                             message: message.author == author and message.channel == ctx.message.channel)
                         if msg.content.lower() == 'heads':
                             await ctx.reply("I get tails then...")
@@ -211,7 +211,7 @@ Password: {hack_pass}
                     await ctx.reply(
                         f"Alright {author.mention} and {member.mention} playing the flippin game. {author.mention} heads or tails?")
                     try:
-                        msg: Message = await bot.wait_for(event='message', timeout=7, check=lambda
+                        msg: Message = await bot.wait_for('message', timeout=7, check=lambda
                             message: message.author == author and message.channel == ctx.message.channel)
                         if msg.content.lower() == 'heads':
                             await ctx.reply(
