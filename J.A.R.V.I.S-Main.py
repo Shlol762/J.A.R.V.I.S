@@ -245,8 +245,50 @@ async def destroy(ctx: commands.Context):
         await guild.leave()
 
 
+@bot.command()
+async def test(ctx: commands.Context):
+    for i in range(10):
+        i += i
+        log.info((f'*'*i)+'\r')
+
+
+@bot.command()
+async def chat_history(ctx, user: discord.User, limit: int = 10):
+    # Get the user object for the user you want to read the chat history with
+    messages = [message async for message in user.history(limit=limit)][::-1]
+    for message in messages:
+        await ctx.send(f"`{message.author}`: {message.content if message.content else '`EmptyMessageWithAttachment`'}")
+
+
+@bot.command()
+async def recover(ctx: commands.Context):
+    channels = set()
+    for guild in bot.guilds:
+        for channel in guild.channels:
+            channels.add(channel) if isinstance(channel, discord.TextChannel) else None
+        for member in guild.members:
+            try:channels.add(member.dm_channel) if member.dm_channel else None
+            except AttributeError: pass
+    messages = {}
+    for channel in channels:
+        try:
+            messages[channel.name] = [message.content async for message in channel.history(limit=None, after=datetime.datetime(2021, 9, 27, 13, 41, 18), oldest_first=True)]
+            log.info(f'{channel.name}...')
+        except discord.Forbidden: pass
+
+    messages = {
+        re.sub('[\\uff5c│⌖✎⃣➥]', '', (demoji.replace(channel))): [re.sub(r'[^\w\s]', '', re.sub("<.*?>", '', msg)) for
+                                                                  msg in msgs if msg != "" or msg != " "]
+        for channel, msgs in messages.items() if len(msgs) > 0 and channel != ""}
+
+    with open("C:/Users/Shlok/Downloads/messages.json", "w") as _f:
+        json.dump(messages, _f, indent=3)
+
+    log.info('Complete.')
+
+
 try:
-    bot.run(BOT_TOKEN)
+    bot.run(BOT_TOKEN, log_handler=logging.StreamHandler(), log_level=logging.INFO, log_formatter=discord.utils._ColourFormatter(), root_logger=True)
 except (KeyboardInterrupt, RuntimeError):
     pass
 finally:
