@@ -6,7 +6,7 @@ from JayCogs import command_log_and_err, set_timestamp, Cog,\
 
 #discord.
 
-NO_HELP_COGS = ["help", "events"]
+NO_HELP_COGS = ["help", "events", "backup"]
 
 
 class Help(Cog):
