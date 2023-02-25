@@ -260,8 +260,8 @@ def comm_log_local(command_: Callable):
             f"|    Name   : {com_name:<45}Command Number: {com_num:<45}|",
             f"|Timestamp  : {time + ' on ' + date + '({})'.format(unixtim()):<106}|",
             f"+{'-'*49}USAGE CONTEXT DETAILS{'-'*49}+",
-            f"|Used by: {ctx.author.id:<55}Server  : {ctx.guild.id:<45}|",
-            f"|Channel: {ctx.channel.id:<53}Message ID: {ctx.message.id:<45}|",
+            f"|Used by: {ctx.author.id:<55}Server  : {(ctx.guild if ctx.guild else ctx.author).id:<45}|",
+            f"|Channel: {(ctx.channel if ctx.guild else ctx.author).id:<53}Message ID: {ctx.message.id:<45}|",
             f"|Message Link: {ctx.message.jump_url:<105}|"
             ])
         f = open("C:/Users/Shlok/bot_stuff/safe_docs/command_logs.txt", "w")
