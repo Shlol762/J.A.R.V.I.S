@@ -1,7 +1,7 @@
 import asyncio
 from typing import Optional
 import discord
-from JayCogs import encrypt, decrypt, command_log_and_err,\
+from JayCogs import encrypt as _enc, decrypt as _dec, command_log_and_err,\
     commands, Cog, command, cooldown, BucketType, Context,\
     Member, guild_only, Client, Embed, Colour, Message,\
     choice, randint, Bot, comm_log_local
@@ -271,10 +271,10 @@ Password: {hack_pass}
         if code:
             if text:
                 await command_log_and_err(ctx=ctx, status="Success")
-                await ctx.author.send(embed=Embed(title="Encrypting Text...",
+                await (ctx.author if code.lower() != 'rcipher' else ctx).send(embed=Embed(title="Encrypting Text...",
                                                           description=f"`Encoding type`: {code}\n `Encryption requested by`: {ctx.author.mention}",
                                                           colour=Colour.random()).add_field(name="Encrypted:",
-                                                                                                    value=f"`{encrypt(code, text)}`"))
+                                                                                                    value=f"```fix\n{await _enc(code, text)}\n```"))
             else:
                 await command_log_and_err(ctx=ctx, err_code="Err_40648",
                                           text="Specify the text you want to encrypt")
@@ -295,7 +295,8 @@ Password: {hack_pass}
                 await ctx.author.send(embed=Embed(title="Decrypting Code...",
                                                           description=f"`Encoding type`: {code}\n `Decryption requested by`: {ctx.author.mention}",
                                                           colour=Colour.random()).add_field(name="Decrypted:",
-                                                                                                    value=f"`{decrypt(code, text)}`"))
+                                                                                                    value=f"`{await _dec(code, text)}`")) if code.lower() != 'rcipher'\
+                    else await _dec(code, text, ctx)
             else:
                 await command_log_and_err(ctx=ctx, err_code="Err_40748",
                                           text="Specify the code you want to decrypt")
