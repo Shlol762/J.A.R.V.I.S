@@ -13,6 +13,7 @@ import aiohttp, aiofiles
 import re
 from inspect import isawaitable
 from functools import wraps
+import asyncio
 from time import time as unixtim
 
 __doc__ = "Module containing all sorts of custom functions."
@@ -223,6 +224,19 @@ async def get_prefix(bot: Bot, message: Message) -> str:
     id: str = str(message.guild.id) if message.guild else "DM(A113)"
     for_guild = prefixes[id]
     return for_guild
+
+async def async_input(prompt: str = None):
+    async def _async_input(_prompt: str = None):
+        mtch = re.search("(ye?(ah|s)?)",
+                              await asyncio.get_event_loop().run_in_executor(None, input, _prompt))
+        return mtch
+    try:
+        _match = await asyncio.wait_for(_async_input(prompt), 5)
+    except asyncio.TimeoutError:
+        _match = False
+        print('Request timed out.')
+
+    return _match
 
 
 def comm_log_local(command_: Callable):

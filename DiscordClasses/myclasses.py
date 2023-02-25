@@ -2,7 +2,8 @@ from discord.ext import commands
 import discord, re
 from typing import Optional
 from .version import Version
-from .custom_funcs import get_prefix
+from .custom_funcs import get_prefix, async_input
+import asyncio
 
 
 class Jarvis(commands.AutoShardedBot):
@@ -12,9 +13,12 @@ class Jarvis(commands.AutoShardedBot):
 
         with open("C:/Users/Shlok/bot_stuff/version.txt", 'r+') as f:
             ver = Version(f.read())
-            match = re.search("(no?(ah)?|deny)", input("Version increment? "))
+
+            loop = asyncio.get_event_loop()
+            match = loop.run_until_complete(async_input("Version increment? "))
+
             self.VERSION = ver.version
-            if not match:
+            if match:
                 self.VERSION = ver.increment().version
                 f.write(self.VERSION)
 
