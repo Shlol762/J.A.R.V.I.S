@@ -17,7 +17,7 @@ from . import command_log_and_err,\
     ChannelNotFound, NoPrivateMessage, Message, MessageConverter, BadUnionArgument,\
     trim, forbidden_word, noswear, greetings, farewells, nou, urnotgod, timeto, Bot,\
     ThreadNotFound, train, CheckFailure, eastereggs, who_pinged, ErrorView, HTTPException,\
-    stopwatch, time_set, AllowedMentions, load, IST, Member
+    stopwatch, time_set, AllowedMentions, IST, Member
 
 log = logging.getLogger(__name__)
 
@@ -26,48 +26,48 @@ chnls = [833995745690517524, 817299815900643348,
 webhooks = [861660340617084968, 861660166193807430,
             861660711037960243, 938268473623212053]
 
-model = None
-if load:
-    from nltk.stem import WordNetLemmatizer
-    from . import load_model
-    lemmatizer = WordNetLemmatizer()
-
-    model, words, classes, data = load_model(lemmatizer)
-
-    def clean_text(_text):
-        _tokens = nltk.word_tokenize(_text)
-        _tokens = [lemmatizer.lemmatize(word) for word in _tokens]
-        return _tokens
-
-    def bag_of_words(_text, vocab):
-        _tokens = clean_text(_text)
-        bow = [0] * len(vocab)
-        for w in _tokens:
-            for idx, word in enumerate(vocab):
-                if word == w:
-                    bow[idx] = 1
-        return np.array(bow)
-
-    def pred_class(_text, vocab, labels):
-        bow = bag_of_words(_text, vocab)
-        result = model.predict(np.array([bow]))[0]
-        thresh = 0.2
-        y_pred = [[idx, res] for idx, res in enumerate(result) if res > thresh]
-
-        y_pred.sort(key=lambda x: x[1], reverse=True)
-        return_list = []
-        for r in y_pred:
-            return_list.append(labels[r[0]])
-        return return_list
-
-    def get_response(intents_list, intents_json):
-        tag = intents_list[0]
-        list_of_intents = intents_json["intents"]
-        for i in list_of_intents:
-            if i["tag"] == tag:
-                result = random.choice(i["responses"])
-                break
-        return result
+# model = None
+# if load:
+#     from nltk.stem import WordNetLemmatizer
+#     from . import load_model
+#     lemmatizer = WordNetLemmatizer()
+#
+#     model, words, classes, data = load_model(lemmatizer)
+#
+#     def clean_text(_text):
+#         _tokens = nltk.word_tokenize(_text)
+#         _tokens = [lemmatizer.lemmatize(word) for word in _tokens]
+#         return _tokens
+#
+#     def bag_of_words(_text, vocab):
+#         _tokens = clean_text(_text)
+#         bow = [0] * len(vocab)
+#         for w in _tokens:
+#             for idx, word in enumerate(vocab):
+#                 if word == w:
+#                     bow[idx] = 1
+#         return np.array(bow)
+#
+#     def pred_class(_text, vocab, labels):
+#         bow = bag_of_words(_text, vocab)
+#         result = model.predict(np.array([bow]))[0]
+#         thresh = 0.2
+#         y_pred = [[idx, res] for idx, res in enumerate(result) if res > thresh]
+#
+#         y_pred.sort(key=lambda x: x[1], reverse=True)
+#         return_list = []
+#         for r in y_pred:
+#             return_list.append(labels[r[0]])
+#         return return_list
+#
+#     def get_response(intents_list, intents_json):
+#         tag = intents_list[0]
+#         list_of_intents = intents_json["intents"]
+#         for i in list_of_intents:
+#             if i["tag"] == tag:
+#                 result = random.choice(i["responses"])
+#                 break
+#         return result
 
 
 class Events(Cog):
@@ -234,11 +234,11 @@ class Events(Cog):
                         await message.edit(suppress=True)
 
                     if options["message"]:
-                        if model:
-                            intents = pred_class(
-                                message.content.lower(), words, classes)
-                            _result = get_response(intents, data)
-                            await ctx.send(_result)
+                        # if model:
+                        #     intents = pred_class(
+                        #         message.content.lower(), words, classes)
+                        #     _result = get_response(intents, data)
+                        #     await ctx.send(_result)
                         if options["msghai"]:
                             await forbidden_word(ctx)
                         if options["noswear"]:
@@ -283,7 +283,7 @@ class Events(Cog):
                             pass
                     await train(ctx)
                 except TypeError:
-                    print(ctx.message.content)
+                    pass
             if random.randint(1, 1000) == 0:
                 await ctx.send(f"<@")
 

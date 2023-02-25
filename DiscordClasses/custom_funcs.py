@@ -350,34 +350,38 @@ def stopwatch(coro: Coroutine):
         print(str(diff)+' ms') if diff > 0 else None
     return wrapper
 
-load = False
-if re.search(r"y(e[sa]h?)", input("Load model? ")):
-    import nltk
-    from nltk.stem import WordNetLemmatizer
-    from tensorflow.keras.models import load_model as lm
-    import string
-    load = True
-
-    def load_model(lemmatizer: WordNetLemmatizer):
-        with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/patterns.json", "r") as f:
-            data: dict = json.load(f)
-
-        words = []
-        classes = []
-        doc_X = []
-        doc_y = []
-        for intent in data["intents"]:
-            for pattern in intent["patterns"]:
-                tokens = nltk.word_tokenize(pattern)
-                words.extend(tokens)
-                doc_X.append(pattern)
-                doc_y.append(intent["tag"])
-            if intent["tag"] not in classes:
-                classes.append(intent["tag"])
-        words = [lemmatizer.lemmatize(word.lower()) for word in words if word not in string.punctuation]
-        words = sorted(set(words))
-        classes = sorted(set(classes))
-
-        model = lm('C:/Users/Shlok/Desktop/chatbot-model1.h5')
-        return model, words, classes, data
+# load = False
+#
+# loop = asyncio.get_event_loop()
+# match = loop.run_until_complete(async_input("Load model? "))
+#
+# if match:
+#     import nltk
+#     from nltk.stem import WordNetLemmatizer
+#     from tensorflow.keras.models import load_model as lm
+#     import string
+#     load = True
+#
+#     def load_model(lemmatizer: WordNetLemmatizer):
+#         with open("C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/patterns.json", "r") as f:
+#             data: dict = json.load(f)
+#
+#         words = []
+#         classes = []
+#         doc_X = []
+#         doc_y = []
+#         for intent in data["intents"]:
+#             for pattern in intent["patterns"]:
+#                 tokens = nltk.word_tokenize(pattern)
+#                 words.extend(tokens)
+#                 doc_X.append(pattern)
+#                 doc_y.append(intent["tag"])
+#             if intent["tag"] not in classes:
+#                 classes.append(intent["tag"])
+#         words = [lemmatizer.lemmatize(word.lower()) for word in words if word not in string.punctuation]
+#         words = sorted(set(words))
+#         classes = sorted(set(classes))
+#
+#         model = lm('C:/Users/Shlok/Desktop/chatbot-model1.h5')
+#         return model, words, classes, data
 
