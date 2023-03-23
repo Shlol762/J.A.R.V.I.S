@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 import json
 import os
@@ -5,9 +6,10 @@ import random
 import re
 import demoji
 import discord
+import threading
 import logging
 from discord.ext import commands
-from DiscordClasses import BOT_TOKEN, JoinHomeServer, Jarvis
+from DiscordClasses import BOT_TOKEN, JoinHomeServer, Jarvis, Hotline
 from asyncio import get_event_loop
 
 
@@ -246,10 +248,15 @@ async def destroy(ctx: commands.Context):
 
 
 @bot.command()
-async def test(ctx: commands.Context):
-    for i in range(10):
-        i += i
-        log.info((f'*'*i)+'\r')
+async def restart(ctx: commands.Context):
+    import pyautogui as gui
+
+    gui.hotkey('win', 'd')
+    gui.hotkey('win', '6')
+    gui.hotkey('ctrl', 'shift', 't')
+    gui.hotkey('alt', 'tab')
+    raise KeyboardInterrupt()
+
 
 
 @bot.command()
@@ -285,6 +292,63 @@ async def recover(ctx: commands.Context):
         json.dump(messages, _f, indent=3)
 
     log.info('Complete.')
+
+
+@bot.command()
+async def hotline(ctx: commands.Context, *, override: str = 'None'):
+    override = True if re.search(r'override 23113', override.lower()) else False
+    if not override:
+        try:
+            confirm = await ctx.send('Are you sure you want to contact Shlok through the desktop? Respond with y(es) in 10 seconds')
+            await bot.wait_for('message',
+                                              check = lambda m:
+                                              (m.author, m.channel) == (ctx.author, ctx.channel) and re.search(
+                                                  r'y(es)?', m.content.lower()),
+                                              timeout = 10)
+        except asyncio.TimeoutError:
+            await confirm.delete()
+            return await ctx.reply('Cancelled direct connection to Shlok.')
+        else:
+            await ctx.send('You can send a maximum of 10 messages. If you take more than 15 seconds'
+                           ' to send a message, I will assume you\'ve finished typing your messages.'
+                           ' Should you want to end the hotline immediately all you have to do is type out '
+                           '**`TERMINUS MSG@113`**\nTime starts now.')
+
+    await ctx.send("```less\n>>> Hotline Active\n```")
+
+    end = None
+    messages = []
+    try:
+        while not end and len(messages) < 20:
+            messages.append(await bot.wait_for('message',
+                                               check = lambda m: (m.author, m.channel) == (ctx.author, ctx.channel),
+                                               timeout = 15))
+            if 'TERMINUS MSG@113' in messages[-1].content:
+                messages.pop(-1)
+                end = True
+    except asyncio.TimeoutError:
+        pass
+
+    async with ctx.typing():
+        if len(messages) == 0:
+            await ctx.send(f'```nim\n>>> Hotline Terminated: "{"15 sec time limit exceeded without messages" if not end else "ended comms without messages"}"\n```')
+            await ctx.send('```nim\n>>> Aborting Communication with Desktop\n```')
+            return
+
+        await ctx.send("```less\n>>> Establishing Connection With Desktop...\n```")
+
+    loop = bot.loop
+
+    async def executer():
+        def desktop_notif():
+            hotline_ = Hotline(ctx, messages, loop)
+            hotline_.mainloop()
+
+        threading.Thread(target = desktop_notif).start()
+
+    bot.loop.create_task(executer())
+
+
 
 
 try:

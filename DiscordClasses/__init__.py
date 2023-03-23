@@ -6,6 +6,7 @@ from .version import *
 from .web_scrapers import *
 from .views import *
 from .myclasses import *
+from .gui import *
 
 BOT_DIR = "C:/Users/Shlok/bot_stuff/safe_docs/"
 

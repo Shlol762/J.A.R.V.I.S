@@ -132,6 +132,11 @@ class Events(Cog):
 
         await general.edit(topic=topic)
 
+    @loop(seconds = 0.1)
+    async def print_tasks(self):
+        dt_fmt_str = "%d %b %Y at %I:%M:%S:\x1b[0m\x1b[34;1m%f\x1b[0m \x1b[30;1m%p"
+        log.info(f'\x1b[30;1m{datetime.datetime.now().strftime(dt_fmt_str)}\x1b[0m \x1b[35m{", ".join([task.get_name() for task in asyncio.all_tasks() if not task.done()])}\x1b[0m')
+
     @Cog.listener()
     async def on_ready(self):
         now = datetime.datetime.now()
@@ -149,6 +154,7 @@ class Events(Cog):
             self.birthday.restart()
         log.info(
             f"Connection to discord instantiation success")
+        # self.print_tasks.start()
 
     @Cog.listener()
     async def on_message(self, message: Message):
