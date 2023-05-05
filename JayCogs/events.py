@@ -272,16 +272,14 @@ class Events(Cog):
                                 birthdays: dict[str: str] = json.load(f)
 
                             if birthdays.get(str(person.id)):
-                                time: datetime.datetime = datetime.datetime.strptime(
-                                    birthdays[str(person.id)]+datetime.datetime.now().strftime("/%Y"), "%d/%m/%Y")
-                                datending = (lambda t: {'1': 'st', '2': 'nd', '3': 'rd'}.get(
-                                    str(t)[-1]) or 'th')(time.day)
-                                if time < datetime.datetime.now():
-                                    time: str = re.sub(" to `00:00 \d{2}/\d{2}/\d{4}`", "", time.strftime(
-                                        f"""The next occurrance of . birthday is in {timeto(f'{time.day}/{time.month}/{time.year + 1}')[0]} on the `%d{datending} of %B in {time.year + 1}`"""))
-                                else:
-                                    time: str = re.sub(" to `00:00 \d{2}/\d{2}/\d{4}`", "", time.strftime(
-                                        f"""The next occurrance of . birthday is in {timeto(f'{time.day}/{time.month}/{time.year}')[0]} on the `%d{datending} of %B in %Y`"""))
+                                time: int = int(datetime.datetime.strptime(
+                                    birthdays[str(person.id)]+datetime.datetime.now().strftime("/%Y"), "%d/%m/%Y").timestamp())
+
+                                if time < datetime.datetime.now().timestamp():
+                                    time: int = int((datetime.datetime.fromtimestamp(
+                                        time) + datetime.timedelta(days = 365)).timestamp())
+
+                                time: str = f"""The next occurrance of . birthday is <t:{time}:R> on <t:{time}:D>"""
                                 await ctx.reply(time.replace(".", 'your' if person.id == author.id else person.name+"'s"))
                             else:
                                 await ctx.reply(f"I'm sorry but I don't think I have that birthday stored anywhere. Contact Shlol#2501 to add the birthday")
