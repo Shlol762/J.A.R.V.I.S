@@ -296,6 +296,7 @@ class Events(Cog):
     @Cog.listener()
     async def on_disconnect(self):
         self.severed_time = datetime.datetime.now().strftime("%d %b %Y at %I:%M %p")
+        log.warning(f"Shard {shard_id} has disconnected from gateway")
 
     @Cog.listener()
     async def on_connect(self):

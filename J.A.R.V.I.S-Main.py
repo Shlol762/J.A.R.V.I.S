@@ -13,7 +13,15 @@ from DiscordClasses import BOT_TOKEN, JoinHomeServer, Jarvis, Hotline
 from asyncio import get_event_loop
 
 
+log_level = logging.INFO
+log_formatter = discord.utils._ColourFormatter()
+log_handler = logging.StreamHandler()
+
+log_handler.setFormatter(log_formatter)
+
 log = logging.getLogger(__name__)
+log.setLevel(log_level)
+log.addHandler(log_handler)
 
 bot = Jarvis()
 
@@ -349,12 +357,9 @@ async def hotline(ctx: commands.Context, *, override: str = 'None'):
     bot.loop.create_task(executer())
 
 
-
-
 try:
-    bot.run(BOT_TOKEN, log_handler=logging.StreamHandler(), log_level=logging.INFO, log_formatter=discord.utils._ColourFormatter(), root_logger=True)
+    bot.run(BOT_TOKEN, log_handler=log_handler, log_level=log_level, log_formatter=log_formatter, root_logger=True)
 except (KeyboardInterrupt, RuntimeError):
-    pass
-finally:
-    log.info(
-        f"Connection to internet termniated willingly.")
+    log.info(f"Connection to internet termniated willingly.")
+except aiohttp.ClientConnectorError:
+    log.exception(f"Connection to internet failed. End of process.", exc_info = None)
