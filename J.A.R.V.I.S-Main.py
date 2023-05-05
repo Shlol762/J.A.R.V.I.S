@@ -1,4 +1,7 @@
 import asyncio
+import time
+from typing import Union, Optional, Tuple, List
+import aiohttp
 import datetime
 import json
 import os
@@ -9,6 +12,7 @@ import discord
 import threading
 import logging
 from discord.ext import commands
+from discord.ext import tasks
 from DiscordClasses import BOT_TOKEN, JoinHomeServer, Jarvis, Hotline
 from asyncio import get_event_loop
 
@@ -35,9 +39,36 @@ with open('C:/Users/Shlok/J.A.R.V.I.SV2021/json_files/settings.json', 'r') as f:
 
 del f
 
-for cog in os.listdir("C:/Users/Shlok/J.A.R.V.I.SV2021/JayCogs"):
-    if re.search(r'^(?!__init__).+(\.py)$', cog):
+cogs = [cog for cog in os.listdir("C:/Users/Shlok/J.A.R.V.I.SV2021/JayCogs")
+        if re.search(r'^(?!__init__).+(\.py)$', cog)]
+cogs_init_at = {}
+
+for cog in cogs:
+    try:
+        cogs_init_at[f'C:/Users/Shlok/J.A.R.V.I.SV2021/JayCogs/{cog}'] = time.time()
         get_event_loop().run_until_complete(bot.load_extension(f'JayCogs.{cog[:-3]}'))
+    except commands.NoEntryPointError:
+        log.exception(f"Extension 'JayCogs.{cog}' does not contain a setup function")
+    except commands.ExtensionNotFound:
+        log.exception(f'Extension Not Found: "{_cog}" not found')
+    except commands.ExtensionFailed as _exc:
+        log.exception(_exc.args[0])
+
+
+@bot.event
+async def on_ready():
+    check_diff.start()
+
+
+@tasks.loop(seconds = 10)
+async def check_diff():
+    for file, saved_last in cogs_init_at.items():
+        extension = '/'.join(file.split('/')[-1:])[:-3]
+        if os.path.getmtime(file) > saved_last:
+            print(datetime.datetime.now().strftime(f'\x1b[30;1m%Y-%m-%d %H:%M:%S\x1b[0m \x1b[34;1mINFO    \x1b[0m \x1b[35m__main__\x1b[0m'
+                  f' Change detected in file "{extension}". Reloading "JayCogs.{extension}"'))
+            await _reload([extension])
+            cogs_init_at[file] = time.time()
 
 
 @bot.command(hidden=True)
@@ -255,16 +286,108 @@ async def destroy(ctx: commands.Context):
         await guild.leave()
 
 
+async def _load(_cogs: List[str], log_to_console: bool = False) -> Tuple[List, List]:
+    errors = []
+    successes = []
+    for _cog in _cogs:
+        if _cog not in [cog[:-3] for cog in cogs]:
+            msg = f'Extension Not Found: "{_cog}" not found'
+            errors.append(f'\n>>> {msg}')
+            log.exception(msg) if log_to_console else None
+        else:
+            try:
+                await bot.load_extension(f'JayCogs.{_cog}')
+                msg = f'Successfully loaded "JayCogs.{_cog}"'
+                successes.append(f'\n>>> {msg}')
+                log.info(msg) if log_to_console else None
+            except commands.ExtensionNotFound:
+                msg = f'Extension Not Found: "{_cog}" not found'
+                errors.append(f'\n>>> {msg}')
+                log.exception(msg) if log_to_console else None
+            except commands.ExtensionAlreadyLoaded:
+                msg = f'Extension "JayCogs.{_cog}" is already loaded'
+                successes.append(f'\n>>> {msg}')
+                log.warning(msg) if log_to_console else None
+            except commands.NoEntryPointError:
+                msg = f'Loading Extension Failed: "JayCogs.{_cog}" is missing a setup function'
+                errors.append(f'\n>>> {msg}'); log.exception(msg) if log_to_console else None
+            except commands.ExtensionFailed as exc:
+                msg = f'Loading Extension Failed: "{exc.args[0]}"'
+                errors.append(f'\n>>> {msg}'); log.exception(msg) if log_to_console else None
+    return successes, errors
+
+
+async def _reload(_cogs: List[str], log_to_console: bool = False) -> Tuple[List, List]:
+    errors = []
+    successes = []
+    for _cog in _cogs:
+        if _cog not in [cog[:-3] for cog in cogs]:
+            msg = f'Extension Not Found: "{_cog}" not found'
+            errors.append(f'\n>>> {msg}'); log.exception(msg) if log_to_console else None
+        else:
+            try:
+                await bot.reload_extension(f'JayCogs.{_cog}')
+                msg = f'Successfully refreshed "JayCogs.{_cog}"'
+                successes.append(f'\n>>> {msg}'); log.info(msg) if log_to_console else None
+            except commands.ExtensionNotLoaded:
+                errors.append(f'\n>>> Reloading Extension Failed: "JayCogs.{_cog}" was never loaded'
+                              f'\n``````less\n>>> Attempting to load "JayCogs.{_cog}"')
+                success, error = await _load([_cog], True)
+                errors.append(f'{success[0]}\n``````nim') if len(success) > 0 else None
+                errors.append(f'\n``````nim{error[0]}') if len(error) > 0 else None
+            except commands.ExtensionNotFound:
+                errors.append(f'\n>>> Extension Not Found: "{_cog}" not found')
+            except commands.NoEntryPointError:
+                errors.append(f'\n>>> Reloading Extension Failed: "JayCogs.{_cog}" is missing a setup function')
+            except commands.ExtensionFailed as exc:
+                errors.append(f'\n>>> Reloading Extension Failed: "{exc.args[0]}"')
+    return successes, errors
+
+
+async def _unload(_cogs: List[str]) -> Tuple[List, List]:
+    errors = []
+    successes = []
+    for _cog in _cogs:
+        if _cog not in [cog[:-3] for cog in cogs]:
+            errors.append(f'\n>>> Extension Not Found: "{_cog}" not found')
+        else:
+            try:
+                await bot.unload_extension(f'JayCogs.{_cog}')
+                successes.append(f'\n>>> Successfully unloaded "JayCogs.{_cog}"')
+            except commands.ExtensionNotLoaded:
+                errors.append(f'\n>>> Unloading Extension Failed: "JayCogs.{_cog}" was never loaded')
+            except commands.ExtensionNotFound:
+                errors.append(f'\n>>> Extension Not Found: "{_cog}" not found')
+            except commands.ExtensionFailed as exc:
+                errors.append(f'\n>>> Unloading Extension Failed: "{exc.args[0]}"')
+    return successes, errors
+
+
 @bot.command()
-async def restart(ctx: commands.Context):
-    import pyautogui as gui
+async def reload(ctx: commands.Context, *, _cogs: str = None):
+    _cogs = _cogs.split(', ') if _cogs else [_cog[:-3] for _cog in cogs]
+    successes, errors = await _reload(_cogs)
+    await ctx.send(f'```less{"".join(successes)}\n```') if len(successes) > 0 else None
+    await ctx.send(f'```nim{"".join(errors)}\n```'.replace('```nim\n```', '', -1)) if len(errors) > 0 else None
+    await ctx.send(f'```js\nReloading Procedure Complete\n```')
 
-    gui.hotkey('win', 'd')
-    gui.hotkey('win', '6')
-    gui.hotkey('ctrl', 'shift', 't')
-    gui.hotkey('alt', 'tab')
-    raise KeyboardInterrupt()
 
+@bot.command()
+async def load(ctx: commands.Context, *, _cogs: str = None):
+    _cogs = _cogs.split(', ') if _cogs else [_cog[:-3] for _cog in cogs]
+    successes, errors = await _load(_cogs)
+    await ctx.send(f'```less{"".join(successes)}\n```') if len(successes) > 0 else None
+    await ctx.send(f'```nim{"".join(errors)}\n```'.replace('```nim\n```', '', -1)) if len(errors) > 0 else None
+    await ctx.send(f'```js\nLoading Procedure Complete\n```')
+
+
+@bot.command()
+async def unload(ctx: commands.Context, *, _cogs: str = None):
+    _cogs = _cogs.split(', ') if _cogs else [_cog[:-3] for _cog in cogs]
+    successes, errors = await _unload(_cogs)
+    await ctx.send(f'```less{"".join(successes)}\n```') if len(successes) > 0 else None
+    await ctx.send(f'```nim{"".join(errors)}\n```'.replace('```nim\n```', '', -1)) if len(errors) > 0 else None
+    await ctx.send(f'```js\nUnloading Procedure Complete\n```')
 
 
 @bot.command()
