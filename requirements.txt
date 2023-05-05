@@ -11,10 +11,11 @@ PyYAML~=6.0
 speedtest_cli
 aiofiles>=0.8.0
 typing>=3.7.4.3
-DateTime>=4.3
 discord>=2.0.0a6
 nltk>=3.6.3
 numpy>=1.21.1
 tensorflow>=2.7.0
 rich>=12.4.4
+pyautogui
 demoji>=1.1.0
+customtkinter>=5.1.2
