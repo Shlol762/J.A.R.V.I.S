@@ -444,6 +444,8 @@ class Events(Cog):
     async def on_presence_update(self, before, after):
         watch_ids = [613044385910620190,
                      728917592160469022, 809295130213089320]
+        if before.id not in watch_ids:
+            return
 
         t = self.status_time
         n = datetime.datetime.now()
@@ -458,13 +460,13 @@ class Events(Cog):
         current_status = 'online' if str(after.status) in [
             'dnd', 'online', 'idle'] else 'offline'
 
-       # if before.id == watch_ids[2] and current_status != self.statuses[1]:
-       #    await (await self.bot.fetch_user(watch_ids[1])).send(f"{before.mention} is now {after.status}.")
-       #    self.statuses[1] = current_status
+        if before.id == watch_ids[2] and current_status != self.statuses[1]:
+            await (await self.bot.fetch_user(watch_ids[1])).send(f"{before.mention} is now {after.status}.")
+            self.statuses[1] = current_status
 
-       # if before.id == watch_ids[1] and current_status != self.statuses[0]:
-       #     await (await self.bot.fetch_user(watch_ids[2])).send(f"{before.mention} is now {after.status}.")
-       #     self.statuses[0] = current_status
+        # if before.id == watch_ids[1] and current_status != self.statuses[0]:
+        #     await (await self.bot.fetch_user(watch_ids[2])).send(f"{before.mention} is now {after.status}.")
+        #     self.statuses[0] = current_status
 
 
 async def setup(bot: Bot):
