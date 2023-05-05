@@ -292,7 +292,7 @@ class Events(Cog):
                 await ctx.send(f"<@")
 
     @Cog.listener()
-    async def on_disconnect(self):
+    async def on_shard_disconnect(self, shard_id: int):
         self.severed_time = datetime.datetime.now().strftime("%d %b %Y at %I:%M %p")
         log.warning(f"Shard {shard_id} has disconnected from gateway")
 
