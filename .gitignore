@@ -114,3 +114,6 @@ dmypy.json
 .pyre/
 /json_files/
 /image_resources/
+databases/
+
+.test.py
